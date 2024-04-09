@@ -1,21 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 interface User {
-  firstName?: string;
-  imageUrl?: string;
-  lastName?: string;
+  nombre: string;
+  apellido: string;
   email: string;
   password: string;
-  location: {
-    country: string;
-    state: string;
-    city: string;
-    coords: {
-      lat: number;
-      long: number;
-    };
-  };
-  eventIds: string[];
-  admin?: boolean;
+  rol: string;
+  dni: string;
 }
 export default User;
