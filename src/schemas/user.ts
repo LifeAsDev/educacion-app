@@ -1,39 +1,35 @@
-import User from '@/models/user';
-import mongoose, { Schema, models } from 'mongoose';
+import User from "@/models/user";
+import mongoose, { Schema, models } from "mongoose";
 
 const userSchema = new Schema<User>(
   {
-    firstName: {
+    nombre: {
       type: String,
-      default: '',
+      default: "",
     },
-    imageUrl: String,
-    lastName: {
+    apellido: {
       type: String,
-      default: '',
+      default: "",
     },
     email: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
       required: true,
     },
-    location: {
-      country: String,
-      state: String,
-      city: String,
-      coords: { lat: Number, long: Number },
+    rol: {
+      type: String,
+      required: true,
+      default: "estudiante",
     },
-    eventIds: { type: [String], default: [] },
-
-    admin: {
-      type: Boolean,
-      default: false,
+    dni: {
+      type: String,
+      required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-export default models.User || mongoose.model('User', userSchema);
+export default models.User || mongoose.model("User", userSchema);
