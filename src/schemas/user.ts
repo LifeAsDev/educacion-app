@@ -28,6 +28,14 @@ const userSchema = new Schema<User>(
       type: String,
       required: true,
     },
+    clase: {
+      type: String,
+      default: "",
+    },
+    grado: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

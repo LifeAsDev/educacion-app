@@ -7,5 +7,7 @@ interface User {
   password: string;
   rol: string;
   dni: string;
+  clase: string;
+  grado: string;
 }
 export default User;
