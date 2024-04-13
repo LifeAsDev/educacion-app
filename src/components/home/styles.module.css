@@ -1,0 +1,25 @@
+.homeOption svg {
+  width: 8em;
+}
+.homeOption p {
+  font-weight: 600;
+}
+.homeOption {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border: 2px solid black;
+  padding: 2em;
+  width: 16em;
+  height: 14em;
+}
+.main {
+  display: flex;
+}
+.homeOptionsBox {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 3em;
+  cursor: pointer;
+}
