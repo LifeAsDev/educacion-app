@@ -1,5 +1,8 @@
+import { useOnboardingContext } from "@/lib/context";
 import styles from "./styles.module.css";
 export default function Home() {
+  const { session, status } = useOnboardingContext();
+
   return (
     <main className={styles.main}>
       <div className={styles.homeOptionsBox}>
