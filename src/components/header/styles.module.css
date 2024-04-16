@@ -1,0 +1,36 @@
+.header {
+  background-color: var(--secondary-color-dark-black);
+  position: absolute;
+  height: 5em;
+  width: 100%;
+  top: 0;
+  display: flex;
+  padding: 2em;
+  justify-content: flex-end;
+  align-items: center;
+}
+.name {
+  color: white;
+  font-size: 1.1em;
+  font-weight: 500;
+}
+.red {
+  color: rgb(250, 131, 131);
+  font-size: 1.1em;
+  font-weight: 500;
+  margin-left: 2em;
+  cursor: pointer;
+  user-select: none;
+}
+.red:hover {
+  color: red;
+}
+
+.rol {
+  margin-right: 2em;
+  background-color: var(--color-light-night-blue);
+  color: white;
+  font-size: 1.1em;
+  font-weight: 500;
+  padding: 0.1em 1em;
+}
