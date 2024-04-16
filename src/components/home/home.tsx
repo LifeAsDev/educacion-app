@@ -1,15 +1,17 @@
 "use client";
 import { useOnboardingContext } from "@/lib/context";
 import styles from "./styles.module.css";
+import Link from "next/link";
 export default function Home() {
   const { session, status } = useOnboardingContext();
   const rolTest = "estudiante";
   return (
     <main className={styles.main}>
+      <h2 className={styles.h2}>Tablero</h2>
       <div className={styles.homeOptionsBox}>
         {rolTest === "estudiante" ? (
           <>
-            <div className={styles.homeOption}>
+            <Link href={"/asda"} className={styles.homeOption}>
               <svg
                 fill="#000000"
                 version="1.1"
@@ -65,7 +67,7 @@ export default function Home() {
                 </g>
               </svg>
               <p>Pruebas de evaluacion</p>
-            </div>
+            </Link>
           </>
         ) : (
           ""
