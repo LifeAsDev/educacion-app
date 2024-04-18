@@ -11,7 +11,7 @@ export default function Home() {
       <div className={styles.homeOptionsBox}>
         {rolTest === "estudiante" ? (
           <>
-            <Link href={"/asda"} className={styles.homeOption}>
+            <Link href={"/evaluation"} className={styles.homeOption}>
               <svg
                 fill="#000000"
                 version="1.1"
@@ -119,7 +119,7 @@ export default function Home() {
               </svg>
               <p>Editar perfil</p>
             </Link>
-            <Link href={"/asda"} className={styles.homeOption}>
+            <Link href={"/evaluation"} className={styles.homeOption}>
               <svg
                 fill="#000000"
                 version="1.1"
@@ -245,7 +245,7 @@ export default function Home() {
               </svg>
               <p>Editar perfil</p>
             </Link>
-            <Link href={"/asda"} className={styles.homeOption}>
+            <Link href={"/evaluation"} className={styles.homeOption}>
               <svg
                 fill="#000000"
                 version="1.1"
