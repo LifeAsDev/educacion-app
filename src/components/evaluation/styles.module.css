@@ -13,13 +13,16 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 2em;
-  gap: 3em;
+  padding: 0 2em;
+  justify-content: space-between;
 }
 .info {
   font-weight: 600;
   font-size: 1.2em;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .testList {
   width: 100%;
@@ -31,22 +34,60 @@
   height: 5em;
   width: 100%;
   background-color: #8b93a7;
-  padding: 2em;
-  cursor: pointer;
+  padding: 0 1em;
   transition: background-color 0.3s ease;
-}
-
-.testItem:hover {
-  background-color: #6b7387;
+  gap: 0.5em;
 }
 
 .testItem:nth-child(2n) {
-  background-color: lightgray;
+  background-color: rgb(201, 201, 201);
 }
-.testItem:nth-child(2n):hover {
-  background-color: #bbbaba;
-}
+
 .testItem p {
   font-weight: 600;
   font-size: 1.2em;
+  margin-left: 1em;
+  cursor: pointer;
+}
+.testItem p:hover {
+  color: white;
+}
+.testItem svg {
+  cursor: pointer;
+  transition: 0.1s;
+}
+.testItem svg:hover {
+  transform: scale(1.1);
+}
+.dropdown {
+  padding: 0.5em;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-charcoal);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dropdown option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.infoBox {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+.createBtn {
+  background-color: rgb(30, 201, 30);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  padding-left: 1em;
+  cursor: pointer;
+}
+.createBtn:hover {
+  background-color: rgb(26, 173, 26);
 }
