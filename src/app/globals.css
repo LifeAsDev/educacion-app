@@ -16,9 +16,12 @@
   --light-indigo: #636ea9;
   --grey-disabled: #8b93a7;
   --font-color-primary: #1d275f;
+  --primary-red: #ff0000;
+  --secondary-red: #fa8383;
 }
 main {
   min-height: 100vh;
+  padding-top: 7em;
 }
 body {
   background: var(--background-color-light-purple);

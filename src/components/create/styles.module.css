@@ -1,0 +1,131 @@
+.main {
+  min-height: initial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  max-width: 1200px;
+  width: 80%;
+  margin: auto;
+  min-height: 100vh;
+}
+.main h1 {
+  font-size: 2em;
+  font-weight: 600;
+  margin-bottom: 1em;
+}
+.main input {
+  outline: none;
+  border-radius: 4px;
+  padding: 6.5px 8px;
+  font-weight: 500;
+}
+.main input:focus {
+  outline: 2px solid var(--secondary-color-dark-black);
+}
+.inputBox {
+  display: flex;
+  flex-direction: column;
+  width: 14em;
+}
+.inputBox label {
+  font-weight: 600;
+  padding-left: 8px;
+}
+.dropdown {
+  padding: 0.5em;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+.dropdown option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+.mainTestOptionsBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+  width: 100%;
+  justify-content: center;
+}
+.btn {
+  background-color: rgb(30, 201, 30);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  padding: 1em;
+  cursor: pointer;
+}
+.createQuestionBtn {
+  margin-top: auto;
+  margin-left: auto;
+  margin-bottom: 2em;
+  font-size: 1.2em;
+}
+.btn:hover {
+  background-color: rgb(26, 173, 26);
+}
+.createQuestionBox {
+  height: 12em;
+  border: 2px dashed var(--grey-disabled);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+.questionBox {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 4em 0;
+  gap: 4em;
+  position: relative;
+}
+.questionInput {
+  width: 100%;
+  min-height: 5em;
+  padding: 8px;
+}
+.multipleQuestionBox {
+  min-height: 12em;
+  border: 2px dashed var(--grey-disabled);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  padding: 1em;
+  width: 100%;
+}
+.multipleQuestionAnswerBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  row-gap: 1em;
+  column-gap: 1em;
+}
+.answerInput {
+  padding: 8px;
+  width: 100%;
+  min-height: 3em;
+}
+.deleteBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(75%, -50%);
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--primary-red);
+}
+.deleteBtn:hover {
+  background-color: var(--secondary-red);
+}

@@ -1,7 +1,6 @@
 .main {
   display: flex;
   margin: auto;
-  margin-top: 8em;
   flex-direction: column;
   width: 80%;
   min-height: initial;
