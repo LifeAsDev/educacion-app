@@ -87,14 +87,14 @@
   flex-direction: column;
   margin: 4em 0;
   gap: 4em;
-  position: relative;
 }
 .questionInput {
   width: 100%;
   min-height: 5em;
   padding: 8px;
 }
-.multipleQuestionBox {
+.multipleQuestionBox,
+.openQuestionBox {
   min-height: 12em;
   border: 2px dashed var(--grey-disabled);
   display: flex;
@@ -103,6 +103,7 @@
   gap: 1em;
   padding: 1em;
   width: 100%;
+  position: relative;
 }
 .multipleQuestionAnswerBox {
   display: grid;
@@ -128,4 +129,7 @@
 }
 .deleteBtn:hover {
   background-color: var(--secondary-red);
+}
+.openQuestionBox > .questionInput {
+  min-height: 9.5em;
 }
