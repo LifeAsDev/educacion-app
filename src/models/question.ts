@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 interface Question {
   type: string;
   pregunta: string;

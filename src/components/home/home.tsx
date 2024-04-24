@@ -174,7 +174,7 @@ export default function Home() {
                   </g>
                 </g>
               </svg>
-              <p>Pruebas de evaluacion</p>
+              <p>Pruebas de evaluación</p>
             </Link>
             <Link href={"/asda"} className={styles.homeOption}>
               <svg

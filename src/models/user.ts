@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 interface User {
   nombre: string;
   apellido: string;
@@ -9,5 +7,6 @@ interface User {
   dni: string;
   clase: string;
   grado: string;
+  _id: string;
 }
 export default User;

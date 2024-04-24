@@ -3,11 +3,22 @@ import styles from "./styles.module.css";
 import { useState, useEffect, useRef } from "react";
 import Question from "@/models/question";
 import { v4 as uuidv4 } from "uuid"; // Importa la función uuidv4
+import { useRouter } from "next/navigation";
 
 export default function Create() {
-  const [questionArr, setQuestionArr] = useState<Question[]>([]);
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
+
+  const router = useRouter();
+
+  const [questionArr, setQuestionArr] = useState<Question[]>([]);
+  const [name, setName] = useState("");
+  const [type, setType] = useState("formativa");
+  const [difficulty, setDifficulty] = useState("basico");
+  const [clase, setClase] = useState("A");
+  const [grado, setGrado] = useState("7");
+  const [submitting, setSubmitting] = useState(false);
+
   const editQuestion = (
     property: keyof Question,
     value: string,
@@ -17,7 +28,6 @@ export default function Create() {
     newQuestion[index][property] = value;
     setQuestionArr(newQuestion);
   };
-  const cache = useRef(false);
 
   const createQuestion = () => {
     let newQuestion: Question;
@@ -37,6 +47,7 @@ export default function Create() {
 
     setQuestionArr((prev) => [...prev, newQuestion]);
   };
+
   const deleteQuestion = (questionIndex: number) => {
     console.log(questionIndex);
     const newQuestionArr = [...questionArr];
@@ -45,31 +56,93 @@ export default function Create() {
     console.log(newQuestionArr);
     setQuestionArr(newQuestionArr);
   };
+
+  const cache = useRef(false);
   useEffect(() => {
-    const cachedState = localStorage.getItem("questionArr");
+    const cachedState = localStorage.getItem("createState");
     if (cachedState && !cache.current) {
       cache.current = true;
-
-      console.log(JSON.parse(cachedState));
-      setQuestionArr(JSON.parse(cachedState));
+      const parseCachedState = JSON.parse(cachedState);
+      setQuestionArr(parseCachedState.questionArr);
+      setName(parseCachedState.name);
+      setType(parseCachedState.type);
+      setDifficulty(parseCachedState.difficulty);
+      setClase(parseCachedState.clase);
+      setGrado(parseCachedState.grado);
     }
   }, []);
   useEffect(() => {
-    localStorage.setItem("questionArr", JSON.stringify(questionArr));
-  }, [questionArr]);
+    if (!submitting)
+      localStorage.setItem(
+        "createState",
+        JSON.stringify({ questionArr, name, type, difficulty, grado, clase })
+      );
+  }, [clase, difficulty, grado, name, questionArr, submitting, type]);
 
+  const submitEvaluationTest = async () => {
+    localStorage.removeItem("createState");
+
+    setSubmitting(true);
+    try {
+      const data = new FormData();
+      data.set("name", name as string);
+      data.set("type", type as string);
+      data.set("difficulty", difficulty as string);
+      data.set("clase", clase as string);
+      data.set("grado", grado as string);
+
+      questionArr.forEach((question) => {
+        const questionString = JSON.stringify(question);
+        data.append("questionArr", questionString);
+      });
+
+      const res = await fetch("/api/evaluation-test", {
+        method: "POST",
+        body: data,
+      });
+      const resData = await res.json();
+
+      if (res.ok) {
+        router.push(`/evaluation`);
+        return true;
+      } else {
+        return;
+      }
+    } catch (error) {
+      return;
+    }
+  };
   const rolTest: string = "directivo";
   return (
     <main className={styles.main}>
+      {submitting ? (
+        <div className={styles.submitting}>
+          <div className={styles.loader}></div>
+          Creando Evaluación
+        </div>
+      ) : (
+        ""
+      )}
       <h1>Creación de evaluación</h1>
       <div className={styles.mainTestOptionsBox}>
         <div className={styles.inputBox}>
           <label>Nombre</label>
-          <input type="text" placeholder="Nombre " />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            placeholder="Nombre "
+          />
         </div>
         <div className={styles.inputBox}>
           <label>Tipo de prueba</label>
-          <select className={styles.dropdown} name="prueba" id="prueba">
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className={styles.dropdown}
+            name="prueba"
+            id="prueba"
+          >
             <option value="formativa">Formativa</option>
             <option value="sumativa">Sumativa</option>
             <option value="simce">Simce</option>
@@ -78,7 +151,13 @@ export default function Create() {
         </div>
         <div className={styles.inputBox}>
           <label>Nivel de dificultad</label>
-          <select className={styles.dropdown} name="dificultad" id="dificultad">
+          <select
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            className={styles.dropdown}
+            name="dificultad"
+            id="dificultad"
+          >
             <option value="basico">Básico</option>
             <option value="intermedio">Intermedio</option>
             <option value="avanzado">Avanzado</option>
@@ -88,7 +167,13 @@ export default function Create() {
           <>
             <div className={styles.inputBox}>
               <label>Clase</label>
-              <select className={styles.dropdown} name="clase" id="clase">
+              <select
+                value={clase}
+                onChange={(e) => setClase(e.target.value)}
+                className={styles.dropdown}
+                name="clase"
+                id="clase"
+              >
                 <option value="A">A</option>
                 <option value="B">B</option>
                 <option value="C">C</option>
@@ -97,7 +182,13 @@ export default function Create() {
             </div>
             <div className={styles.inputBox}>
               <label>Grado</label>
-              <select className={styles.dropdown} name="grado" id="grado">
+              <select
+                value={grado}
+                onChange={(e) => setGrado(e.target.value)}
+                className={styles.dropdown}
+                name="grado"
+                id="grado"
+              >
                 <option value="7">7</option>
                 <option value="8">8</option>
                 <option value="9">9</option>
@@ -109,7 +200,6 @@ export default function Create() {
           ""
         )}
       </div>
-
       <div className={styles.questionBox}>
         {questionArr.map((question, i) =>
           question.type === "open" ? (
@@ -211,8 +301,13 @@ export default function Create() {
           </div>
         </div>
       </div>
-      <div className={`${styles.createQuestionBtn} ${styles.btn}`}>
-        Crear Prueba
+      <div
+        onClick={submitting ? undefined : submitEvaluationTest}
+        className={`${styles.createQuestionBtn} ${styles.btn} ${
+          submitting ? "cursor-default" : "submitEvaluationTest"
+        }`}
+      >
+        Crear Evaluación
       </div>
     </main>
   );
