@@ -15,10 +15,9 @@ export async function POST(req: Request) {
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
-    const parseQuestionArr = questionArr.map((question) =>
+    const parseQuestionArr: Question[] = questionArr.map((question) =>
       JSON.parse(question)
     );
-    console.log(parseQuestionArr);
     await connectMongoDB();
     const newEvaluationTest = await EvaluationTest.create({
       name,
@@ -42,6 +41,18 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: false,
       error: "error creating evaluation test",
+    });
+  }
+}
+export async function GET(req: Request) {
+  try {
+    await connectMongoDB();
+    const evaluationTests = await EvaluationTest.find();
+    return NextResponse.json({ evaluationTests }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      error: "error retrieving evaluation tests",
     });
   }
 }
