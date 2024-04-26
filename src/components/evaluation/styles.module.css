@@ -78,7 +78,7 @@
   gap: 2em;
 }
 .createBtn {
-  background-color: rgb(30, 201, 30);
+  background-color: var(--primary-green);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -88,5 +88,61 @@
   cursor: pointer;
 }
 .createBtn:hover {
-  background-color: rgb(26, 173, 26);
+  background-color: var(--secondary-green);
+}
+.deleteEvaluationBox {
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.deleteEvaluationModal {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  padding: 2em 1.5em;
+}
+.deleteEvaluationModal > p {
+  font-size: 1.25em;
+  font-weight: 600;
+  text-align: center;
+}
+.deleteEvaluationModal > p > span {
+  color: var(--third-red);
+  font-weight: 700;
+}
+.deleteModalOptionsBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 4em;
+}
+.modalOption {
+  padding: 0.2em 0;
+  color: white;
+  width: 3.5em;
+  display: flex;
+  justify-content: center;
+  font-size: 1.3em;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modalOption:first-of-type {
+  background-color: var(--primary-red);
+}
+.modalOption:first-of-type:hover {
+  background-color: var(--third-red);
+}
+.modalOption:nth-of-type(2) {
+  background-color: var(--primary-green);
+}
+.modalOption:nth-of-type(2):hover {
+  background-color: var(--secondary-green);
 }

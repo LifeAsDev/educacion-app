@@ -7,6 +7,9 @@ import EvaluationTest from "@/models/evaluationTest";
 export default function Evaluation() {
   const rolTest: string = "directivo";
   const fetchedEvaluations = useRef(false);
+  const [evaluationDeleteIndex, setEvaluationDeleteIndex] = useState<
+    null | number
+  >(null);
   const [evaluationArr, setEvaluationArr] = useState<EvaluationTest[]>([]);
   useEffect(() => {
     const fetchEvaluations = async () => {
@@ -15,9 +18,7 @@ export default function Evaluation() {
           method: "GET",
         });
         const resData = await res.json();
-        console.log("yo");
         if (res.ok) {
-          console.log(resData);
           setEvaluationArr(resData.evaluationTests);
           return true;
         } else {
@@ -32,11 +33,58 @@ export default function Evaluation() {
       fetchEvaluations();
     }
   }, []);
-  useEffect(() => {
-    console.log(evaluationArr);
-  }, [evaluationArr]);
+
+  const deleteEvaluation = async () => {
+    const newEvaluationArr = [...evaluationArr];
+    const deleteEvaluation = newEvaluationArr.splice(
+      evaluationDeleteIndex as number,
+      1
+    );
+    const deleteFetch = async () => {
+      try {
+        const res = await fetch(
+          `/api/evaluation-test/${deleteEvaluation[0]._id}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!res.ok) {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    deleteFetch();
+    setEvaluationArr(newEvaluationArr);
+    setEvaluationDeleteIndex(null);
+  };
   return (
     <main className={styles.main}>
+      {evaluationDeleteIndex !== null ? (
+        <div className={styles.deleteEvaluationBox}>
+          <div className={styles.deleteEvaluationModal}>
+            <p>
+              ¿Estás seguro que deseas eliminar
+              <br />
+              <span>{evaluationArr[evaluationDeleteIndex].name}</span>?
+            </p>
+            <div className={styles.deleteModalOptionsBox}>
+              <div
+                onClick={() => setEvaluationDeleteIndex(null)}
+                className={styles.modalOption}
+              >
+                No
+              </div>
+              <div onClick={deleteEvaluation} className={styles.modalOption}>
+                Si
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
       <div className={styles.top}>
         <div className={styles.infoBox}>
           {rolTest === "estudiante" || rolTest === "profesor" ? (
@@ -94,6 +142,9 @@ export default function Evaluation() {
           evaluationArr.map((item, i) => (
             <li key={item._id} className={styles.testItem}>
               <svg
+                onClick={() => {
+                  setEvaluationDeleteIndex(i);
+                }}
                 width="48px"
                 height="48px"
                 viewBox="0 0 24 24"

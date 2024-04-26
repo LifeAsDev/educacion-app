@@ -18,6 +18,10 @@
   --font-color-primary: #1d275f;
   --primary-red: #ff0000;
   --secondary-red: #fa8383;
+  --third-red: #da0202;
+  --primary-green: #1ec91e;
+  --secondary-green: #1aad1a;
+  --primary-green: #1ec91e;
 }
 main {
   min-height: 100vh;
