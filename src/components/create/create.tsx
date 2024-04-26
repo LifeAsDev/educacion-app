@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Question from "@/models/question";
 import { v4 as uuidv4 } from "uuid"; // Importa la función uuidv4
 import { useRouter } from "next/navigation";
-
+import Link from "next/link";
 export default function Create() {
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
@@ -123,6 +123,21 @@ export default function Create() {
       ) : (
         ""
       )}
+      <div className={styles.backBtn}>
+        <svg
+          fill="var(--primary-light-blue)"
+          height="28px"
+          width="28px"
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          enableBackground="new 0 0 512 512"
+        >
+          <polygon points="213.3,205.3 213.3,77.3 0,248 213.3,418.7 213.3,290.7 512,290.7 512,205.3 " />
+        </svg>
+        <Link href={"/evaluation"}>Volver</Link>
+      </div>
       <h1>Creación de evaluación</h1>
       <div className={styles.mainTestOptionsBox}>
         <div className={styles.inputBox}>

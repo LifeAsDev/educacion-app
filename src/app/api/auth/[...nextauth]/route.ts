@@ -20,6 +20,21 @@ const handler = NextAuth({
     The token data it only visible on backend so the data we set here is not visible on the session object 
     we get from useSession(), to get data to that object we use the callback session below*/
     async jwt({ token, account, profile }) {
+      try {
+        const fetchUrl = `${process.env.NEXTAUTH_URL}/api/user/${token.sub}`;
+        const res = await fetch(fetchUrl, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+        });
+        if (res.ok) {
+          const resData = await res.json();
+
+          token = { ...token, ...resData };
+        } else {
+        }
+      } catch (error) {
+        console.log(error);
+      }
       return token;
     },
 

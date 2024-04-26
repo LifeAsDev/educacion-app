@@ -22,6 +22,8 @@
   --primary-green: #1ec91e;
   --secondary-green: #1aad1a;
   --primary-green: #1ec91e;
+  --primary-light-blue: #007bff;
+  --secondary-light-blue: #0000ff;
 }
 main {
   min-height: 100vh;

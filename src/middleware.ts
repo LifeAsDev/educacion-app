@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 const blockedPagesWithoutLogin = ["/home", "/create-event", "/event"];
-
+const blockedPagesForEstudiantes = ["/create,/edit"];
 export default async function middleware(req: NextRequest) {
   const session = await getToken({
     req,
@@ -18,17 +18,21 @@ export default async function middleware(req: NextRequest) {
   afterAuth.pathname = "/home";
 
   const currentUrl = req.nextUrl.pathname;
-  // Store current request url in a custom header, which you can read later
-  if (
-    blockedPagesWithoutLogin.some((page) => currentUrl.startsWith(page)) &&
-    !session
-  ) {
+  if (!session && currentUrl !== "/") {
+    console.log("false");
     return NextResponse.redirect(auth);
+  } else if (session) {
+    if (currentUrl === "/") {
+      return NextResponse.redirect(home);
+    }
+    if (
+      session.rol === "estudiante" &&
+      blockedPagesForEstudiantes.some((page) => currentUrl.startsWith(page))
+    ) {
+      return NextResponse.redirect(home);
+    }
   }
-  // If user is unauthenticated, continue.
-  if (currentUrl === "/" && session) {
-    return NextResponse.redirect(home);
-  }
+
   return NextResponse.next();
 }
 export const config = {
