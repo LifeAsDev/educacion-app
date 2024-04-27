@@ -70,22 +70,23 @@ const handler = NextAuth({
           label: "Email",
           type: "text",
         },
+        dni: { label: "DNI", type: "text" },
       },
 
       async authorize(credentials) {
         await connectMongoDB();
 
         const user = await User.findOne({
-          email: credentials?.email.toUpperCase(),
+          dni: credentials?.dni,
         });
 
         if (!user) {
-          console.log("Invalid Email");
+          console.log("Invalid DNI");
           throw new Error("Wrong credentials");
         }
 
-        if (await compare(credentials!.password, user.password)) {
-          return { email: user.email, firstName: user.firstName, id: user.id };
+        if (credentials?.password === user.password) {
+          return { id: user.id };
         } else {
           console.log("Invalid Password");
           throw new Error("Wrong credentials");

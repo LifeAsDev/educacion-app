@@ -11,10 +11,7 @@ const userSchema = new Schema<User>(
       type: String,
       default: "",
     },
-    email: {
-      type: String,
-      required: false,
-    },
+
     password: {
       type: String,
       required: true,
@@ -28,13 +25,8 @@ const userSchema = new Schema<User>(
       type: String,
       required: true,
     },
-    clase: {
+    curso: {
       type: String,
-      default: "",
-    },
-    grado: {
-      type: String,
-      default: "",
     },
   },
   { timestamps: true }

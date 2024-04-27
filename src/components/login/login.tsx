@@ -10,20 +10,20 @@ export default function Login() {
   const handleLogin = async () => {
     const res = await signIn("credentials", {
       password: inputPassword,
-      email: inputEmail,
+      dni: inputEmail,
       redirect: false,
     });
   };
   return (
     <main className={styles.main}>
       <div className={styles.loginBox}>
-        <label>Email</label>
+        <label>RUT</label>
         <input
           value={inputEmail}
           onChange={(e) => setInputEmail(e.target.value)}
           type="text"
         ></input>
-        <label>Password</label>
+        <label>Contraseña</label>
         <input
           value={inputPassword}
           onChange={(e) => setInputPassword(e.target.value)}
