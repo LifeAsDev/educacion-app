@@ -1,5 +1,5 @@
 interface Question {
-  type: string;
+  type: "open" | "multiple" | string;
   pregunta: string;
   correcta?: string;
   señuelo1?: string;

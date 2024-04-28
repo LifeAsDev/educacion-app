@@ -5,6 +5,7 @@ import Question from "@/models/question";
 import { v4 as uuidv4 } from "uuid"; // Importa la función uuidv4
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { error } from "console";
 export default function Create() {
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
@@ -16,12 +17,16 @@ export default function Create() {
   const [type, setType] = useState("formativa");
   const [difficulty, setDifficulty] = useState("basico");
   const [submitting, setSubmitting] = useState(false);
-
+  const [questionErrorArr, setQuestionErrorArr] = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const editQuestion = (
     property: keyof Question,
     value: string,
     index: number
   ) => {
+    setQuestionErrorArr([]);
+    setErrors([]);
+
     const newQuestion = [...questionArr];
     newQuestion[index][property] = value;
     setQuestionArr(newQuestion);
@@ -47,11 +52,8 @@ export default function Create() {
   };
 
   const deleteQuestion = (questionIndex: number) => {
-    console.log(questionIndex);
     const newQuestionArr = [...questionArr];
-    console.log(newQuestionArr);
     newQuestionArr.splice(questionIndex, 1);
-    console.log(newQuestionArr);
     setQuestionArr(newQuestionArr);
   };
 
@@ -75,35 +77,74 @@ export default function Create() {
       );
   }, [difficulty, name, questionArr, submitting, type]);
 
-  const submitEvaluationTest = async () => {
+  const submitEvaluationTest = () => {
     localStorage.removeItem("createState");
-
-    setSubmitting(true);
-    try {
-      const data = new FormData();
-      data.set("name", name as string);
-      data.set("type", type as string);
-      data.set("difficulty", difficulty as string);
-
-      questionArr.forEach((question) => {
-        const questionString = JSON.stringify(question);
-        data.append("questionArr", questionString);
-      });
-
-      const res = await fetch("/api/evaluation-test", {
-        method: "POST",
-        body: data,
-      });
-      const resData = await res.json();
-
-      if (res.ok) {
-        router.push(`/evaluation`);
-        return true;
-      } else {
-        return;
+    const newQuestionErrorArr: string[] = [];
+    const newErrors: string[] = [];
+    questionArr.forEach((question) => {
+      if (question.type === "multiple") {
+        if (
+          question.pregunta === "" ||
+          question.correcta === "" ||
+          question.señuelo1 === "" ||
+          question.señuelo2 === "" ||
+          question.señuelo3 === ""
+        ) {
+          newQuestionErrorArr.push("error");
+        } else {
+          newQuestionErrorArr.push("good");
+        }
       }
-    } catch (error) {
+      if (question.type === "open") {
+        if (question.pregunta === "") {
+          newQuestionErrorArr.push("error");
+        } else {
+          newQuestionErrorArr.push("good");
+        }
+      }
+    });
+    setQuestionErrorArr(newQuestionErrorArr);
+    setErrors([]);
+    if (name === "") {
+      newErrors.push("name");
+    }
+    setErrors(newErrors);
+    if (
+      newQuestionErrorArr.some((question) => question === "error") ||
+      newErrors.length > 0
+    ) {
       return;
+    } else {
+      setSubmitting(true);
+
+      const fetchSubmit = async () => {
+        try {
+          const data = new FormData();
+          data.set("name", name as string);
+          data.set("type", type as string);
+          data.set("difficulty", difficulty as string);
+
+          questionArr.forEach((question) => {
+            const questionString = JSON.stringify(question);
+            data.append("questionArr", questionString);
+          });
+
+          const res = await fetch("/api/evaluation-test", {
+            method: "POST",
+            body: data,
+          });
+          const resData = await res.json();
+          if (res.ok) {
+            router.push(`/evaluation`);
+            return true;
+          } else {
+            return;
+          }
+        } catch (error) {
+          return;
+        }
+      };
+      fetchSubmit();
     }
   };
   const rolTest: string = "directivo";
@@ -137,11 +178,20 @@ export default function Create() {
         <div className={styles.inputBox}>
           <label>Nombre</label>
           <input
+            onFocus={() => {
+              setErrors([]);
+              setQuestionErrorArr([]);
+            }}
             value={name}
             onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="Nombre "
           />
+          {errors.includes("name") ? (
+            <p className={styles.error}>Ningún campo puede estar vacío</p>
+          ) : (
+            ""
+          )}
         </div>
         <div className={styles.inputBox}>
           <label>Tipo de prueba</label>
@@ -200,6 +250,11 @@ export default function Create() {
                 placeholder="Pregunta abierta"
                 className={styles.questionInput}
               ></textarea>
+              {questionErrorArr[i] === "error" ? (
+                <p className={styles.error}>Ningún campo puede estar vacío</p>
+              ) : (
+                ""
+              )}
             </div>
           ) : (
             <div key={question.id} className={styles.multipleQuestionBox}>
@@ -252,6 +307,11 @@ export default function Create() {
                   className={styles.answerInput}
                 ></textarea>
               </div>
+              {questionErrorArr[i] === "error" ? (
+                <p className={styles.error}>Ningún campo puede estar vacío</p>
+              ) : (
+                ""
+              )}
             </div>
           )
         )}

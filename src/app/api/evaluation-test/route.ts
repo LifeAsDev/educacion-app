@@ -10,8 +10,6 @@ export async function POST(req: Request) {
     const name: string = data.get("name") as unknown as string;
     const type: string = data.get("type") as unknown as string;
     const difficulty: string = data.get("difficulty") as unknown as string;
-    const clase: string = data.get("clase") as unknown as string;
-    const grado: string = data.get("grado") as unknown as string;
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
@@ -23,8 +21,6 @@ export async function POST(req: Request) {
       name,
       type,
       difficulty,
-      clase,
-      grado,
       questionArr: parseQuestionArr,
     });
 
@@ -40,7 +36,7 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json({
       success: false,
-      error: "error creating evaluation test",
+      error,
     });
   }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import Login from "@/components/login/login";
 
 export default function Page() {

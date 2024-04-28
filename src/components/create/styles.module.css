@@ -32,6 +32,11 @@
   font-weight: 600;
   padding-left: 8px;
 }
+.inputBox .error {
+  font-size: 0.9em;
+  padding-left: 6px;
+  padding-top: 4px;
+}
 .dropdown {
   padding: 0.5em;
   font-weight: 500;
@@ -179,4 +184,9 @@
   font-size: 1.45em;
   font-weight: 500;
   margin-left: 1em;
+}
+.error {
+  color: red;
+  font-weight: 600;
+  margin-right: auto;
 }

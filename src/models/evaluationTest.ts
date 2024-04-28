@@ -4,8 +4,7 @@ interface EvaluationTest {
   name: string;
   type: string;
   difficulty: string;
-  clase: string;
-  grado: string;
+  curso?: string;
   questionArr: Question[];
   _id: string;
 }

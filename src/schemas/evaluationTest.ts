@@ -35,14 +35,11 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
       type: String,
       required: false,
     },
-    clase: {
+    curso: {
       type: String,
       required: false,
     },
-    grado: {
-      type: String,
-      required: false,
-    },
+
     questionArr: {
       type: [questionSchema],
       default: [],
