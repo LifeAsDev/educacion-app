@@ -19,7 +19,6 @@ export default async function middleware(req: NextRequest) {
 
   const currentUrl = req.nextUrl.pathname;
   if (!session && currentUrl !== "/") {
-    console.log("false");
     return NextResponse.redirect(auth);
   } else if (session) {
     if (currentUrl === "/") {
