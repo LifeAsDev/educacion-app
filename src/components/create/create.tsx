@@ -15,8 +15,6 @@ export default function Create() {
   const [name, setName] = useState("");
   const [type, setType] = useState("formativa");
   const [difficulty, setDifficulty] = useState("basico");
-  const [clase, setClase] = useState("A");
-  const [grado, setGrado] = useState("7");
   const [submitting, setSubmitting] = useState(false);
 
   const editQuestion = (
@@ -67,17 +65,15 @@ export default function Create() {
       setName(parseCachedState.name);
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
-      setClase(parseCachedState.clase);
-      setGrado(parseCachedState.grado);
     }
   }, []);
   useEffect(() => {
     if (!submitting)
       localStorage.setItem(
         "createState",
-        JSON.stringify({ questionArr, name, type, difficulty, grado, clase })
+        JSON.stringify({ questionArr, name, type, difficulty })
       );
-  }, [clase, difficulty, grado, name, questionArr, submitting, type]);
+  }, [difficulty, name, questionArr, submitting, type]);
 
   const submitEvaluationTest = async () => {
     localStorage.removeItem("createState");
@@ -88,8 +84,6 @@ export default function Create() {
       data.set("name", name as string);
       data.set("type", type as string);
       data.set("difficulty", difficulty as string);
-      data.set("clase", clase as string);
-      data.set("grado", grado as string);
 
       questionArr.forEach((question) => {
         const questionString = JSON.stringify(question);
@@ -178,42 +172,6 @@ export default function Create() {
             <option value="avanzado">Avanzado</option>
           </select>
         </div>
-        {rolTest === "directivo" || rolTest === "administrador" ? (
-          <>
-            <div className={styles.inputBox}>
-              <label>Clase</label>
-              <select
-                value={clase}
-                onChange={(e) => setClase(e.target.value)}
-                className={styles.dropdown}
-                name="clase"
-                id="clase"
-              >
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-              </select>
-            </div>
-            <div className={styles.inputBox}>
-              <label>Grado</label>
-              <select
-                value={grado}
-                onChange={(e) => setGrado(e.target.value)}
-                className={styles.dropdown}
-                name="grado"
-                id="grado"
-              >
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-              </select>
-            </div>
-          </>
-        ) : (
-          ""
-        )}
       </div>
       <div className={styles.questionBox}>
         {questionArr.map((question, i) =>
