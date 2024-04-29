@@ -24,10 +24,11 @@
   --primary-green: #1ec91e;
   --primary-light-blue: #007bff;
   --secondary-light-blue: #0000ff;
+  --third-light-blue: #0068d8;
 }
 main {
   min-height: 100vh;
-  padding-top: 7em;
+  padding-top: 6em;
 }
 body {
   background: var(--background-color-light-purple);

@@ -4,12 +4,12 @@ import styles from "./styles.module.css";
 import Link from "next/link";
 export default function Home() {
   const { session, status } = useOnboardingContext();
-  const rolTest: string = "administrador";
+
   return (
     <main className={styles.main}>
       <h2 className={styles.h2}>Tablero</h2>
       <div className={styles.homeOptionsBox}>
-        {rolTest === "estudiante" ? (
+        {session && session.rol === "estudiante" ? (
           <>
             <Link href={"/evaluation"} className={styles.homeOption}>
               <svg
@@ -69,7 +69,7 @@ export default function Home() {
               <p>Pruebas de evaluacion</p>
             </Link>
           </>
-        ) : rolTest === "profesor" ? (
+        ) : session && session.rol === "profesor" ? (
           <>
             <Link href={"/asda"} className={styles.homeOption}>
               <svg
@@ -195,7 +195,7 @@ export default function Home() {
               <p>Datos de estudiantes</p>
             </Link>
           </>
-        ) : rolTest === "administrador" ? (
+        ) : session && session.rol === "Admin" ? (
           <>
             <Link href={"/asda"} className={styles.homeOption}>
               <svg
@@ -320,7 +320,7 @@ export default function Home() {
               </svg>
               <p>Datos de estudiantes</p>
             </Link>
-            <Link href={"/asda"} className={styles.homeOption}>
+            <Link href={"/management"} className={styles.homeOption}>
               <svg
                 fill="#000000"
                 height="800px"
@@ -370,7 +370,7 @@ export default function Home() {
                   </g>
                 </g>
               </svg>
-              <p>Gestion de usuarios</p>
+              <p>Gestion general</p>
             </Link>
           </>
         ) : (

@@ -1,0 +1,300 @@
+.main {
+  min-height: initial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: auto;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.main h1 {
+  font-size: 2em;
+  font-weight: 600;
+  margin-bottom: 0.5em;
+}
+
+.top {
+  width: 100%;
+  background-color: var(--secondary-color-dark-black);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.usersList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.userItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 3.5em;
+  width: 100%;
+  background-color: #8b93a7;
+  transition: background-color 0.3s ease;
+  gap: 0.5em;
+  justify-content: space-between;
+  padding-left: 1em;
+}
+
+.userItem p {
+  font-weight: 500;
+  font-size: 1.1em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.userItem p:hover {
+  overflow: visible;
+  background-color: #8b93a7;
+}
+
+.userItem:nth-child(2n) p:hover {
+  background-color: rgb(201, 201, 201);
+}
+
+.userItem:nth-child(2n) {
+  background-color: rgb(201, 201, 201);
+}
+
+.userItem svg {
+  width: 38px;
+  height: auto;
+  cursor: pointer;
+  transition: 0.1s;
+}
+.userItem svg:hover {
+  transform: scale(1.2);
+}
+
+.pageBox {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+
+.page {
+  width: 3em;
+  height: 3em;
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page:not(.selected):hover {
+  background-color: var(--grey-disabled);
+}
+
+.page.selected {
+  background-color: var(--secondary-color-dark-black);
+  color: white;
+  cursor: initial;
+}
+
+.tableItem,
+.tableHeadName {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.tableHeadName {
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  padding: 0 16px;
+}
+
+.tableItem:last-of-type,
+.tableHeadName:last-of-type {
+  gap: 0.5em;
+  width: 116px;
+}
+
+.tableItem:nth-of-type(1),
+.tableHeadName:nth-of-type(1) {
+  width: 323px;
+}
+
+.tableItem:nth-of-type(2),
+.tableHeadName:nth-of-type(2) {
+  width: 100px;
+}
+
+.tableItem:nth-of-type(3),
+.tableHeadName:nth-of-type(3) {
+  width: 250px;
+}
+
+.tableItem:nth-of-type(4),
+.tableHeadName:nth-of-type(4) {
+  width: 150px;
+}
+
+.deleteUserBox {
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.deleteUserModal {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  padding: 2em 1.5em;
+}
+.deleteUserModal > p {
+  font-size: 1.25em;
+  font-weight: 600;
+  text-align: center;
+}
+.deleteUserModal > p > span {
+  color: var(--third-red);
+  font-weight: 700;
+}
+.deleteModalOptionsBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 4em;
+}
+.modalOption {
+  padding: 0.2em 0;
+  color: white;
+  width: 3.5em;
+  display: flex;
+  justify-content: center;
+  font-size: 1.3em;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modalOption:first-of-type {
+  background-color: var(--primary-red);
+}
+.modalOption:first-of-type:hover {
+  background-color: var(--third-red);
+}
+.modalOption:nth-of-type(2) {
+  background-color: var(--primary-green);
+}
+.modalOption:nth-of-type(2):hover {
+  background-color: var(--secondary-green);
+}
+
+.tableHead {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+.filterBox {
+  --border-height: 1em;
+  padding-left: 1em;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  padding-bottom: var(--border-height);
+  border-bottom: 1px solid white;
+  margin-bottom: var(--border-height);
+  align-items: center;
+}
+.filterBox p {
+  margin-right: 1em;
+  font-weight: 500;
+}
+.filterBox label {
+  margin-left: 0.25em;
+  margin-right: 1.5em;
+  cursor: pointer;
+}
+
+.loadingBox {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+}
+
+.loader {
+  width: 80px;
+  padding: 10px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #25b09b;
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+  mask: var(--_m);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  animation: l3 1s infinite linear;
+  margin: auto;
+}
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.none {
+  display: none;
+}
+
+.uploadBtn {
+  background-color: var(--primary-light-blue);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5em 1em;
+  margin-left: auto !important;
+  gap: 0.5em;
+}
+
+.uploadBtn:hover {
+  background-color: var(--third-light-blue);
+}
+
+.uploadBtn svg {
+  width: 28px;
+  height: auto;
+}
+
+.uploadBtn span {
+  white-space: nowrap;
+  color: white;
+}
+
+.downloadExcel {
+  color: var(--primary-light-blue);
+  text-decoration: underline;
+  margin-left: auto;
+}

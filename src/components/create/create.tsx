@@ -5,11 +5,13 @@ import Question from "@/models/question";
 import { v4 as uuidv4 } from "uuid"; // Importa la función uuidv4
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { error } from "console";
+import { useOnboardingContext } from "@/lib/context";
+
 export default function Create() {
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
 
+  const { session } = useOnboardingContext();
   const router = useRouter();
 
   const [questionArr, setQuestionArr] = useState<Question[]>([]);
@@ -147,7 +149,6 @@ export default function Create() {
       fetchSubmit();
     }
   };
-  const rolTest: string = "directivo";
   return (
     <main className={styles.main}>
       {submitting ? (
@@ -188,7 +189,7 @@ export default function Create() {
             placeholder="Nombre "
           />
           {errors.includes("name") ? (
-            <p className={styles.error}>Ningún campo puede estar vacío</p>
+            <p className={styles.error}>Campo obligatorio</p>
           ) : (
             ""
           )}
@@ -251,7 +252,7 @@ export default function Create() {
                 className={styles.questionInput}
               ></textarea>
               {questionErrorArr[i] === "error" ? (
-                <p className={styles.error}>Ningún campo puede estar vacío</p>
+                <p className={styles.error}>Campo obligatorio</p>
               ) : (
                 ""
               )}
@@ -308,7 +309,7 @@ export default function Create() {
                 ></textarea>
               </div>
               {questionErrorArr[i] === "error" ? (
-                <p className={styles.error}>Ningún campo puede estar vacío</p>
+                <p className={styles.error}>Campo obligatorio</p>
               ) : (
                 ""
               )}

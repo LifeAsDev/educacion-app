@@ -29,7 +29,7 @@ const handler = NextAuth({
         if (res.ok) {
           const resData = await res.json();
 
-          token = { ...token, ...resData };
+          token = { ...token, ...resData.user };
         } else {
         }
       } catch (error) {
@@ -48,7 +48,7 @@ const handler = NextAuth({
         if (res.ok) {
           const resData = await res.json();
 
-          session = { ...session, ...resData };
+          session = { ...session, ...resData.user };
         } else {
         }
       } catch (error) {
