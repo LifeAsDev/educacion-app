@@ -163,47 +163,67 @@ export default function Management() {
             }}
           />
           <p>Rol:</p>
-          <input
-            onChange={(e) => setFilterRolInput(e.target.value)}
-            type="radio"
-            id="Todos"
-            name="rol"
-            value="Todos"
-            defaultChecked
-          />
-          <label htmlFor="Todos">Todos</label>
-          <input
-            onChange={(e) => setFilterRolInput(e.target.value)}
-            type="radio"
-            id="Admin"
-            name="rol"
-            value="Admin"
-          />
-          <label htmlFor="Admin">Admin</label>
-          <input
-            onChange={(e) => setFilterRolInput(e.target.value)}
-            type="radio"
-            id="Directivo"
-            name="rol"
-            value="Directivo"
-          />
-          <label htmlFor="Directivo">Directivo</label>
-          <input
-            onChange={(e) => setFilterRolInput(e.target.value)}
-            type="radio"
-            id="Profesor"
-            name="rol"
-            value="Profesor"
-          />
-          <label htmlFor="Profesor">Profesor</label>
-          <input
-            onChange={(e) => setFilterRolInput(e.target.value)}
-            type="radio"
-            id="Estudiante"
-            name="rol"
-            value="Estudiante"
-          />
-          <label htmlFor="Estudiante">Estudiante</label>
+
+          <label className={styles.rolBox} htmlFor="Todos">
+            Todos
+            <input
+              onChange={(e) => setFilterRolInput(e.target.value)}
+              type="radio"
+              id="Todos"
+              name="rol"
+              value="Todos"
+              defaultChecked
+            />
+            <span className={styles.checkmarkRadio}></span>
+          </label>
+
+          <label className={styles.rolBox} htmlFor="Admin">
+            Admin
+            <input
+              onChange={(e) => setFilterRolInput(e.target.value)}
+              type="radio"
+              id="Admin"
+              name="rol"
+              value="Admin"
+            />
+            <span className={styles.checkmarkRadio}></span>
+          </label>
+
+          <label className={styles.rolBox} htmlFor="Directivo">
+            Directivo
+            <input
+              onChange={(e) => setFilterRolInput(e.target.value)}
+              type="radio"
+              id="Directivo"
+              name="rol"
+              value="Directivo"
+            />
+            <span className={styles.checkmarkRadio}></span>
+          </label>
+
+          <label className={styles.rolBox} htmlFor="Profesor">
+            Profesor
+            <input
+              onChange={(e) => setFilterRolInput(e.target.value)}
+              type="radio"
+              id="Profesor"
+              name="rol"
+              value="Profesor"
+            />
+            <span className={styles.checkmarkRadio}></span>
+          </label>
+
+          <label className={styles.rolBox} htmlFor="Estudiante">
+            Estudiante
+            <input
+              onChange={(e) => setFilterRolInput(e.target.value)}
+              type="radio"
+              id="Estudiante"
+              name="rol"
+              value="Estudiante"
+            />
+            <span className={styles.checkmarkRadio}></span>
+          </label>
           <label className={styles.uploadBtn} htmlFor="excelFileInput">
             <span>Cargar Usuarios</span>
             <svg
