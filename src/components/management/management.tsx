@@ -7,8 +7,6 @@ import * as XLSX from "xlsx";
 import Link from "next/link";
 
 export default function Management() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [fetchingUsers, setFetchingUsers] = useState(false);
   const [usersArr, setUsersArr] = useState<User[]>([]);
   const [keyword, setKeyword] = useState("");
@@ -94,15 +92,66 @@ export default function Management() {
 
         const sheetName = workbook.SheetNames[0]; // Suponiendo que los usuarios están en la primera hoja
         const sheet = workbook.Sheets[sheetName];
-        const users = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        const users: string[][] = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+        });
+
+        users.splice(0, 1);
 
         // Ahora `users` contiene los datos de los usuarios como una matriz de filas
         // Puedes procesar estos datos según tus necesidades
-        console.log(users);
-
+        const newUsersArr: {
+          nombre: string;
+          apellido: string;
+          rol: string;
+          dni: string;
+          curso: string;
+        }[] = [];
+        for (const user of users) {
+          const newUser = {
+            nombre: user[0].trim(),
+            apellido: user[1].trim(),
+            rol: user[2].trim(),
+            dni: user[3],
+            curso: user[4].trim(),
+          };
+          newUsersArr.push(newUser);
+        }
         // Resetea el input de tipo archivo después de leer el archivo
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
+        setFetchingUsers(true);
+
+        const fetchSubmit = async () => {
+          try {
+            const data = new FormData();
+            console.log(newUsersArr);
+            newUsersArr.forEach((user, index) => {
+              data.append("users", JSON.stringify(user));
+            });
+
+            const res = await fetch(`/api/user`, {
+              method: "POST",
+              body: data,
+            });
+
+            const resData = await res.json();
+            setFetchingUsers(false);
+
+            if (res.ok) {
+              setUsersArr((prev) => [...prev, ...resData.users]);
+            } else {
+              // Handle error
+            }
+          } catch (error) {
+            setFetchingUsers(false);
+            // Handle error
+          }
+        };
+        fetchSubmit();
+        let fileInput = document.getElementById("excelFileInput");
+
+        if (fileInput instanceof HTMLInputElement) {
+          fileInput.value = "";
+          fileInput.dispatchEvent(new Event("change"));
         }
       };
       reader.readAsArrayBuffer(file);

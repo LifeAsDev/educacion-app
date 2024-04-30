@@ -93,3 +93,41 @@ export async function GET(req: Request) {
     );
   }
 }
+
+function generateRandomString(length: number) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+export async function POST(req: Request) {
+  await connectMongoDB();
+
+  const formData = await req.formData();
+  const usersData = formData.getAll("users") as string[];
+
+  try {
+    const users = usersData.map((userData: string) => {
+      const user = JSON.parse(userData);
+      // Generar una contraseña aleatoria de longitud 4
+      const password = generateRandomString(4);
+      return { ...user, password };
+    });
+    // Crear usuarios en la base de datos
+
+    const createdUsers = await User.create(users);
+    return NextResponse.json({
+      users: createdUsers,
+      message: "Users created successfully",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Error creating users" },
+      { status: 500 }
+    );
+  }
+}
