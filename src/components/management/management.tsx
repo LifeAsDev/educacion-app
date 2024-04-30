@@ -11,7 +11,7 @@ export default function Management() {
   const [usersArr, setUsersArr] = useState<User[]>([]);
   const [keyword, setKeyword] = useState("");
   const [inputSearch, setInputSearch] = useState("");
-  const [itemCount, ItemCount] = useState(1);
+  const [itemCount, setItemCount] = useState(1);
   const itemsPerPage = 25;
   const [pageArr, setPageArr] = useState<number[]>([]);
   const [pageSelected, setPageSelected] = useState(1);
@@ -50,6 +50,10 @@ export default function Management() {
   }, [itemCount]);
 
   useEffect(() => {
+    setPageSelected(1);
+  }, [filterRolInput]);
+
+  useEffect(() => {
     setFetchingUsers(true);
     const fetchSubmit = async () => {
       try {
@@ -66,7 +70,7 @@ export default function Management() {
 
         const resData = await res.json();
         setFetchingUsers(false);
-
+        setItemCount(resData.totalCount);
         if (res.ok) {
           setUsersArr(resData.users);
           return;
@@ -137,7 +141,7 @@ export default function Management() {
             setFetchingUsers(false);
 
             if (res.ok) {
-              setUsersArr((prev) => [...prev, ...resData.users]);
+              setPageSelected(1);
             } else {
               // Handle error
             }
@@ -174,7 +178,7 @@ export default function Management() {
               ¿Estás seguro que deseas borrar
               <br /> al usuario
               <span>
-                {`${usersArr[userDeleteIndex].nombre} ${usersArr[userDeleteIndex].apellido}`}
+                {` ${usersArr[userDeleteIndex].nombre} ${usersArr[userDeleteIndex].apellido}`}
               </span>
               ?
             </p>
@@ -315,6 +319,15 @@ export default function Management() {
             <li className={styles.userItem}></li>
             <li className={styles.userItem}></li>
             <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
+            <li className={styles.userItem}></li>
             <li className={styles.overlay}>
               <div className={styles.loader}></div>
             </li>
@@ -323,9 +336,10 @@ export default function Management() {
           usersArr.map((user: User, index) => (
             <li className={styles.userItem} key={user._id}>
               <div className={styles.tableItem}>
-                <p
-                  className={styles.name}
-                >{`${user.nombre} ${user.apellido}`}</p>
+                <p className={styles.name}>
+                  <span>{25 * (pageSelected - 1) + index + 1} </span>
+                  {`${user.nombre} ${user.apellido}`}
+                </p>
               </div>
               <div className={styles.tableItem}>
                 <p className={styles.name}>{`${user.rol}`}</p>

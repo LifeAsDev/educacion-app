@@ -12,13 +12,20 @@ export async function GET(req: Request) {
   await connectMongoDB();
 
   let aggregatePipeline: any[] = [];
-
   if (keyword !== "") {
     aggregatePipeline.push({
       $match: {
         $or: [
-          { nombre: { $regex: keyword, $options: "i" } },
-          { apellido: { $regex: keyword, $options: "i" } },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $concat: ["$nombre", " ", "$apellido"] },
+                regex: keyword,
+                options: "i",
+              },
+            },
+          },
+          { dni: { $regex: keyword, $options: "i" } },
         ],
       },
     });
@@ -120,10 +127,17 @@ export async function POST(req: Request) {
     // Crear usuarios en la base de datos
 
     const createdUsers = await User.create(users);
-    return NextResponse.json({
-      users: createdUsers,
-      message: "Users created successfully",
-    });
+
+    if (createdUsers)
+      return NextResponse.json({
+        users: createdUsers,
+        message: "Users created successfully",
+      });
+    else
+      return NextResponse.json(
+        { message: "Error creating users" },
+        { status: 500 }
+      );
   } catch (error) {
     return NextResponse.json(
       { message: "Error creating users" },

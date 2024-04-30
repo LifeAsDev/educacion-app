@@ -7,12 +7,14 @@
   margin: auto;
   min-height: 100vh;
   overflow: hidden;
+  padding-top: 6em;
+  max-height: 100vh;
+  padding-bottom: 1em;
 }
 
 .main h1 {
   font-size: 2em;
   font-weight: 600;
-  margin-bottom: 0.5em;
 }
 
 .top {
@@ -29,13 +31,15 @@
   flex-direction: column;
   width: 100%;
   position: relative;
+  flex-grow: 1;
+  overflow: auto;
 }
 
 .userItem {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 3.5em;
+  min-height: 2.41em;
   width: 100%;
   background-color: #8b93a7;
   transition: background-color 0.3s ease;
@@ -46,7 +50,6 @@
 
 .userItem p {
   font-weight: 500;
-  font-size: 1.1em;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -65,7 +68,7 @@
 }
 
 .userItem svg {
-  width: 38px;
+  width: 32px;
   height: auto;
   cursor: pointer;
   transition: 0.1s;
@@ -77,12 +80,13 @@
 .pageBox {
   display: flex;
   justify-content: center;
-  margin-top: 1.5em;
+  margin-top: 1em;
+  gap: 1em;
 }
 
 .page {
-  width: 3em;
-  height: 3em;
+  width: 2.5em;
+  height: 2.5em;
   background-color: white;
   border-radius: 8px;
   color: black;
@@ -94,7 +98,7 @@
 }
 
 .page:not(.selected):hover {
-  background-color: var(--grey-disabled);
+  background-color: var(--light-indigo);
 }
 
 .page.selected {
@@ -115,7 +119,7 @@
 
 .tableHeadName {
   color: white;
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: 600;
   padding: 0 16px;
 }
@@ -370,4 +374,9 @@
   height: 8px;
   border-radius: 50%;
   background: white;
+}
+.name span {
+  display: inline-block;
+  width: 2em;
+  font-weight: 600;
 }
