@@ -43,11 +43,15 @@
   width: 100%;
   background-color: #8b93a7;
   transition: background-color 0.3s ease;
-  gap: 0.5em;
-  justify-content: space-between;
-  padding-left: 1em;
+  gap: 1em;
+  padding: 0 1em;
 }
-
+.tableHead {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 1em;
+}
 .userItem p {
   font-weight: 500;
   white-space: nowrap;
@@ -57,6 +61,7 @@
 .userItem p:hover {
   overflow: visible;
   background-color: #8b93a7;
+  z-index: 1;
 }
 
 .userItem:nth-child(2n) p:hover {
@@ -111,7 +116,6 @@
 .tableHeadName {
   display: flex;
   flex-direction: row;
-  padding: 0 1em;
   height: 100%;
   display: flex;
   align-items: center;
@@ -121,18 +125,12 @@
   color: white;
   font-size: 1.1em;
   font-weight: 600;
-  padding: 0 16px;
-}
-
-.tableItem:last-of-type,
-.tableHeadName:last-of-type {
-  gap: 0.5em;
-  width: 116px;
+  min-height: 1em;
 }
 
 .tableItem:nth-of-type(1),
 .tableHeadName:nth-of-type(1) {
-  width: 323px;
+  width: 233px;
 }
 
 .tableItem:nth-of-type(2),
@@ -148,6 +146,22 @@
 .tableItem:nth-of-type(4),
 .tableHeadName:nth-of-type(4) {
   width: 175px;
+}
+
+.tableItem:nth-of-type(5),
+.tableHeadName:nth-of-type(5) {
+  width: 80px;
+  cursor: pointer;
+}
+.tableItem:nth-of-type(5) span {
+  user-select: none;
+}
+
+.tableItem:last-of-type,
+.tableHeadName:last-of-type {
+  gap: 0.5em;
+  width: 90px;
+  margin-left: auto;
 }
 
 .deleteUserBox {
@@ -207,12 +221,6 @@
   background-color: var(--secondary-green);
 }
 
-.tableHead {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-}
 .filterBox {
   --border-height: 1em;
   padding-left: 1em;

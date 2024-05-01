@@ -17,6 +17,7 @@ export default function Management() {
   const [pageSelected, setPageSelected] = useState(1);
   const [userDeleteIndex, setUserDeleteIndex] = useState<null | number>(null);
   const [filterRolInput, setFilterRolInput] = useState("Todos");
+  const [passwordShowArr, setPasswordShowArr] = useState<boolean[]>([]);
 
   const deleteUser = async () => {
     const newUsersArr = [...usersArr];
@@ -85,6 +86,12 @@ export default function Management() {
     };
     fetchSubmit();
   }, [filterRolInput, keyword, pageSelected]);
+
+  useEffect(() => {
+    setPasswordShowArr(
+      Array.from({ length: usersArr.length }, (_, index) => false)
+    );
+  }, [usersArr]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -308,6 +315,7 @@ export default function Management() {
           <div className={styles.tableHeadName}>Rol</div>
           <div className={styles.tableHeadName}>RUT</div>
           <div className={styles.tableHeadName}>Curso</div>
+          <div className={styles.tableHeadName}>Clave</div>
           <div className={styles.tableHeadName}></div>
         </div>
       </div>
@@ -349,6 +357,19 @@ export default function Management() {
               </div>
               <div className={styles.tableItem}>
                 <p className={styles.name}>{`${user.curso || "N/A"}`}</p>
+              </div>
+              <div
+                onClick={() => {
+                  const newPasswordShowArr = [...passwordShowArr];
+
+                  newPasswordShowArr[index] = true;
+                  setPasswordShowArr(newPasswordShowArr);
+                }}
+                className={styles.tableItem}
+              >
+                <p className={styles.name}>
+                  {passwordShowArr[index] ? user.password : <span>****</span>}
+                </p>
               </div>
               <div className={styles.tableItem}>
                 <svg
