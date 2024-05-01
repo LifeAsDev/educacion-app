@@ -30,9 +30,25 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  position: relative;
   flex-grow: 1;
   overflow: auto;
+  position: relative;
+}
+
+.usersList.hidden {
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 .userItem {
@@ -46,6 +62,7 @@
   gap: 1em;
   padding: 0 1em;
 }
+
 .tableHead {
   display: flex;
   flex-direction: row;
@@ -150,9 +167,22 @@
 
 .tableItem:nth-of-type(5),
 .tableHeadName:nth-of-type(5) {
-  width: 80px;
-  cursor: pointer;
+  width: 90px;
 }
+.tableHeadName:nth-of-type(5) {
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+.tableHeadName:nth-of-type(5) svg {
+  width: 32px;
+  height: auto;
+}
+
+.tableHeadName:nth-of-type(5):hover svg {
+  transform: scale(1.1);
+}
+
 .tableItem:nth-of-type(5) span {
   user-select: none;
 }
@@ -246,18 +276,6 @@
   position: relative;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-}
-
 .loader {
   width: 80px;
   padding: 10px;
@@ -327,7 +345,7 @@
   position: relative;
   padding-left: 24px;
   cursor: pointer;
-  -webkit-user-select: none;
+  -webkit--select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -383,8 +401,33 @@
   border-radius: 50%;
   background: white;
 }
+
+.password svg {
+  width: 20px;
+  height: 20px;
+}
+
 .name span {
   display: inline-block;
-  width: 2em;
   font-weight: 600;
+  cursor: pointer;
+  width: 2em;
+}
+
+.password span {
+  display: inline-block;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.password,
+.password span {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.password span svg {
+  margin-bottom: 6px;
 }
