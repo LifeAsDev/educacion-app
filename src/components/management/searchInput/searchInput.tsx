@@ -6,14 +6,14 @@ export default function SearchInput({
 }: {
   input: string;
   setInput: (arg0: string) => void;
-  action: () => void;
+  action?: () => void;
 }) {
   return (
     <div className={styles.searchBox}>
       <input
         type="text"
         onKeyDown={(e) => {
-          if (e.key === "Enter") action();
+          if (e.key === "Enter") action!();
         }}
         value={input}
         onChange={(e) => setInput(e.target.value)}

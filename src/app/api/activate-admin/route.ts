@@ -17,8 +17,8 @@ export async function GET(req: Request) {
   } else {
     // Si no existe un usuario con ese nombre de usuario, crear el usuario "admin"
     const admin = await User.create({
-      nombre: "admin",
-      apellido: "admin",
+      nombre: "Admin",
+      apellido: "User",
       password: "admin",
       rol: "Admin",
       dni: "admin",

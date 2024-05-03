@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/schemas/user";
 import { compare } from "bcrypt";
+import { JWT } from "next-auth/jwt";
 
 const handler = NextAuth({
   callbacks: {
@@ -19,7 +20,7 @@ const handler = NextAuth({
     
     The token data it only visible on backend so the data we set here is not visible on the session object 
     we get from useSession(), to get data to that object we use the callback session below*/
-    async jwt({ token, account, profile }) {
+    async jwt({ token }) {
       try {
         const fetchUrl = `${process.env.NEXTAUTH_URL}/api/user/${token.sub}`;
         const res = await fetch(fetchUrl, {
@@ -28,32 +29,21 @@ const handler = NextAuth({
         });
         if (res.ok) {
           const resData = await res.json();
-
           token = { ...token, ...resData.user };
         } else {
+          token = { ...token, signOutNextAuth: true };
         }
       } catch (error) {
+        token = { ...token, signOutNextAuth: true };
+
         console.log(error);
       }
       return token;
     },
 
     async session({ session, user, token }) {
-      try {
-        const fetchUrl = `${process.env.NEXTAUTH_URL}/api/user/${token.sub}`;
-        const res = await fetch(fetchUrl, {
-          method: "GET",
-          headers: { "Content-type": "application/json" },
-        });
-        if (res.ok) {
-          const resData = await res.json();
+      session = { ...session, ...token };
 
-          session = { ...session, ...resData.user };
-        } else {
-        }
-      } catch (error) {
-        console.log(error);
-      }
       return session;
     },
     async redirect({ url, baseUrl }) {

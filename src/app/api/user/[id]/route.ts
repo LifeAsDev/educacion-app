@@ -22,7 +22,7 @@ export async function DELETE(req: Request, { params }: any) {
 
   await connectMongoDB();
 
-  const deleteUser = await User.findByIdAndDelete(userId);
+  const deleteUser = await User.findByIdAndDelete(userId).select("-password");
 
   if (deleteUser)
     return NextResponse.json(
