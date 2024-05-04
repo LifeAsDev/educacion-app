@@ -8,6 +8,7 @@ export async function GET(req: Request) {
   const pageSize: number = parseInt(searchParams.get("pageSize") || "25", 10);
   const keyword = searchParams.get("keyword");
   const rol = searchParams.get("filterRolInput");
+  const review = searchParams.get("review") === "true" ? true : false;
 
   await connectMongoDB();
 
@@ -35,6 +36,13 @@ export async function GET(req: Request) {
     aggregatePipeline.push({
       $match: {
         rol: rol,
+      },
+    });
+  }
+  if (review) {
+    aggregatePipeline.push({
+      $match: {
+        review: review,
       },
     });
   }
@@ -125,6 +133,7 @@ export async function POST(req: Request) {
       return { ...user, password };
     });
     // Crear usuarios en la base de datos
+    console.log(users);
 
     const createdUsers = await User.create(users);
 

@@ -43,6 +43,7 @@ export default function Management() {
   const [asignaturaDeleteIndex, setAsignaturaDeleteIndex] =
     useState<null | Asignatura>(null);
   const [deleteUsers, setDeleteUsers] = useState<string[] | null>(null);
+  const [filterReviewInput, setFilterReviewInput] = useState<boolean>(false);
 
   const addCurso = () => {
     if (
@@ -314,6 +315,7 @@ export default function Management() {
         searchParams.append("keyword", keyword);
         searchParams.append("page", page);
         searchParams.append("filterRolInput", filterRolInput);
+        searchParams.append("review", filterReviewInput.toString());
 
         const res = await fetch(`/api/user?${searchParams.toString()}`, {
           method: "GET",
@@ -341,7 +343,7 @@ export default function Management() {
     else {
       setPageSelected(1);
     }
-  }, [filterRolInput, keyword, pageSelected]);
+  }, [filterRolInput, keyword, pageSelected, filterReviewInput]);
 
   useEffect(() => {
     if (tabSelected === "cursos") {
@@ -435,6 +437,7 @@ export default function Management() {
           rol: string;
           dni: string;
           curso: string;
+          review?: boolean;
         }
 
         interface UserSheet {
@@ -451,15 +454,22 @@ export default function Management() {
         const users: UserArr[] = usersSheet.map(
           (user: UserSheet, index: number) => {
             return {
-              nombre: (user.Nombre || "").toString().trim(),
-              apellido: (user.Apellido || "").toString().trim(),
-              rol: (user.Rol || "").toString().trim(),
-              dni: (user.RUT || "").toString(),
-              curso: (user.Curso || "").toString().trim(),
+              nombre: (user.Nombre || "N/A").toString().trim(),
+              apellido: (user.Apellido || "N/A").toString().trim(),
+              rol: (user.Rol || "N/A").toString().trim(),
+              dni: (user.RUT || "N/A").toString(),
+              curso: (user.Curso || "N/A").toString().trim(),
             };
           }
         );
-        console.log(users);
+        users.forEach((user, index) => {
+          Object.values(user).map((userEntry: string) => {
+            if (userEntry === "N/A") {
+              users[index] = { ...user, review: true };
+            }
+          });
+        });
+
         // Resetea el input de tipo archivo después de leer el archivo
         setFetchingUsers(true);
 
@@ -677,7 +687,17 @@ export default function Management() {
                 <option value="Profesor">Profesor</option>
                 <option value="Estudiante">Estudiante</option>
               </select>
-
+              <label className={styles.rolBox} htmlFor="inReview">
+                <p>En revisión</p>
+                <input
+                  onChange={(e) => setFilterReviewInput((prev) => !prev)}
+                  type="checkbox"
+                  id="inReview"
+                  name="inReview"
+                  checked={filterReviewInput}
+                />
+                <span className={styles.checkmarkRadio}></span>
+              </label>
               {deleteUsers ? (
                 <div className={styles.deleteSomeBox}>
                   <p>{deleteUsers.length} elementos seleccionados</p>
@@ -1015,7 +1035,13 @@ export default function Management() {
                     </p>
                   </div>
                   {deleteUsers?.includes(user._id) ? (
-                    <div className={styles.itemSelectedOverlay}></div>
+                    <div
+                      className={`${styles.select} ${styles.itemSelectedOverlay}`}
+                    ></div>
+                  ) : user.review ? (
+                    <div
+                      className={`${styles.wrong} ${styles.itemSelectedOverlay}`}
+                    ></div>
                   ) : (
                     ""
                   )}

@@ -6,6 +6,6 @@ interface User {
   dni: string;
   curso?: string;
   _id: string;
-  revisition?: boolean;
+  review?: boolean;
 }
 export default User;
