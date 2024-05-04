@@ -28,6 +28,9 @@ const userSchema = new Schema<User>(
     curso: {
       type: String,
     },
+    revisition: {
+      type: Boolean,
+    },
   },
   { timestamps: true }
 );

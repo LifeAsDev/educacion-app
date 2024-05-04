@@ -145,3 +145,36 @@ export async function POST(req: Request) {
     );
   }
 }
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const usersDeleteId: string[] = searchParams.getAll("users");
+
+  await connectMongoDB();
+
+  try {
+    // Eliminar usuarios por IDs
+    const deletionResult = await User.deleteMany({
+      _id: { $in: usersDeleteId },
+    });
+
+    // Verificar si se eliminaron usuarios y devolver respuesta
+    if (deletionResult.deletedCount > 0) {
+      // Obtener los usuarios actualizados después de la eliminación
+
+      // Devolver respuesta con los usuarios actualizados
+      return NextResponse.json({ message: "Users deleted" }, { status: 200 });
+    } else {
+      return NextResponse.json(
+        { message: "No users were deleted" },
+        { status: 404 }
+      );
+    }
+  } catch (error) {
+    // Manejar cualquier error que pueda ocurrir
+    console.error("Error deleting users:", error);
+    return NextResponse.json(
+      { message: "Error deleting users" },
+      { status: 500 }
+    );
+  }
+}
