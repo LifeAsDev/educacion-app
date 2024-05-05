@@ -197,6 +197,10 @@
   margin-left: auto;
 }
 
+.tableItem:last-of-type svg {
+  z-index: 2;
+}
+
 .deleteUserBox {
   background-color: rgba(0, 0, 0, 0.8);
   width: 100vw;
@@ -626,6 +630,7 @@
 .itemSelectedOverlay.wrong {
   background-color: rgba(230, 173, 173, 0.5);
   border: 1px solid rgb(230, 81, 81);
+  cursor: default;
 }
 .itemSelectedOverlay.select {
   background-color: rgba(173, 216, 230, 0.5);

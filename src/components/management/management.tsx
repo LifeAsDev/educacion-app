@@ -655,13 +655,13 @@ export default function Management() {
         >
           <p>Asignaturas</p>
         </div>
-        <Link
+        <a
           className={styles.downloadExcel}
           href="/plantilla de excel.xlsx"
-          passHref
+          download="plantilla de excel.xlsx"
         >
           <p>Descargar plantilla de Excel</p>
-        </Link>
+        </a>
       </div>
       {tabSelected === "usuarios" ? (
         <>
