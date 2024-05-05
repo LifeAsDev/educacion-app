@@ -15,10 +15,10 @@ export async function POST(req: Request) {
     if (existingAsignatura) {
       return NextResponse.json(
         {
-          success: false,
+          id: existingAsignatura.id,
           error: "La asignatura ya existe",
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
 

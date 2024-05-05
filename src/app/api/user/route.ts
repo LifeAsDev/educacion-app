@@ -1,7 +1,10 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/schemas/user";
 import { NextResponse } from "next/server";
-
+import UserType from "@/models/user";
+import Curso from "@/schemas/curso";
+import mongoose from "mongoose";
+import CursoType from "@/models/curso";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   let page: number = parseInt(searchParams.get("page") || "1", 10);
@@ -77,22 +80,37 @@ export async function GET(req: Request) {
     // establece la página en 1 y vuelve a consultar los eventos
     page = 1;
     aggregatePipeline[1].$facet.data = [{ $skip: 0 }, { $limit: pageSize }];
-    const updatedusers = await User.aggregate(aggregatePipeline);
+
+    const updatedUsers = await User.aggregate(aggregatePipeline);
+
+    const populatedUsers = await User.populate(updatedUsers[0].data, {
+      path: "curso",
+    });
+
     return NextResponse.json(
       {
         totalCount,
         totalPages,
         currentPage: page,
-        users: updatedusers[0].data,
+        users: populatedUsers,
         message: "Page does not exist. Showing users from page 1.",
       },
       { status: 200 }
     );
   }
+  const populatedUsers = await User.populate(allUsers[0].data, {
+    path: "curso",
+  });
 
   if (allUsers[0].data.length > 0) {
     return NextResponse.json(
-      { totalCount, totalPages, currentPage: page, users: allUsers[0].data },
+      {
+        totalCount,
+        totalPages,
+        currentPage: page,
+        users: populatedUsers,
+        message: "yo?",
+      },
       { status: 200 }
     );
   } else {
@@ -126,34 +144,85 @@ export async function POST(req: Request) {
   const usersData = formData.getAll("users") as string[];
 
   try {
-    const users = usersData.map((userData: string) => {
+    const createdUsersPromises = usersData.map(async (userData: string) => {
       const user = JSON.parse(userData);
       // Generar una contraseña aleatoria de longitud 4
       const password = generateRandomString(4);
-      return { ...user, password };
-    });
-    // Crear usuarios en la base de datos
-    console.log(users);
 
-    const createdUsers = await User.create(users);
+      const newUser: Omit<UserType, "_id"> = {
+        nombre: (user.nombre || "N/A").toString().trim(),
+        apellido: (user.apellido || "N/A").toString().trim(),
+        rol: (() => {
+          const providedRole = (user.rol || "N/A")
+            .toString()
+            .trim()
+            .toLowerCase();
+          switch (providedRole) {
+            case "estudiante":
+            case "profesor":
+            case "directivo":
+            case "admin":
+              return (
+                providedRole.charAt(0).toUpperCase() + providedRole.slice(1)
+              );
+            default:
+              return "N/A";
+          }
+        })(),
+        dni: (user.dni || "N/A").toString(),
+        curso: (user.curso || "N/A").toString().trim(),
+        password,
+        review: false, // Inicializar la propiedad review como false
+      };
 
-    if (createdUsers)
-      return NextResponse.json({
-        users: createdUsers,
-        message: "Users created successfully",
+      // Si alguna entrada es "N/A", establecer review como true
+      if (
+        Object.entries(newUser).some(
+          (value) => value[0] !== "curso" && value[1] === "N/A"
+        )
+      ) {
+        newUser.review = true;
+      }
+
+      // Buscar cursos en la base de datos
+      const cursosName = newUser.curso as string;
+      const cursosArr = await Curso.find({
+        name: {
+          $in: cursosName.split(","),
+        },
       });
-    else
-      return NextResponse.json(
-        { message: "Error creating users" },
-        { status: 500 }
-      );
+      if (newUser.rol === "Estudiante") {
+        cursosArr.splice(1, cursosArr.length);
+        if (cursosArr.length < 0) {
+          newUser.review = true;
+        }
+      }
+      const cursoObjectsId: string[] = cursosArr.map((e: CursoType) => e._id!);
+
+      // Asignar los cursos encontrados al usuario
+      newUser.curso = cursoObjectsId;
+      console.log(newUser);
+      return newUser;
+    });
+
+    const createdUsers = await Promise.all(createdUsersPromises);
+
+    // Crear usuarios en la base de datos
+    const users = await User.create(createdUsers);
+
+    return NextResponse.json({
+      users,
+      message: "Users created successfully",
+    });
   } catch (error) {
+    console.error("Error creating users:", error);
     return NextResponse.json(
       { message: "Error creating users" },
       { status: 500 }
     );
   }
 }
+
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const usersDeleteId: string[] = searchParams.getAll("users");

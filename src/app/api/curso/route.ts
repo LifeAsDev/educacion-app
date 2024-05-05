@@ -15,10 +15,10 @@ export async function POST(req: Request) {
     if (existingCurso) {
       return NextResponse.json(
         {
-          success: false,
-          error: "El curso ya existe",
+          id: existingCurso.id,
+          message: "El curso ya existe",
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
 

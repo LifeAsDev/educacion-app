@@ -25,9 +25,7 @@ const userSchema = new Schema<User>(
       type: String,
       required: true,
     },
-    curso: {
-      type: String,
-    },
+    curso: [{ type: Schema.Types.ObjectId, ref: "Curso" }],
     review: {
       type: Boolean,
       default: false,
