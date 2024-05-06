@@ -186,12 +186,14 @@ export async function POST(req: Request) {
 
       // Buscar cursos en la base de datos
       const cursosName = newUser.curso as string;
-      const isDuplicated = await User.find({ dni: newUser.dni });
-
-      if (isDuplicated) {
-        newUser.review = true;
-        newUser.dni = `${newUser.dni}(duplicado)`;
+      if (newUser.dni !== "N/A") {
+        const isDuplicated = await User.find({ dni: newUser.dni });
+        if (isDuplicated && isDuplicated.length > 0) {
+          newUser.review = true;
+          newUser.dni = `${newUser.dni}(duplicado)`;
+        }
       }
+
       const cursosArr = await Curso.find({
         name: {
           $in: cursosName.split(","),
