@@ -77,7 +77,7 @@ const handler = NextAuth({
           dni: credentials?.dni,
         });
 
-        if (!user) {
+        if (!user && !user.review) {
           console.log("Invalid DNI");
           throw new Error("Wrong credentials");
         }

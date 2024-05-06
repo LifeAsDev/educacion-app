@@ -186,22 +186,32 @@ export async function POST(req: Request) {
 
       // Buscar cursos en la base de datos
       const cursosName = newUser.curso as string;
+      const isDuplicated = await User.find({ dni: newUser.dni });
+
+      if (isDuplicated) {
+        newUser.review = true;
+        newUser.dni = `${newUser.dni}(duplicado)`;
+      }
       const cursosArr = await Curso.find({
         name: {
           $in: cursosName.split(","),
         },
       });
+
       if (newUser.rol === "Estudiante") {
         cursosArr.splice(1, cursosArr.length);
         if (cursosArr.length < 0) {
           newUser.review = true;
         }
       }
+
+      if (newUser.rol === "Directivo" || newUser.rol === "Admin") {
+        cursosArr.splice(0, cursosArr.length);
+      }
       const cursoObjectsId: string[] = cursosArr.map((e: CursoType) => e._id!);
 
       // Asignar los cursos encontrados al usuario
       newUser.curso = cursoObjectsId;
-      console.log(newUser);
       return newUser;
     });
 
