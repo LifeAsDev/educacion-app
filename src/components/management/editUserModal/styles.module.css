@@ -1,0 +1,143 @@
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editBox {
+  background-color: white;
+  padding: 2em;
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-bottom: 1em;
+  width: min-content;
+}
+.editBox input {
+  background-color: transparent;
+  color: black;
+  outline: none;
+  font-weight: 500;
+  border-bottom: 2px solid black;
+}
+.editBox select {
+  height: min-content;
+}
+
+.editBox input:focus {
+  border-bottom-color: var(--primary-light-blue);
+}
+
+.inputBox {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  user-select: none;
+}
+
+.editBox select {
+  color: white;
+  background-color: var(--secondary-color-dark-black);
+}
+
+.modalOption {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-left: auto;
+  gap: 1em;
+  height: min-content;
+  margin-top: 1em;
+}
+
+.btn {
+  font-weight: 500;
+  color: white;
+  padding: 0.25em 0.5em;
+  font-size: 1.2em;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn.green {
+  background-color: var(--primary-green);
+}
+
+.btn.green:hover {
+  background-color: var(--secondary-green);
+}
+
+.btn.red {
+  background-color: var(--primary-red);
+  margin-left: auto;
+}
+
+.btn.red:hover {
+  background-color: var(--third-red);
+}
+
+.cursosProfesor {
+  display: flex;
+  flex-direction: row;
+}
+
+.cursoItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  user-select: none;
+  font-weight: 500;
+  min-width: 120px;
+}
+.cursoItem div {
+  color: white;
+  font-weight: 500;
+  background-color: var(--third-color-light-black);
+  padding: 0 1em;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 29px;
+  cursor: pointer;
+  position: relative;
+}
+
+.cursoItem div:hover {
+  background-color: var(--secondary-color-dark-black);
+}
+
+.cursoItem span {
+  color: red;
+  display: none;
+  position: absolute;
+  user-select: none;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.cursoItem div:hover span {
+  display: flex;
+  background-color: var(--secondary-color-dark-black);
+}
+
+.id {
+  border-bottom: 2px solid black;
+  font-weight: 600;
+}
+
+.editItem {
+  display: flex;
+  width: 100%;
+  gap: 2em;
+}

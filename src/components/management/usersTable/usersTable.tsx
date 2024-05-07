@@ -16,7 +16,7 @@ export default function UsersTable({
   filterReviewInput,
   deleteUsers,
   setDeleteUsers,
-  submitDeleteUsers,
+  setDeleteUsersConfirm,
   passwordShowArr,
   setPasswordShowArr,
   fetchingUsers,
@@ -25,6 +25,7 @@ export default function UsersTable({
   setUserDeleteIndex,
   pageArr,
   setPageSelected,
+  setUserSelected,
 }: {
   setInputSearch: Dispatch<SetStateAction<string>>;
   setKeyword: (arg0: string) => void;
@@ -35,7 +36,7 @@ export default function UsersTable({
   filterReviewInput: boolean;
   deleteUsers: string[] | null;
   setDeleteUsers: Dispatch<SetStateAction<string[] | null>>;
-  submitDeleteUsers: () => void;
+  setDeleteUsersConfirm: () => void;
   passwordShowArr: boolean[];
   setPasswordShowArr: (arg0: boolean[]) => void;
   fetchingUsers: boolean;
@@ -44,6 +45,7 @@ export default function UsersTable({
   setUserDeleteIndex: (arg0: number) => void;
   setPageSelected: (arg0: number) => void;
   pageArr: number[];
+  setUserSelected: Dispatch<SetStateAction<User | null>>;
 }) {
   return (
     <>
@@ -110,7 +112,7 @@ export default function UsersTable({
                 </svg>
               </label>
               <label
-                onClick={() => submitDeleteUsers()}
+                onClick={setDeleteUsersConfirm}
                 className={`${styles.optionDeleteSome} ${styles.btn}`}
               >
                 <svg
@@ -448,6 +450,9 @@ export default function UsersTable({
                     />
                   </svg>
                   <svg
+                    onClick={() => {
+                      setUserSelected(user);
+                    }}
                     width="32px"
                     height="32px"
                     viewBox="0 0 24 24"

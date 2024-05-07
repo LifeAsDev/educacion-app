@@ -10,6 +10,7 @@ import DeleteModal from "@/components/management/deleteModal/deleteModal";
 import UsersTable from "@/components/management/usersTable/usersTable";
 import CursoTable from "@/components/management/cursoTable/cursoTable";
 import AsignaturaTable from "@/components/management/asignaturaTable/asignaturaTable";
+import EditUserModal from "@/components/management/editUserModal/editUserModal";
 
 interface CursoWrap extends Curso {
   edit: Boolean;
@@ -50,6 +51,8 @@ export default function Management() {
     useState<null | Asignatura>(null);
   const [deleteUsers, setDeleteUsers] = useState<string[] | null>(null);
   const [filterReviewInput, setFilterReviewInput] = useState<boolean>(false);
+  const [deleteUsersConfirm, setDeleteUsersConfirm] = useState(false);
+  const [userSelected, setUserSelected] = useState<User | null>(null);
 
   const addCurso = () => {
     if (
@@ -310,7 +313,8 @@ export default function Management() {
     if (tabSelected === "usuarios") {
       const divElement = document.getElementById("usersList");
       divElement!.scrollTop = 0;
-
+      setDeleteUsersConfirm(false);
+      setDeleteUsers(null);
       setFetchingUsers(true);
 
       const page = pageSelected.toString();
@@ -333,7 +337,6 @@ export default function Management() {
           setItemCount(resData.totalCount);
           if (res.ok) {
             setFetchingUsers(false);
-            console.log(resData);
             setUsersArr(resData.users);
             return;
           } else {
@@ -388,7 +391,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-    if (tabSelected === "cursos") {
+    if (tabSelected === "cursos" || userSelected) {
       const divElement = document.getElementById("wrapBox");
       if (divElement?.scrollTop) {
         divElement!.scrollTop = 0;
@@ -419,7 +422,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-  }, [tabSelected]);
+  }, [tabSelected, userSelected]);
 
   useEffect(() => {
     setPasswordShowArr(
@@ -455,7 +458,6 @@ export default function Management() {
 
         const usersSheet: UserSheet[] = XLSX.utils.sheet_to_json(sheet);
 
-        console.log(usersSheet);
         const users: UserArr[] = usersSheet.map(
           (user: UserSheet, index: number) => {
             return {
@@ -485,10 +487,8 @@ export default function Management() {
 
             const resData = await res.json();
             if (res.ok) {
-              console.log(resData.users);
               setPageSelected(0);
             } else {
-              console.log(resData.message);
               // Handle error
               setFetchingUsers(false);
             }
@@ -511,9 +511,8 @@ export default function Management() {
   };
 
   const submitDeleteUsers = () => {
-    setUsersArr([]);
-    setFetchingUsers(true);
     setDeleteUsers(null);
+    setDeleteUsersConfirm(false);
     const fetchDeleteUsers = async () => {
       try {
         const searchParams = new URLSearchParams();
@@ -526,7 +525,6 @@ export default function Management() {
         });
 
         const resData = await res.json();
-
         if (res.ok) {
           setPageSelected(0);
         } else {
@@ -538,7 +536,10 @@ export default function Management() {
         setFetchingUsers(false);
       }
     };
-    fetchDeleteUsers();
+    if (deleteUsers && deleteUsers?.length > 0) {
+      setFetchingUsers(true);
+      fetchDeleteUsers();
+    }
   };
 
   return (
@@ -582,6 +583,31 @@ export default function Management() {
       ) : (
         ""
       )}
+      {deleteUsersConfirm && deleteUsers ? (
+        <DeleteModal
+          modalItemName={`${deleteUsers.length} elemento${
+            deleteUsers.length > 1 ? "s" : ""
+          }`}
+          itemPronoun=""
+          yesAction={submitDeleteUsers}
+          noAction={() => {
+            setDeleteUsersConfirm(false);
+            setDeleteUsers(null);
+          }}
+        />
+      ) : (
+        ""
+      )}
+      {userSelected ? (
+        <EditUserModal
+          setUserSelected={setUserSelected}
+          userSelected={userSelected}
+          cursosArr={cursosArr}
+        />
+      ) : (
+        ""
+      )}
+
       <h1>Gestion general</h1>
       <div className={styles.tabsBox}>
         <div
@@ -619,6 +645,7 @@ export default function Management() {
       </div>
       {tabSelected === "usuarios" ? (
         <UsersTable
+          setUserSelected={setUserSelected}
           setInputSearch={setInputSearch}
           inputSearch={inputSearch}
           setKeyword={setKeyword}
@@ -628,7 +655,13 @@ export default function Management() {
           filterReviewInput={filterReviewInput}
           deleteUsers={deleteUsers}
           setDeleteUsers={setDeleteUsers}
-          submitDeleteUsers={submitDeleteUsers}
+          setDeleteUsersConfirm={() => {
+            if (deleteUsers && deleteUsers.length > 0) {
+              setDeleteUsersConfirm(true);
+            } else {
+              setDeleteUsers(null);
+            }
+          }}
           passwordShowArr={passwordShowArr}
           setPasswordShowArr={setPasswordShowArr}
           fetchingUsers={fetchingUsers}
