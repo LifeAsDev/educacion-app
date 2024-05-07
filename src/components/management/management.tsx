@@ -106,7 +106,8 @@ export default function Management() {
         const res = await fetch(`/api/curso/${deleteUser[0]._id}`, {
           method: "DELETE",
         });
-        if (!res.ok) {
+        if (res.ok) {
+          setPageSelected(0);
           return;
         }
       } catch (error) {
@@ -306,50 +307,52 @@ export default function Management() {
   }, [filterRolInput]);
 
   useEffect(() => {
-    const divElement = document.getElementById("usersList");
-    divElement!.scrollTop = 0;
+    if (tabSelected === "usuarios") {
+      const divElement = document.getElementById("usersList");
+      divElement!.scrollTop = 0;
 
-    setFetchingUsers(true);
+      setFetchingUsers(true);
 
-    const page = pageSelected.toString();
+      const page = pageSelected.toString();
 
-    const fetchSubmit = async () => {
-      try {
-        const data = new FormData();
-        const searchParams = new URLSearchParams();
+      const fetchSubmit = async () => {
+        try {
+          const data = new FormData();
+          const searchParams = new URLSearchParams();
 
-        searchParams.append("keyword", keyword);
-        searchParams.append("page", page);
-        searchParams.append("filterRolInput", filterRolInput);
-        searchParams.append("review", filterReviewInput.toString());
+          searchParams.append("keyword", keyword);
+          searchParams.append("page", page);
+          searchParams.append("filterRolInput", filterRolInput);
+          searchParams.append("review", filterReviewInput.toString());
 
-        const res = await fetch(`/api/user?${searchParams.toString()}`, {
-          method: "GET",
-        });
+          const res = await fetch(`/api/user?${searchParams.toString()}`, {
+            method: "GET",
+          });
 
-        const resData = await res.json();
-        setItemCount(resData.totalCount);
-        if (res.ok) {
-          setFetchingUsers(false);
-          console.log(resData);
-          setUsersArr(resData.users);
-          return;
-        } else {
+          const resData = await res.json();
+          setItemCount(resData.totalCount);
+          if (res.ok) {
+            setFetchingUsers(false);
+            console.log(resData);
+            setUsersArr(resData.users);
+            return;
+          } else {
+            setFetchingUsers(false);
+
+            return;
+          }
+        } catch (error) {
           setFetchingUsers(false);
 
           return;
         }
-      } catch (error) {
-        setFetchingUsers(false);
-
-        return;
+      };
+      if (pageSelected > 0) fetchSubmit();
+      else {
+        setPageSelected(1);
       }
-    };
-    if (pageSelected > 0) fetchSubmit();
-    else {
-      setPageSelected(1);
     }
-  }, [filterRolInput, keyword, pageSelected, filterReviewInput]);
+  }, [filterRolInput, keyword, pageSelected, filterReviewInput, tabSelected]);
 
   useEffect(() => {
     if (tabSelected === "asignaturas") {
@@ -415,9 +418,6 @@ export default function Management() {
         }
       };
       fetchSubmit();
-    }
-    if (tabSelected === "usuarios") {
-      setPageSelected(0);
     }
   }, [tabSelected]);
 
@@ -582,7 +582,6 @@ export default function Management() {
       ) : (
         ""
       )}
-
       <h1>Gestion general</h1>
       <div className={styles.tabsBox}>
         <div

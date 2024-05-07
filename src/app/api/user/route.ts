@@ -3,8 +3,9 @@ import User from "@/schemas/user";
 import { NextResponse } from "next/server";
 import UserType from "@/models/user";
 import Curso from "@/schemas/curso";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import CursoType from "@/models/curso";
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   let page: number = parseInt(searchParams.get("page") || "1", 10);
@@ -58,6 +59,7 @@ export async function GET(req: Request) {
   });
 
   const allUsers = await User.aggregate(aggregatePipeline);
+  const initialUsers = [...allUsers[0].data];
   if (allUsers.length === 0 || !allUsers[0].metadata[0]) {
     // Si no hay eventos o no se encontró metadata, significa que no hay eventos que coincidan con la búsqueda
     return NextResponse.json(
@@ -82,6 +84,7 @@ export async function GET(req: Request) {
     aggregatePipeline[1].$facet.data = [{ $skip: 0 }, { $limit: pageSize }];
 
     const updatedUsers = await User.aggregate(aggregatePipeline);
+    console.log("UpdatedUsers ", updatedUsers[0].data);
 
     const populatedUsers = await User.populate(updatedUsers[0].data, {
       path: "curso",
@@ -98,9 +101,25 @@ export async function GET(req: Request) {
       { status: 200 }
     );
   }
+
   const populatedUsers = await User.populate(allUsers[0].data, {
     path: "curso",
   });
+
+  const usersCursoDelete = populatedUsers.map((user: UserType) => {
+    const newUser: UserType = { ...user }; // Create a shallow copy of the user object
+    newUser.curso = (user.curso! as CursoType[]).map((curso: CursoType) => {
+      return new Types.ObjectId(curso._id); // Convert curso._id to ObjectId
+    });
+    return newUser;
+  });
+
+  for (const updatedUser of usersCursoDelete) {
+    // Create a new instance of the User model with the updated user data
+    const userInstance = new User(updatedUser);
+    // Save the updated user to the database
+    await User.updateOne({ _id: updatedUser._id }, updatedUser); // Update the user document
+  }
 
   if (allUsers[0].data.length > 0) {
     return NextResponse.json(
