@@ -94,7 +94,6 @@ export async function GET(req: Request) {
     aggregatePipeline[1].$facet.data = [{ $skip: 0 }, { $limit: pageSize }];
 
     const updatedUsers = await User.aggregate(aggregatePipeline);
-    console.log("UpdatedUsers ", updatedUsers[0].data);
 
     const populatedUsers = await User.populate(updatedUsers[0].data, {
       path: "curso",

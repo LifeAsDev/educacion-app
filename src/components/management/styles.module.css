@@ -319,7 +319,7 @@
 .rolBox {
   display: flex;
   position: relative;
-  padding-left: 45px;
+  padding-left: 40px;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;
@@ -348,7 +348,7 @@
   --height: 25px;
   position: absolute;
   top: 0;
-  left: calc(var(--height) / 2);
+  left: 8px;
   height: var(--height);
   width: var(--height);
   background-color: #eee;

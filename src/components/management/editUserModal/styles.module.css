@@ -28,12 +28,13 @@
   font-weight: 500;
   border-bottom: 2px solid black;
 }
-.editBox select {
-  height: min-content;
-}
 
 .editBox input:focus {
   border-bottom-color: var(--primary-light-blue);
+}
+
+.editBox input.wrong {
+  border-bottom-color: var(--primary-red);
 }
 
 .inputBox {
@@ -46,6 +47,14 @@
 .editBox select {
   color: white;
   background-color: var(--secondary-color-dark-black);
+  height: min-content;
+}
+
+.editBox select.wrong {
+  color: white;
+  background-color: var(--secondary-color-dark-black);
+  height: min-content;
+  outline: 2px solid red;
 }
 
 .modalOption {

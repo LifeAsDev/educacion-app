@@ -29,46 +29,66 @@ export default function EditUserModal({
   const [curso, setCurso] = useState(userSelected.curso);
   const [userId, setUserId] = useState(userSelected._id);
   const [userCursoInput, setUserCursoInput] = useState("N/A");
-
+  const [errors, setErrors] = useState<string[]>([]);
   const patchUser = () => {
-    setFetchingUsers(true);
-    setUserSelected(null);
-    const fetchSubmit = async () => {
-      try {
-        const data = new FormData();
-        data.set("nombre", nombre as string);
-        data.set("apellido", apellido as string);
-        data.set("rol", rol as string);
-        data.set("rut", rut as string);
-        if (rol === "Admin" || rol === "Directivo") {
-          data.set("curso", JSON.stringify([]));
-        }
-        if (rol === "Profesor" || rol === "Estudiante") {
-          const cursoArr = (curso as Curso[]).map((c) => c._id);
-          data.set("curso", JSON.stringify(cursoArr));
-        }
+    const newErrors: string[] = [];
+    if (nombre === "" || nombre === "N/A") {
+      newErrors.push("nombre");
+    }
+    if (apellido === "" || apellido === "N/A") {
+      newErrors.push("apellido");
+    }
+    if (rut === "" || rut === "N/A") {
+      newErrors.push("rut");
+    }
+    if (rol === "N/A") {
+      newErrors.push("rol");
+    }
+    if (rol === "Estudiante" && curso.length === 0) {
+      newErrors.push("curso");
+    }
+    if (newErrors.length === 0) {
+      setFetchingUsers(true);
+      setUserSelected(null);
+      const fetchSubmit = async () => {
+        try {
+          const data = new FormData();
+          data.set("nombre", nombre as string);
+          data.set("apellido", apellido as string);
+          data.set("rol", rol as string);
+          data.set("rut", rut as string);
+          if (rol === "Admin" || rol === "Directivo") {
+            data.set("curso", JSON.stringify([]));
+          }
+          if (rol === "Profesor" || rol === "Estudiante") {
+            const cursoArr = (curso as Curso[]).map((c) => c._id);
+            data.set("curso", JSON.stringify(cursoArr));
+          }
 
-        const res = await fetch(`/api/user/${userId}`, {
-          method: "PATCH",
-          body: data,
-        });
+          const res = await fetch(`/api/user/${userId}`, {
+            method: "PATCH",
+            body: data,
+          });
 
-        const resData = await res.json();
-        if (res.ok) {
-          setPageSelected(0);
-          return;
-        } else {
+          const resData = await res.json();
+          if (res.ok) {
+            setPageSelected(0);
+            return;
+          } else {
+            setFetchingUsers(false);
+
+            return;
+          }
+        } catch (error) {
           setFetchingUsers(false);
 
           return;
         }
-      } catch (error) {
-        setFetchingUsers(false);
-
-        return;
-      }
-    };
-    fetchSubmit();
+      };
+      fetchSubmit();
+    } else {
+      setErrors(newErrors);
+    }
   };
 
   const addCursoToUser = (curso: CursoWrap) => {
@@ -100,8 +120,9 @@ export default function EditUserModal({
               onChange={(e) => setNombre(e.target.value)}
               spellCheck="false"
               placeholder="Nombre"
-              className=""
+              className={`${errors.includes("nombre") ? styles.wrong : ""}`}
               type="text"
+              onFocus={() => setErrors([])}
             />
           </div>
           <div className={styles.inputBox}>
@@ -111,8 +132,9 @@ export default function EditUserModal({
               onChange={(e) => setApellido(e.target.value)}
               spellCheck="false"
               placeholder="Apellido"
-              className=""
+              className={`${errors.includes("apellido") ? styles.wrong : ""}`}
               type="text"
+              onFocus={() => setErrors([])}
             />
           </div>
           <div className={styles.inputBox}>
@@ -122,6 +144,8 @@ export default function EditUserModal({
               onChange={(e) => setRol(e.target.value)}
               name="editRol"
               id="editRol"
+              className={`${errors.includes("rol") ? styles.wrong : ""}`}
+              onFocus={() => setErrors([])}
             >
               <option value="N/A">N/A</option>
               <option value="Admin">Admin</option>
@@ -139,8 +163,9 @@ export default function EditUserModal({
               onChange={(e) => setRut(e.target.value)}
               spellCheck="false"
               placeholder="RUT"
-              className=""
+              className={`${errors.includes("rut") ? styles.wrong : ""}`}
               type="text"
+              onFocus={() => setErrors([])}
             />
           </div>
           {rol === "Profesor" ? (
@@ -193,6 +218,8 @@ export default function EditUserModal({
                     ]);
                   } else setCurso([]);
                 }}
+                onFocus={() => setErrors([])}
+                className={`${errors.includes("curso") ? styles.wrong : ""}`}
               >
                 <option value="N/A">N/A</option>
                 {cursosArr.map((curso) => (

@@ -38,21 +38,21 @@ export async function PATCH(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
   const userId = params.id;
   const formData = await req.formData();
-  const usersData = JSON.parse(formData.get("curso") as string);
+  const curso = JSON.parse(formData.get("curso") as string); // array of strings;
   const nombre = formData.get("nombre");
   const apellido = formData.get("apellido");
   const rol = formData.get("rol");
   const rut = formData.get("rut");
 
-  console.log(usersData);
   await connectMongoDB();
 
   const patchedUser = await User.findByIdAndUpdate(userId, {
     nombre,
     apellido,
     rol,
-    rut,
-    curso: usersData,
+    dni: rut,
+    curso,
+    review: false,
   });
 
   if (patchedUser) {
