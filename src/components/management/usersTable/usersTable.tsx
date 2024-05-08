@@ -3,8 +3,7 @@ import SearchInput from "@/components/management/searchInput/searchInput";
 import User from "@/models/user";
 import Curso from "@/models/curso";
 import { Dispatch, SetStateAction } from "react";
-
-type DeleteUsersFunction = (prev: string[]) => string[];
+import { CursoWrap } from "@/components/management/management";
 
 export default function UsersTable({
   setInputSearch,
@@ -26,6 +25,9 @@ export default function UsersTable({
   pageArr,
   setPageSelected,
   setUserSelected,
+  filterCursoInput,
+  setFilterCursoInput,
+  cursosArr,
 }: {
   setInputSearch: Dispatch<SetStateAction<string>>;
   setKeyword: (arg0: string) => void;
@@ -46,6 +48,9 @@ export default function UsersTable({
   setPageSelected: (arg0: number) => void;
   pageArr: number[];
   setUserSelected: Dispatch<SetStateAction<User | null>>;
+  filterCursoInput: string;
+  setFilterCursoInput: Dispatch<SetStateAction<string>>;
+  cursosArr: CursoWrap[];
 }) {
   return (
     <>
@@ -70,6 +75,20 @@ export default function UsersTable({
             <option value="Directivo">Directivo</option>
             <option value="Profesor">Profesor</option>
             <option value="Estudiante">Estudiante</option>
+          </select>
+          <p>Curso:</p>
+          <select
+            onChange={(e) => setFilterCursoInput(e.target.value)}
+            name="cursoFilter"
+            id="cursoFilter"
+            value={filterCursoInput}
+          >
+            <option value="Todos">Todos</option>
+            {cursosArr.map((curso) => (
+              <option key={curso._id} value={curso._id}>
+                {curso.name}
+              </option>
+            ))}
           </select>
           <label className={styles.rolBox} htmlFor="inReview">
             <p>En revisión</p>
@@ -160,7 +179,6 @@ export default function UsersTable({
               </svg>
             </label>
           )}
-
           <label
             className={`${styles.upload} ${styles.btn}`}
             htmlFor="excelFileInput"

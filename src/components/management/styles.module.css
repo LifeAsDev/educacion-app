@@ -264,22 +264,21 @@
   color: white;
   display: flex;
   border-bottom: 1px solid white;
-  align-items: center;
   flex-wrap: wrap;
-  row-gap: 2em;
-  height: 44px;
+  row-gap: 0.5em;
+  min-height: 44px;
   box-sizing: content-box;
   padding-bottom: var(--border-height);
   margin-bottom: var(--border-height);
+  align-items: center;
+  column-gap: 0.5em;
 }
 
 .filterBox p {
-  margin-right: 1em;
   font-weight: 500;
 }
 
 .filterBox label {
-  margin-right: 1em;
   cursor: pointer;
 }
 
@@ -348,7 +347,7 @@
 .checkmarkRadio {
   --height: 25px;
   position: absolute;
-  top: calc(var(--height) / 2.5);
+  top: 0;
   left: calc(var(--height) / 2);
   height: var(--height);
   width: var(--height);
@@ -559,7 +558,7 @@
   padding: 0.4em 1em;
   gap: 0.5em;
   margin-left: auto;
-  height: 2.5em;
+  height: 2.25em;
 }
 
 .upload {

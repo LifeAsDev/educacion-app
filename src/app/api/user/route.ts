@@ -13,10 +13,20 @@ export async function GET(req: Request) {
   const keyword = searchParams.get("keyword");
   const rol = searchParams.get("filterRolInput");
   const review = searchParams.get("review") === "true" ? true : false;
+  const cursoId = searchParams.get("cursoId") as string;
 
   await connectMongoDB();
 
   let aggregatePipeline: any[] = [];
+
+  if (cursoId && cursoId !== "Todos") {
+    aggregatePipeline.push({
+      $match: {
+        curso: { $elemMatch: { $eq: new mongoose.Types.ObjectId(cursoId) } },
+      },
+    });
+  }
+
   if (keyword !== "") {
     aggregatePipeline.push({
       $match: {

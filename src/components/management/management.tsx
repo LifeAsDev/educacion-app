@@ -53,6 +53,7 @@ export default function Management() {
   const [filterReviewInput, setFilterReviewInput] = useState<boolean>(false);
   const [deleteUsersConfirm, setDeleteUsersConfirm] = useState(false);
   const [userSelected, setUserSelected] = useState<User | null>(null);
+  const [filterCursoInput, setFilterCursoInput] = useState("Todos");
 
   const addCurso = () => {
     if (
@@ -328,6 +329,7 @@ export default function Management() {
           searchParams.append("page", page);
           searchParams.append("filterRolInput", filterRolInput);
           searchParams.append("review", filterReviewInput.toString());
+          searchParams.append("cursoId", filterCursoInput);
 
           const res = await fetch(`/api/user?${searchParams.toString()}`, {
             method: "GET",
@@ -355,7 +357,14 @@ export default function Management() {
         setPageSelected(1);
       }
     }
-  }, [filterRolInput, keyword, pageSelected, filterReviewInput, tabSelected]);
+  }, [
+    filterRolInput,
+    keyword,
+    pageSelected,
+    filterReviewInput,
+    tabSelected,
+    filterCursoInput,
+  ]);
 
   useEffect(() => {
     if (tabSelected === "asignaturas") {
@@ -391,7 +400,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-    if (tabSelected === "cursos" || userSelected) {
+    if (tabSelected === "cursos" || userSelected || cursosArr.length === 0) {
       const divElement = document.getElementById("wrapBox");
       if (divElement?.scrollTop) {
         divElement!.scrollTop = 0;
@@ -422,7 +431,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-  }, [tabSelected, userSelected]);
+  }, [tabSelected, userSelected, cursosArr]);
 
   useEffect(() => {
     setPasswordShowArr(
@@ -672,6 +681,9 @@ export default function Management() {
           setUserDeleteIndex={setUserDeleteIndex}
           pageArr={pageArr}
           setPageSelected={setPageSelected}
+          filterCursoInput={filterCursoInput}
+          setFilterCursoInput={setFilterCursoInput}
+          cursosArr={cursosArr}
         />
       ) : tabSelected === "cursos" ? (
         <CursoTable
