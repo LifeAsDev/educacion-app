@@ -7,7 +7,7 @@ interface User {
   password: string;
   rol: string;
   dni: string;
-  curso: (Types.ObjectId | Curso | string)[] | string;
+  curso: (Types.ObjectId | Curso | string)[];
   _id: string;
   review?: boolean;
 }

@@ -9,34 +9,41 @@
   margin: auto;
   min-height: 100vh;
 }
+
 .main h1 {
   font-size: 2em;
   font-weight: 600;
   margin-bottom: 1em;
 }
+
 .main input {
   outline: none;
   border-radius: 4px;
   padding: 6.5px 8px;
   font-weight: 500;
 }
+
 .main input:focus {
   outline: 2px solid var(--secondary-color-dark-black);
 }
+
 .inputBox {
   display: flex;
   flex-direction: column;
   width: 14em;
 }
+
 .inputBox label {
   font-weight: 600;
   padding-left: 8px;
 }
+
 .inputBox .error {
   font-size: 0.9em;
   padding-left: 6px;
   padding-top: 4px;
 }
+
 .dropdown {
   padding: 0.5em;
   font-weight: 500;
@@ -45,12 +52,14 @@
   align-items: center;
   border-radius: 4px;
 }
+
 .dropdown option {
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 500;
 }
+
 .mainTestOptionsBox {
   display: flex;
   flex-wrap: wrap;
@@ -58,6 +67,7 @@
   width: 100%;
   justify-content: center;
 }
+
 .btn {
   background-color: rgb(30, 201, 30);
   display: flex;
@@ -68,15 +78,18 @@
   padding: 1em;
   cursor: pointer;
 }
+
 .createQuestionBtn {
   margin-top: auto;
   margin-left: auto;
   margin-bottom: 2em;
   font-size: 1.2em;
 }
+
 .btn:hover {
   background-color: rgb(26, 173, 26);
 }
+
 .createQuestionBox {
   height: 12em;
   border: 2px dashed var(--grey-disabled);
@@ -86,6 +99,7 @@
   align-items: center;
   gap: 1em;
 }
+
 .questionBox {
   width: 100%;
   display: flex;
@@ -93,11 +107,13 @@
   margin: 4em 0;
   gap: 4em;
 }
+
 .questionInput {
   width: 100%;
   min-height: 5em;
   padding: 8px;
 }
+
 .multipleQuestionBox,
 .openQuestionBox {
   min-height: 12em;
@@ -110,6 +126,7 @@
   width: 100%;
   position: relative;
 }
+
 .multipleQuestionAnswerBox {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -117,11 +134,13 @@
   row-gap: 1em;
   column-gap: 1em;
 }
+
 .answerInput {
   padding: 8px;
   width: 100%;
   min-height: 3em;
 }
+
 .deleteBtn {
   position: absolute;
   right: 0;
@@ -132,12 +151,15 @@
   cursor: pointer;
   background-color: var(--primary-red);
 }
+
 .deleteBtn:hover {
   background-color: var(--secondary-red);
 }
+
 .openQuestionBox > .questionInput {
   min-height: 9.5em;
 }
+
 .submitting {
   background-color: rgba(0, 0, 0, 0.8);
   width: 100vw;
@@ -169,11 +191,13 @@
   mask-composite: subtract;
   animation: l3 1s infinite linear;
 }
+
 @keyframes l3 {
   to {
     transform: rotate(1turn);
   }
 }
+
 .backBtn {
   display: flex;
   flex-direction: row;
@@ -185,8 +209,26 @@
   font-weight: 500;
   margin-left: 1em;
 }
+
 .error {
   color: red;
   font-weight: 600;
   margin-right: auto;
+}
+
+.inputEventPhoto {
+  display: none;
+}
+
+.labelEventImage {
+  border: 2px dotted var(--grey-disabled);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  min-height: 400px;
+  align-items: center;
+  flex-direction: column;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
 }

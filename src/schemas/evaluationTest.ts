@@ -11,6 +11,7 @@ const questionSchema = new Schema<Question>({
     type: String,
     required: true,
   },
+
   correcta: String,
   señuelo1: String,
   señuelo2: String,
@@ -19,6 +20,7 @@ const questionSchema = new Schema<Question>({
     type: String,
     required: true,
   },
+  image: { type: String, default: null },
 });
 
 const evaluationTestSchema = new Schema<EvaluationTest>(
