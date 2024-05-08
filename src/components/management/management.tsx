@@ -603,6 +603,8 @@ export default function Management() {
           setUserSelected={setUserSelected}
           userSelected={userSelected}
           cursosArr={cursosArr}
+          setPageSelected={setPageSelected}
+          setFetchingUsers={setFetchingUsers}
         />
       ) : (
         ""

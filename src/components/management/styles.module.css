@@ -82,7 +82,7 @@
 .userItem p:hover {
   overflow: visible;
   background-color: #8b93a7;
-  z-index: 1;
+  z-index: 3;
 }
 
 .userItem:nth-child(2n) p:hover {
@@ -161,7 +161,7 @@
 
 .tableItem:nth-of-type(3),
 .tableHeadName:nth-of-type(3) {
-  width: 250px;
+  width: 175px;
 }
 
 .tableItem:nth-of-type(4),
@@ -263,14 +263,14 @@
   --border-height: 0.5em;
   color: white;
   display: flex;
-  padding-bottom: var(--border-height);
   border-bottom: 1px solid white;
-  margin-bottom: var(--border-height);
   align-items: center;
   flex-wrap: wrap;
   row-gap: 2em;
   height: 44px;
   box-sizing: content-box;
+  padding-bottom: var(--border-height);
+  margin-bottom: var(--border-height);
 }
 
 .filterBox p {
@@ -329,6 +329,11 @@
   user-select: none;
   align-items: center;
   height: 100%;
+  margin-right: 0.1em !important;
+}
+
+.rolBox p {
+  margin-right: 0;
 }
 
 .rolBox input {
