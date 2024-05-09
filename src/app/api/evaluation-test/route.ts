@@ -46,7 +46,9 @@ export async function POST(req: Request) {
     const questionArrWithoutBuffer: Question[] = parseQuestionArr.map(
       (question) => {
         const clonedQuestion = { ...question }; // Clonar el objeto question
-        clonedQuestion.image = null; // Modificar el clon
+        if (question.image && typeof question.image !== "string") {
+          clonedQuestion.image = null;
+        } // Modificar el clon
         return clonedQuestion; // Devolver el clon modificado
       }
     );
@@ -65,13 +67,17 @@ export async function POST(req: Request) {
       for (const question of parseQuestionArr) {
         // Llamar a una función asíncrona por cada elemento
         const id = newEvaluationTest.questionArr[index]._id;
-        const extension = await getFileTypeFromBuffer(question.image as Buffer);
-        if (question.image) {
+        if (question.image && typeof question.image !== "string") {
+          const extension = await getFileTypeFromBuffer(
+            question.image as Buffer
+          );
+
           const { imagePath } = await uploadFile(
             question.image as Buffer,
             `${id}.${extension}`,
             newEvaluationTest.id
           );
+          console.log(imagePath);
           newEvaluationTest.questionArr[index].image = imagePath;
         }
         index++; // Aumentar el índice en cada iteración
@@ -82,7 +88,6 @@ export async function POST(req: Request) {
       newEvaluationTest,
       { new: true }
     );
-    console.log(updatedEvaluationTest);
     if (updatedEvaluationTest) {
       return NextResponse.json(
         {
@@ -92,10 +97,10 @@ export async function POST(req: Request) {
         { status: 201 }
       );
     } else {
-      console.log("fallo con exito");
+      console.log("crea los link de imagenes de question");
     }
   } catch (error) {
-    console.log("fallo con exito2");
+    console.log(error);
 
     return NextResponse.json({
       success: false,

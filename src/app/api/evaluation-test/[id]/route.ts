@@ -38,7 +38,7 @@ export async function GET(req: Request, { params }: any) {
     console.log(error);
     return NextResponse.json({
       success: false,
-      error: "Error retrieving evaluation test",
+      error: error,
     });
   }
 }

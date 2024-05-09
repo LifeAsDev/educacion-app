@@ -131,12 +131,12 @@ export default function Create({ id }: { id: null | string }) {
   }, [id]);
 
   useEffect(() => {
-    if (!submitting)
+    if (!submitting && !id)
       localStorage.setItem(
         "createState",
         JSON.stringify({ questionArr, name, type, difficulty })
       );
-  }, [difficulty, name, questionArr, submitting, type]);
+  }, [difficulty, id, name, questionArr, submitting, type]);
 
   const submitEvaluationTest = () => {
     // localStorage.removeItem("createState");
