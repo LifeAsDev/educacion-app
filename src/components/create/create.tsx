@@ -12,7 +12,7 @@ interface QuestionWithError extends Question {
   error?: string;
 }
 
-export default function Create() {
+export default function Create({ id }: { id: null | string }) {
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
 
@@ -74,7 +74,7 @@ export default function Create() {
   const cache = useRef(false);
   useEffect(() => {
     const cachedState = localStorage.getItem("createState");
-    if (cachedState && !cache.current) {
+    if (cachedState && !cache.current && !id) {
       cache.current = true;
       const parseCachedState = JSON.parse(cachedState);
       if (parseCachedState.questionArr) {
@@ -103,7 +103,33 @@ export default function Create() {
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
     }
-  }, []);
+    if (id) {
+      const fetchEvaluationTest = async (id: string) => {
+        try {
+          const response = await fetch(`/api/evaluation-test/${id}`, {
+            method: "GET",
+          });
+
+          const data = await response.json();
+          console.log(data.evaluationTest.questionArr[0]);
+          if (!response.ok) {
+            throw new Error("Failed to fetch evaluation test");
+          }
+          setName(data.evaluationTest.name);
+          setQuestionArr(data.evaluationTest.questionArr);
+          setType(data.evaluationTest.type);
+          setDifficulty(data.evaluationTest.difficulty);
+
+          return data.evaluationTest;
+        } catch (error) {
+          console.error("Error fetching evaluation test:", error);
+          return null;
+        }
+      };
+      fetchEvaluationTest(id);
+    }
+  }, [id]);
+
   useEffect(() => {
     if (!submitting)
       localStorage.setItem(
@@ -282,10 +308,10 @@ export default function Create() {
 
   return (
     <main className={styles.main}>
-      {submitting ? (
+      {submitting || (id && name === "") ? (
         <div className={styles.submitting}>
           <div className={styles.loader}></div>
-          Creando Evaluación
+          {submitting ? "Creando Evaluación" : "Obteniendo Datos"}
         </div>
       ) : (
         ""
@@ -368,7 +394,7 @@ export default function Create() {
                     className="h-full object-contain"
                     src={
                       typeof question.image === "string"
-                        ? question.image
+                        ? `${process.env.NEXT_PUBLIC_BASE_IMAGES_URL}/api/get-image?photoName=${question.image}`
                         : (() => {
                             const blob = new Blob([question.image as Buffer]);
 
@@ -465,7 +491,7 @@ export default function Create() {
                     className="h-full object-contain"
                     src={
                       typeof question.image === "string"
-                        ? question.image
+                        ? `${process.env.NEXT_PUBLIC_BASE_IMAGES_URL}/api/get-image?photoName=${question.image}`
                         : (() => {
                             const blob = new Blob([question.image as Buffer]);
 

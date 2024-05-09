@@ -1,8 +1,6 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import EvaluationTest from "@/schemas/evaluationTest";
-import Question from "@/models/question";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;
@@ -18,6 +16,29 @@ export async function DELETE(req: Request, { params }: any) {
     return NextResponse.json({
       success: false,
       error: "error deleting evaluation test",
+    });
+  }
+}
+
+export async function GET(req: Request, { params }: any) {
+  const id = params.id;
+
+  try {
+    await connectMongoDB();
+    const evaluationTest = await EvaluationTest.findById(id);
+    if (!evaluationTest) {
+      return NextResponse.json(
+        { message: "EvaluationTest not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ evaluationTest }, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({
+      success: false,
+      error: "Error retrieving evaluation test",
     });
   }
 }

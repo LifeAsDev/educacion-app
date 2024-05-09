@@ -67,20 +67,22 @@ export async function POST(req: Request) {
         const id = newEvaluationTest.questionArr[index]._id;
         const extension = await getFileTypeFromBuffer(question.image as Buffer);
         if (question.image) {
-          newEvaluationTest.questionArr[index].image = await uploadFile(
+          const { imagePath } = await uploadFile(
             question.image as Buffer,
             `${id}.${extension}`,
             newEvaluationTest.id
           );
+          newEvaluationTest.questionArr[index].image = imagePath;
         }
-
         index++; // Aumentar el índice en cada iteración
       }
     }
     const updatedEvaluationTest = await EvaluationTest.findByIdAndUpdate(
       newEvaluationTest._id,
-      newEvaluationTest
+      newEvaluationTest,
+      { new: true }
     );
+    console.log(updatedEvaluationTest);
     if (updatedEvaluationTest) {
       return NextResponse.json(
         {
