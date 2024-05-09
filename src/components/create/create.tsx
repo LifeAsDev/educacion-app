@@ -36,14 +36,19 @@ export default function Create() {
     setErrors([]);
 
     const newQuestion = [...questionArr];
-    newQuestion[index][property] = value;
+    if (property !== "image") newQuestion[index][property] = value;
     setQuestionArr(newQuestion);
   };
 
   const createQuestion = () => {
     let newQuestion: Question;
     if (typeOfQuestionSelected === "open") {
-      newQuestion = { type: "open", pregunta: "", id: uuidv4(), image: null };
+      newQuestion = {
+        type: "open",
+        pregunta: "",
+        id: uuidv4(),
+        image: null,
+      };
     } else if (typeOfQuestionSelected === "multiple") {
       newQuestion = {
         type: "multiple",
@@ -72,7 +77,30 @@ export default function Create() {
     if (cachedState && !cache.current) {
       cache.current = true;
       const parseCachedState = JSON.parse(cachedState);
-      setQuestionArr(parseCachedState.questionArr);
+      if (parseCachedState.questionArr) {
+        // Convertir los datos de imagen a Buffer si es necesario
+        const questionsWithBuffer = parseCachedState.questionArr.map(
+          (question: Question) => {
+            if (
+              typeof question.image !== "string" &&
+              question.image !== null &&
+              typeof question.image !== "undefined" &&
+              "type" in question.image &&
+              question.image.type === "Buffer"
+            ) {
+              console.log(Buffer.from(question.image.data));
+
+              return {
+                ...question,
+                image: Buffer.from(question.image.data),
+              };
+            }
+            return question;
+          }
+        );
+
+        setQuestionArr(questionsWithBuffer);
+      }
       setName(parseCachedState.name);
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
@@ -209,13 +237,19 @@ export default function Create() {
     }
 
     if (Object.values(errorsNow).length === 0) {
+      const bytes = await file!.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
       const newQuestionArr = [...questionArr];
-      newQuestionArr[
-        newQuestionArr.findIndex(
-          (question) =>
-            question._id === e.target.id || question.id === e.target.id
-        )
-      ].image = file || null;
+      const questionIndex = newQuestionArr.findIndex(
+        (question) =>
+          question._id === e.target.id || question.id === e.target.id
+      );
+
+      newQuestionArr[questionIndex].image = buffer;
+
+      console.log(newQuestionArr);
+
       setQuestionArr(newQuestionArr);
     } else {
       const newQuestionArr = [...questionArr];
@@ -243,9 +277,13 @@ export default function Create() {
         (question) => question._id === id || question.id === id
       )
     ].image = null;
+
     setQuestionArr(newQuestionArr);
   };
 
+  useEffect(() => {
+    console.log(questionArr);
+  }, [questionArr]);
   return (
     <main className={styles.main}>
       {submitting ? (
@@ -335,7 +373,11 @@ export default function Create() {
                     src={
                       typeof question.image === "string"
                         ? question.image
-                        : URL.createObjectURL(question.image)
+                        : (() => {
+                            const blob = new Blob([question.image as Buffer]);
+
+                            return URL.createObjectURL(blob);
+                          })()
                     }
                     alt={`Image of question ${i}`}
                     width={1200} // Agrega el ancho de la imagen
@@ -428,7 +470,11 @@ export default function Create() {
                     src={
                       typeof question.image === "string"
                         ? question.image
-                        : URL.createObjectURL(question.image)
+                        : (() => {
+                            const blob = new Blob([question.image as Buffer]);
+
+                            return URL.createObjectURL(blob);
+                          })()
                     }
                     alt={`Image of question ${i}`}
                     width={1200} // Agrega el ancho de la imagen

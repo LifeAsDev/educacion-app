@@ -6,7 +6,7 @@ interface Question {
   señuelo2?: string;
   señuelo3?: string;
   id: string;
-  image: string | File | null;
+  image: Buffer | string | null | { data: [number]; type: string };
   _id?: string;
 }
 export default Question;
