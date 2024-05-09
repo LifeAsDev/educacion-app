@@ -9,13 +9,9 @@ export async function GET(req: Request, { params }: any) {
 
   const filePath = path.join("./public/uploads", photoName as string); // Ruta del archivo solicitado
 
-  console.log(filePath);
-  console.log("yo");
-
   try {
     // Verificar si el archivo existe
     if (!fs.existsSync(filePath)) {
-      console.log("yo");
       return NextResponse.json(
         { error: "El archivo no existe" },
         { status: 404 }

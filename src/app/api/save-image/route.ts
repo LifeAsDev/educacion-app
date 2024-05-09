@@ -53,11 +53,11 @@ async function uploadFile(file: Buffer, fileName: string, testId: string) {
 
     fileStream.write(file);
     fileStream.end();
-
+    const getImagePath = `${testId}/${fileName}`;
     return {
       success: true,
       message: "Archivo cargado con éxito",
-      imagePath: uploadPath,
+      imagePath: getImagePath,
     };
   } catch (error) {
     console.error("Error al cargar el archivo:", error);

@@ -66,26 +66,26 @@ export async function POST(req: Request) {
         // Llamar a una función asíncrona por cada elemento
         const id = newEvaluationTest.questionArr[index]._id;
         const extension = await getFileTypeFromBuffer(question.image as Buffer);
-        console.log(extension);
         if (question.image) {
-          console.log(
-            await uploadFile(
-              question.image as Buffer,
-              `${id}.${extension}`,
-              newEvaluationTest.id
-            )
+          newEvaluationTest.questionArr[index].image = await uploadFile(
+            question.image as Buffer,
+            `${id}.${extension}`,
+            newEvaluationTest.id
           );
         }
 
         index++; // Aumentar el índice en cada iteración
       }
     }
-
-    if (newEvaluationTest) {
+    const updatedEvaluationTest = await EvaluationTest.findByIdAndUpdate(
+      newEvaluationTest._id,
+      newEvaluationTest
+    );
+    if (updatedEvaluationTest) {
       return NextResponse.json(
         {
-          message: "the id is " + newEvaluationTest.id,
-          id: newEvaluationTest.id,
+          message: "the id is " + updatedEvaluationTest.id,
+          id: updatedEvaluationTest.id,
         },
         { status: 201 }
       );
