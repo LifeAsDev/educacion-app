@@ -213,7 +213,7 @@ export async function POST(req: Request) {
       }
 
       // Buscar cursos en la base de datos
-      const cursosName = newUser.curso as string;
+      const cursosName = newUser.curso as unknown as string;
       if (newUser.dni !== "N/A") {
         const isDuplicated = await User.find({ dni: newUser.dni });
         if (isDuplicated && isDuplicated.length > 0) {

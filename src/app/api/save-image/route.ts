@@ -38,3 +38,34 @@ export async function POST(req: Request, { params }: any) {
     );
   }
 }
+
+async function uploadFile(file: Buffer, fileName: string, testId: string) {
+  try {
+    const uploadDir = `./public/uploads/${testId}`; // Directorio donde se guardarán los archivos
+    const uploadPath = path.join(uploadDir, fileName); // Ruta de destino para guardar el archivo
+
+    // Verificar si el directorio de carga existe, si no, crearlo
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const fileStream = fs.createWriteStream(uploadPath);
+
+    fileStream.write(file);
+    fileStream.end();
+
+    return {
+      success: true,
+      message: "Archivo cargado con éxito",
+      imagePath: uploadPath,
+    };
+  } catch (error) {
+    console.error("Error al cargar el archivo:", error);
+    return {
+      success: false,
+      error: "Error al cargar el archivo",
+    };
+  }
+}
+
+export { uploadFile };

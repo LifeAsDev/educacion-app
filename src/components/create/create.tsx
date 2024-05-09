@@ -88,8 +88,6 @@ export default function Create() {
               "type" in question.image &&
               question.image.type === "Buffer"
             ) {
-              console.log(Buffer.from(question.image.data));
-
               return {
                 ...question,
                 image: Buffer.from(question.image.data),
@@ -115,7 +113,7 @@ export default function Create() {
   }, [difficulty, name, questionArr, submitting, type]);
 
   const submitEvaluationTest = () => {
-    localStorage.removeItem("createState");
+    // localStorage.removeItem("createState");
     const newQuestionErrorArr: string[] = [];
     const newErrors: string[] = [];
     questionArr.forEach((question) => {
@@ -172,7 +170,10 @@ export default function Create() {
           });
           const resData = await res.json();
           if (res.ok) {
-            router.push(`/evaluation`);
+            console.log(resData);
+            setSubmitting(false);
+
+            // router.push(`/evaluation`);
             return true;
           } else {
             return;
@@ -248,8 +249,6 @@ export default function Create() {
 
       newQuestionArr[questionIndex].image = buffer;
 
-      console.log(newQuestionArr);
-
       setQuestionArr(newQuestionArr);
     } else {
       const newQuestionArr = [...questionArr];
@@ -281,9 +280,6 @@ export default function Create() {
     setQuestionArr(newQuestionArr);
   };
 
-  useEffect(() => {
-    console.log(questionArr);
-  }, [questionArr]);
   return (
     <main className={styles.main}>
       {submitting ? (

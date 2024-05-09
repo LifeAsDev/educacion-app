@@ -10,7 +10,7 @@ export default function Header() {
 
   const currentPage = usePathname();
 
-  if (currentPage !== "/")
+  if (currentPage !== "/" && !currentPage.startsWith("/api"))
     return (
       <header className={styles.header}>
         <nav>

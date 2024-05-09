@@ -3,11 +3,19 @@ import fs from "fs";
 import path from "path";
 
 export async function GET(req: Request, { params }: any) {
-  try {
-    const filePath = path.join("./public/uploads", params.path); // Ruta del archivo solicitado
+  const { searchParams } = new URL(req.url);
 
+  const photoName = searchParams.get("photoName");
+
+  const filePath = path.join("./public/uploads", photoName as string); // Ruta del archivo solicitado
+
+  console.log(filePath);
+  console.log("yo");
+
+  try {
     // Verificar si el archivo existe
     if (!fs.existsSync(filePath)) {
+      console.log("yo");
       return NextResponse.json(
         { error: "El archivo no existe" },
         { status: 404 }

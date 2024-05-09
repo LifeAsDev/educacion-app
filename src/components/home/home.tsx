@@ -2,12 +2,19 @@
 import { useOnboardingContext } from "@/lib/context";
 import styles from "./styles.module.css";
 import Link from "next/link";
+import Image from "next/image";
 export default function Home() {
   const { session, status } = useOnboardingContext();
 
   return (
     <main className={styles.main}>
       <h2 className={styles.h2}>Tablero</h2>
+      <Image
+        src={`${process.env.NEXT_PUBLIC_BASE_IMAGES_URL}/api/get-image?photoName=663d298447180ae16aded6d8\\663d298447180ae16aded6d9.jpg`}
+        width={123}
+        height={213}
+        alt="yo"
+      ></Image>
       <div className={styles.homeOptionsBox}>
         {session && session.rol === "estudiante" ? (
           <>
