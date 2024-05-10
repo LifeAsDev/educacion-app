@@ -7,7 +7,10 @@ export async function GET(req: Request, { params }: any) {
 
   const photoName = searchParams.get("photoName");
 
-  const filePath = path.join("./public/uploads", photoName as string); // Ruta del archivo solicitado
+  const filePath = path.join(
+    `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`,
+    photoName as string
+  ); // Ruta del archivo solicitado
 
   try {
     // Verificar si el archivo existe
@@ -40,8 +43,14 @@ export async function GET(req: Request, { params }: any) {
   }
 }
 export async function DELETE(req: Request, { params }: any) {
+  const { searchParams } = new URL(req.url);
+
+  const photoName = searchParams.get("photoName");
   try {
-    const filePath = path.join("./public/uploads", params.path); // Ruta del archivo solicitado
+    const filePath = path.join(
+      `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`,
+      photoName as string
+    ); // Ruta del archivo solicitado
 
     // Verificar si el archivo existe
     if (!fs.existsSync(filePath)) {

@@ -18,7 +18,7 @@ export default function Create({ id }: { id: null | string }) {
 
   const { session } = useOnboardingContext();
   const router = useRouter();
-
+  const [editFetch, setEditFetch] = useState(false);
   const [questionArr, setQuestionArr] = useState<QuestionWithError[]>([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("formativa");
@@ -104,6 +104,7 @@ export default function Create({ id }: { id: null | string }) {
       setDifficulty(parseCachedState.difficulty);
     }
     if (id) {
+      setEditFetch(true);
       const fetchEvaluationTest = async (id: string) => {
         try {
           const response = await fetch(`/api/evaluation-test/${id}`, {
@@ -119,16 +120,19 @@ export default function Create({ id }: { id: null | string }) {
           setQuestionArr(data.evaluationTest.questionArr);
           setType(data.evaluationTest.type);
           setDifficulty(data.evaluationTest.difficulty);
+          setEditFetch(false);
 
           return data.evaluationTest;
         } catch (error) {
+          router.push(`/evaluation`);
+
           console.error("Error fetching evaluation test:", error);
           return null;
         }
       };
       fetchEvaluationTest(id);
     }
-  }, [id]);
+  }, [id, router]);
 
   useEffect(() => {
     if (!submitting && !id)
@@ -199,7 +203,37 @@ export default function Create({ id }: { id: null | string }) {
             console.log(resData);
             setSubmitting(false);
 
-            // router.push(`/evaluation`);
+            /*             router.push(`/evaluation`);
+             */ return true;
+          } else {
+            return;
+          }
+        } catch (error) {
+          return;
+        }
+      };
+      const fetchSubmitPatch = async () => {
+        try {
+          const data = new FormData();
+          data.set("name", name as string);
+          data.set("type", type as string);
+          data.set("difficulty", difficulty as string);
+
+          questionArr.forEach((question) => {
+            const questionString = JSON.stringify(question);
+            data.append("questionArr", questionString);
+          });
+
+          const res = await fetch(`/api/evaluation-test/${id}`, {
+            method: "PATCH",
+            body: data,
+          });
+          const resData = await res.json();
+          if (res.ok) {
+            console.log(resData);
+            setSubmitting(false);
+
+            router.push(`/evaluation`);
             return true;
           } else {
             return;
@@ -208,7 +242,8 @@ export default function Create({ id }: { id: null | string }) {
           return;
         }
       };
-      fetchSubmit();
+      if (!id) fetchSubmit();
+      else fetchSubmitPatch();
     }
   };
 
@@ -308,10 +343,14 @@ export default function Create({ id }: { id: null | string }) {
 
   return (
     <main className={styles.main}>
-      {submitting || (id && name === "") ? (
+      {submitting || editFetch ? (
         <div className={styles.submitting}>
           <div className={styles.loader}></div>
-          {submitting ? "Creando Evaluación" : "Obteniendo Datos"}
+          {editFetch
+            ? "Obteniendo Datos..."
+            : id
+            ? "Guardando Evaluación..."
+            : "Creando Evaluación..."}
         </div>
       ) : (
         ""
@@ -631,7 +670,7 @@ export default function Create({ id }: { id: null | string }) {
           submitting ? "cursor-default" : "submitEvaluationTest"
         }`}
       >
-        Crear Evaluación
+        {id ? "Guardar Evaluación" : "Crear Evaluación"}
       </div>
     </main>
   );

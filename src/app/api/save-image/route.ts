@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import * as fs from "fs";
+import * as path from "path";
 
 export async function POST(req: Request, { params }: any) {
   const data = await req.formData();
@@ -12,7 +12,7 @@ export async function POST(req: Request, { params }: any) {
   }
 
   try {
-    const uploadDir = "./public/uploads"; // Directorio donde se guardarán las imágenes
+    const uploadDir = `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`; // Directorio donde se guardarán las imágenes
     const uploadPath = path.join(uploadDir, file.name); // Ruta de destino para guardar la imagen
 
     // Verificar si el directorio de carga existe, si no, crearlo
@@ -41,7 +41,7 @@ export async function POST(req: Request, { params }: any) {
 
 async function uploadFile(file: Buffer, fileName: string, testId: string) {
   try {
-    const uploadDir = `./public/uploads/${testId}`; // Directorio donde se guardarán los archivos
+    const uploadDir = `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}/${testId}`; // Directorio donde se guardarán los archivos
     const uploadPath = path.join(uploadDir, fileName); // Ruta de destino para guardar el archivo
 
     // Verificar si el directorio de carga existe, si no, crearlo
@@ -68,4 +68,28 @@ async function uploadFile(file: Buffer, fileName: string, testId: string) {
   }
 }
 
-export { uploadFile };
+async function deleteFile(pathName: string, fileName: string = "") {
+  const filePath = path.join(
+    `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`,
+    pathName
+  );
+  const deletePath = path.join(filePath, fileName);
+  try {
+    // Verificar si el archivo existe
+    await fs.promises.access(deletePath, fs.constants.F_OK);
+  } catch (error) {
+    return "Archivo ya eliminado";
+  }
+
+  try {
+    // Borrar el archivo
+    if (fileName === "") await fs.promises.rmdir(filePath, { recursive: true });
+    else await fs.promises.unlink(deletePath);
+
+    return "Archivo eliminado correctamente";
+  } catch (error) {
+    return false;
+  }
+}
+
+export { uploadFile, deleteFile };

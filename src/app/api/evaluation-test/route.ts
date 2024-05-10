@@ -6,6 +6,7 @@ import Question from "@/models/question";
 import { uploadFile } from "../save-image/route";
 
 import { fileTypeFromBuffer } from "file-type";
+import EvaluationTestType from "@/models/evaluationTest";
 
 async function getFileTypeFromBuffer(buffer: Buffer) {
   const result = await fileTypeFromBuffer(buffer);
@@ -60,13 +61,15 @@ export async function POST(req: Request) {
       difficulty,
       questionArr: questionArrWithoutBuffer,
     });
-    /*   console.log("Create ", newEvaluationTest.questionArr);
-    console.log("Old ", questionArrWithoutBuffer); */
+
+    /*console.log("Old ", questionArrWithoutBuffer); */
     if (newEvaluationTest) {
-      let index = 0;
       for (const question of parseQuestionArr) {
         // Llamar a una función asíncrona por cada elemento
-        const id = newEvaluationTest.questionArr[index]._id;
+        const evaluationIndex = newEvaluationTest?.questionArr?.findIndex(
+          (questionId: Question) => questionId.id == question.id
+        );
+        const id = newEvaluationTest.questionArr[evaluationIndex]._id;
         if (question.image && typeof question.image !== "string") {
           const extension = await getFileTypeFromBuffer(
             question.image as Buffer
@@ -75,12 +78,10 @@ export async function POST(req: Request) {
           const { imagePath } = await uploadFile(
             question.image as Buffer,
             `${id}.${extension}`,
-            newEvaluationTest.id
+            newEvaluationTest._id
           );
-          console.log(imagePath);
-          newEvaluationTest.questionArr[index].image = imagePath;
+          newEvaluationTest.questionArr[evaluationIndex].image = imagePath!;
         }
-        index++; // Aumentar el índice en cada iteración
       }
     }
     const updatedEvaluationTest = await EvaluationTest.findByIdAndUpdate(
@@ -120,3 +121,5 @@ export async function GET(req: Request) {
     });
   }
 }
+
+export { getFileTypeFromBuffer };
