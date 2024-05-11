@@ -12,7 +12,7 @@ interface QuestionWithError extends Question {
   error?: string;
 }
 
-export default function Create({ id }: { id: null | string }) {
+export default function Create({ id }: { id?: string }) {
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
 

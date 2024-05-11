@@ -1,10 +1,10 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import EvaluationTest from "@/schemas/evaluationTest";
-import { uploadFile } from "../../save-image/route";
-import { getFileTypeFromBuffer } from "../route";
+import { uploadFile } from "@/lib/functionToFiles";
+import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import Question from "@/models/question";
-import { deleteFile } from "../../save-image/route";
+import { deleteFile } from "@/lib/functionToFiles";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;

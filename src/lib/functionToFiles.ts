@@ -1,43 +1,16 @@
-import { NextResponse } from "next/server";
+import { fileTypeFromBuffer } from "file-type";
 import * as fs from "fs";
 import * as path from "path";
 
-export async function POST(req: Request, { params }: any) {
-  const data = await req.formData();
-
-  const file: File | null = data.get("file") as unknown as File;
-
-  if (!file) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
-  }
-
-  try {
-    const uploadDir = `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`; // Directorio donde se guardarán las imágenes
-    const uploadPath = path.join(uploadDir, file.name); // Ruta de destino para guardar la imagen
-
-    // Verificar si el directorio de carga existe, si no, crearlo
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    const fileStream = fs.createWriteStream(uploadPath);
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    fileStream.write(buffer);
-    fileStream.end();
-
-    return NextResponse.json(
-      { message: "Archivo cargado con éxito", imagePath: uploadPath },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("Error al cargar el archivo:", error);
-    return NextResponse.json(
-      { error: "Error al cargar el archivo" },
-      { status: 500 }
-    );
+async function getFileTypeFromBuffer(buffer: Buffer) {
+  const result = await fileTypeFromBuffer(buffer);
+  if (result) {
+    return result.ext;
+  } else {
+    return "unknown";
   }
 }
+export { getFileTypeFromBuffer };
 
 async function uploadFile(file: Buffer, fileName: string, testId: string) {
   try {

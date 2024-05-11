@@ -3,19 +3,8 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import EvaluationTest from "@/schemas/evaluationTest";
 import Question from "@/models/question";
-import { uploadFile } from "../save-image/route";
-
-import { fileTypeFromBuffer } from "file-type";
-import EvaluationTestType from "@/models/evaluationTest";
-
-async function getFileTypeFromBuffer(buffer: Buffer) {
-  const result = await fileTypeFromBuffer(buffer);
-  if (result) {
-    return result.ext;
-  } else {
-    return "unknown";
-  }
-}
+import { uploadFile } from "@/lib/functionToFiles";
+import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 
 export async function POST(req: Request) {
   try {
@@ -121,5 +110,3 @@ export async function GET(req: Request) {
     });
   }
 }
-
-export { getFileTypeFromBuffer };
