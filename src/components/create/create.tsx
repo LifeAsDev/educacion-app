@@ -26,6 +26,7 @@ export default function Create({ id }: { id?: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [questionErrorArr, setQuestionErrorArr] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
+  const [asignatura, setAsignatura] = useState<string>("N/A");
 
   const editQuestion = (
     property: keyof Question,
@@ -143,7 +144,6 @@ export default function Create({ id }: { id?: string }) {
   }, [difficulty, id, name, questionArr, submitting, type]);
 
   const submitEvaluationTest = () => {
-    // localStorage.removeItem("createState");
     const newQuestionErrorArr: string[] = [];
     const newErrors: string[] = [];
     questionArr.forEach((question) => {
@@ -178,9 +178,25 @@ export default function Create({ id }: { id?: string }) {
       newQuestionErrorArr.some((question) => question === "error") ||
       newErrors.length > 0
     ) {
+      if (newQuestionErrorArr.some((question) => question === "error")) {
+        const errorIndex = newQuestionErrorArr.findIndex(
+          (question) => question === "error"
+        );
+        const errorId =
+          questionArr[errorIndex]._id || questionArr[errorIndex].id;
+        const element = document.getElementById(`error${errorId}`);
+        if (element) {
+          const elementTop =
+            element.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo(0, elementTop); // Hace scroll hacia arriba 100px adicionales
+        }
+      } else {
+        window.scrollTo(0, 0);
+      }
       return;
     } else {
       setSubmitting(true);
+      localStorage.removeItem("createState");
 
       const fetchSubmit = async () => {
         try {
@@ -188,6 +204,7 @@ export default function Create({ id }: { id?: string }) {
           data.set("name", name as string);
           data.set("type", type as string);
           data.set("difficulty", difficulty as string);
+          data.set("asignatura", asignatura as string);
 
           questionArr.forEach((question) => {
             const questionString = JSON.stringify(question);
@@ -200,11 +217,10 @@ export default function Create({ id }: { id?: string }) {
           });
           const resData = await res.json();
           if (res.ok) {
-            console.log(resData);
             setSubmitting(false);
 
-            /*             router.push(`/evaluation`);
-             */ return true;
+            router.push(`/evaluation`);
+            return true;
           } else {
             return;
           }
@@ -218,6 +234,7 @@ export default function Create({ id }: { id?: string }) {
           data.set("name", name as string);
           data.set("type", type as string);
           data.set("difficulty", difficulty as string);
+          data.set("asignatura", asignatura as string);
 
           questionArr.forEach((question) => {
             const questionString = JSON.stringify(question);
@@ -230,7 +247,6 @@ export default function Create({ id }: { id?: string }) {
           });
           const resData = await res.json();
           if (res.ok) {
-            console.log(resData);
             setSubmitting(false);
 
             router.push(`/evaluation`);
@@ -419,6 +435,18 @@ export default function Create({ id }: { id?: string }) {
             <option value="avanzado">Avanzado</option>
           </select>
         </div>
+        <div className={styles.inputBox}>
+          <label>Asignatura</label>
+          <select
+            value={asignatura}
+            onChange={(e) => setAsignatura(e.target.value)}
+            className={styles.dropdown}
+            name="asignatura"
+            id="asignatura"
+          >
+            <option value="N/A">Escoja una asignatura</option>
+          </select>
+        </div>
       </div>
       <div className={styles.questionBox}>
         {questionArr.map((question, i) =>
@@ -508,6 +536,7 @@ export default function Create({ id }: { id?: string }) {
                 </svg>
               </div>
               <textarea
+                id={`error${question._id || question.id}`}
                 onChange={(e) => editQuestion("pregunta", e.target.value, i)}
                 value={question.pregunta}
                 placeholder="Pregunta abierta"
@@ -606,6 +635,7 @@ export default function Create({ id }: { id?: string }) {
                 </svg>
               </div>
               <textarea
+                id={`error${question._id || question.id}`}
                 onChange={(e) => editQuestion("pregunta", e.target.value, i)}
                 value={question.pregunta}
                 placeholder="Pregunta"

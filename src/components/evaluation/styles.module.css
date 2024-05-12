@@ -5,15 +5,23 @@
   width: 80%;
   min-height: initial;
 }
+.main {
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+  width: 100%;
+  min-height: initial;
+  max-width: 1200px;
+}
 .top {
   width: 100%;
-  height: 5em;
   background-color: var(--secondary-color-dark-black);
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 2em;
   justify-content: space-between;
+  padding-top: 1em;
 }
 .info {
   font-weight: 600;
@@ -27,15 +35,10 @@
   width: 100%;
 }
 .testItem {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 5em;
+  height: 3em;
   width: 100%;
   background-color: #8b93a7;
-  padding: 0 1em;
   transition: background-color 0.3s ease;
-  gap: 0.5em;
 }
 
 .testItem:nth-child(2n) {
@@ -44,16 +47,17 @@
 
 .testItem p {
   font-weight: 600;
-  font-size: 1.2em;
+  font-size: 1.1em;
+}
+.name {
   margin-left: 1em;
-  cursor: pointer;
 }
-.testItem p:hover {
-  color: white;
-}
+
 .testItem svg {
   cursor: pointer;
   transition: 0.1s;
+  height: 42px;
+  width: auto;
 }
 .testItem svg:hover {
   transform: scale(1.1);
@@ -145,4 +149,26 @@
 }
 .modalOption:nth-of-type(2):hover {
   background-color: var(--secondary-green);
+}
+
+.main thead {
+  background-color: var(--secondary-color-dark-black);
+  color: white;
+}
+
+.main thead {
+  padding: 1em;
+}
+.main th,
+.main td {
+  text-align: left;
+  padding: 1em;
+}
+.td div {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
 }

@@ -38,13 +38,22 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
       required: false,
     },
     curso: {
-      type: String,
+      type: [{ type: Schema.Types.ObjectId, ref: "Curso" }],
       required: false,
     },
-
+    asignatura: {
+      type: Schema.Types.ObjectId,
+      ref: "Asignatura",
+      required: false,
+    },
     questionArr: {
       type: [questionSchema],
       default: [],
+    },
+    creatorId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   { timestamps: true }
