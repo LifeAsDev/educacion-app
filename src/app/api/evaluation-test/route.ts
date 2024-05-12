@@ -5,6 +5,7 @@ import EvaluationTest from "@/schemas/evaluationTest";
 import Question from "@/models/question";
 import { uploadFile } from "@/lib/functionToFiles";
 import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
+import { Types } from "mongoose";
 
 export async function POST(req: Request) {
   try {
@@ -12,6 +13,9 @@ export async function POST(req: Request) {
     const name: string = data.get("name") as unknown as string;
     const type: string = data.get("type") as unknown as string;
     const difficulty: string = data.get("difficulty") as unknown as string;
+    let asignatura: string | undefined = data.get("asignatura")! as string;
+    const creatorId: string = data.get("creatorId")! as string;
+
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
@@ -44,11 +48,16 @@ export async function POST(req: Request) {
     );
 
     await connectMongoDB();
+    if (asignatura === "N/A") {
+      asignatura = undefined;
+    }
     const newEvaluationTest = await EvaluationTest.create({
       name,
       type,
       difficulty,
       questionArr: questionArrWithoutBuffer,
+      asignatura: asignatura ? new Types.ObjectId(asignatura) : undefined,
+      creatorId: new Types.ObjectId(creatorId),
     });
 
     /*console.log("Old ", questionArrWithoutBuffer); */
@@ -101,7 +110,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     await connectMongoDB();
-    const evaluationTests = await EvaluationTest.find();
+    const evaluationTests = await EvaluationTest.find().populate("asignatura");
     return NextResponse.json({ evaluationTests }, { status: 200 });
   } catch (error) {
     return NextResponse.json({

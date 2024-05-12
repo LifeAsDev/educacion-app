@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useOnboardingContext } from "@/lib/context";
 import NextImage from "next/image";
+import Asignatura from "@/models/asignatura";
 
 interface QuestionWithError extends Question {
   error?: string;
@@ -27,6 +28,7 @@ export default function Create({ id }: { id?: string }) {
   const [questionErrorArr, setQuestionErrorArr] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [asignatura, setAsignatura] = useState<string>("N/A");
+  const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
 
   const editQuestion = (
     property: keyof Question,
@@ -72,6 +74,29 @@ export default function Create({ id }: { id?: string }) {
     setQuestionArr(newQuestionArr);
   };
 
+  useEffect(() => {
+    const fetchAsignaturas = async () => {
+      try {
+        const response = await fetch(`/api/asignatura`, {
+          method: "GET",
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error("Failed to fetch evaluation test");
+        }
+
+        setAsignaturasArr(data.asignaturas);
+
+        return data.asignaturas;
+      } catch (error) {
+        console.error("Error fetching evaluation test:", error);
+        return null;
+      }
+    };
+    fetchAsignaturas();
+  }, []);
+
   const cache = useRef(false);
   useEffect(() => {
     const cachedState = localStorage.getItem("createState");
@@ -103,6 +128,7 @@ export default function Create({ id }: { id?: string }) {
       setName(parseCachedState.name);
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
+      setAsignatura(parseCachedState.asignatura);
     }
     if (id) {
       setEditFetch(true);
@@ -113,7 +139,6 @@ export default function Create({ id }: { id?: string }) {
           });
 
           const data = await response.json();
-          console.log(data.evaluationTest.questionArr[0]);
           if (!response.ok) {
             throw new Error("Failed to fetch evaluation test");
           }
@@ -122,6 +147,7 @@ export default function Create({ id }: { id?: string }) {
           setType(data.evaluationTest.type);
           setDifficulty(data.evaluationTest.difficulty);
           setEditFetch(false);
+          setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
 
           return data.evaluationTest;
         } catch (error) {
@@ -139,9 +165,9 @@ export default function Create({ id }: { id?: string }) {
     if (!submitting && !id)
       localStorage.setItem(
         "createState",
-        JSON.stringify({ questionArr, name, type, difficulty })
+        JSON.stringify({ questionArr, name, type, difficulty, asignatura })
       );
-  }, [difficulty, id, name, questionArr, submitting, type]);
+  }, [asignatura, difficulty, id, name, questionArr, submitting, type]);
 
   const submitEvaluationTest = () => {
     const newQuestionErrorArr: string[] = [];
@@ -205,6 +231,7 @@ export default function Create({ id }: { id?: string }) {
           data.set("type", type as string);
           data.set("difficulty", difficulty as string);
           data.set("asignatura", asignatura as string);
+          data.set("creatorId", session._id as string);
 
           questionArr.forEach((question) => {
             const questionString = JSON.stringify(question);
@@ -235,6 +262,7 @@ export default function Create({ id }: { id?: string }) {
           data.set("type", type as string);
           data.set("difficulty", difficulty as string);
           data.set("asignatura", asignatura as string);
+          data.set("creatorId", session._id as string);
 
           questionArr.forEach((question) => {
             const questionString = JSON.stringify(question);
@@ -445,6 +473,12 @@ export default function Create({ id }: { id?: string }) {
             id="asignatura"
           >
             <option value="N/A">Escoja una asignatura</option>
+            {asignaturasArr &&
+              asignaturasArr.map((asignatura) => (
+                <option key={asignatura._id} value={asignatura._id}>
+                  {asignatura.name}
+                </option>
+              ))}
           </select>
         </div>
       </div>

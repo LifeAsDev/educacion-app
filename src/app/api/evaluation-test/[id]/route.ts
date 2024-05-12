@@ -5,6 +5,7 @@ import { uploadFile } from "@/lib/functionToFiles";
 import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import Question from "@/models/question";
 import { deleteFile } from "@/lib/functionToFiles";
+import { Types } from "mongoose";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;
@@ -31,7 +32,11 @@ export async function GET(req: Request, { params }: any) {
 
   try {
     await connectMongoDB();
-    const evaluationTest = await EvaluationTest.findById(id);
+
+    const evaluationTest = await EvaluationTest.findById(id).populate(
+      "asignatura"
+    );
+
     if (!evaluationTest) {
       return NextResponse.json(
         { message: "EvaluationTest not found" },
@@ -56,6 +61,8 @@ export async function PATCH(req: Request, { params }: any) {
     const name: string = data.get("name") as unknown as string;
     const type: string = data.get("type") as unknown as string;
     const difficulty: string = data.get("difficulty") as unknown as string;
+    let asignatura: string | undefined = data.get("asignatura")! as string;
+
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
@@ -88,15 +95,18 @@ export async function PATCH(req: Request, { params }: any) {
     );
 
     await connectMongoDB();
-
+    if (asignatura === "N/A") {
+      asignatura = undefined;
+    }
     const newEvaluationTest = await EvaluationTest.findByIdAndUpdate(paramId, {
       name: name,
       type,
       difficulty,
       questionArr: questionArrWithoutBuffer,
+      asignatura: asignatura ? new Types.ObjectId(asignatura) : null,
     });
-
     const newEvaluationTest2 = await EvaluationTest.findById(paramId);
+
     /*   console.log("Create ", newEvaluationTest.questionArr);
     console.log("Old ", questionArrWithoutBuffer); */
     if (newEvaluationTest) {
