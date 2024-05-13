@@ -103,36 +103,6 @@
   transform: scale(1.2);
 }
 
-.pageBox {
-  display: flex;
-  justify-content: center;
-  margin-top: 1em;
-  gap: 1em;
-}
-
-.page {
-  width: 2.5em;
-  height: 2.5em;
-  background-color: white;
-  border-radius: 8px;
-  color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.page:not(.selected):hover {
-  background-color: var(--light-indigo);
-}
-
-.page.selected {
-  background-color: var(--secondary-color-dark-black);
-  color: white;
-  cursor: initial;
-}
-
 .tableItem,
 .tableHeadName {
   display: flex;
@@ -299,6 +269,7 @@
   mask-composite: subtract;
   animation: l3 1s infinite linear;
   margin: auto;
+  user-select: none;
 }
 @keyframes l3 {
   to {
@@ -642,4 +613,33 @@
   background-color: rgba(173, 216, 230, 0.4);
   border: 1px solid rgb(81, 192, 230);
   z-index: 2;
+}
+.pageBox {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+  gap: 1em;
+}
+
+.page {
+  width: 2.5em;
+  height: 2.5em;
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page:not(.selected):hover {
+  background-color: var(--light-indigo);
+}
+
+.page.selected {
+  background-color: var(--secondary-color-dark-black);
+  color: white;
+  cursor: initial;
 }

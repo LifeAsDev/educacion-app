@@ -162,11 +162,14 @@ export default function Create({ id }: { id?: string }) {
   }, [id, router]);
 
   useEffect(() => {
-    if (!submitting && !id)
+    if (!submitting && !id) {
       localStorage.setItem(
         "createState",
         JSON.stringify({ questionArr, name, type, difficulty, asignatura })
       );
+    } else if (submitting) {
+      localStorage.removeItem("createState");
+    }
   }, [asignatura, difficulty, id, name, questionArr, submitting, type]);
 
   const submitEvaluationTest = () => {
@@ -200,6 +203,7 @@ export default function Create({ id }: { id?: string }) {
       newErrors.push("name");
     }
     setErrors(newErrors);
+
     if (
       newQuestionErrorArr.some((question) => question === "error") ||
       newErrors.length > 0
@@ -222,8 +226,6 @@ export default function Create({ id }: { id?: string }) {
       return;
     } else {
       setSubmitting(true);
-      localStorage.removeItem("createState");
-
       const fetchSubmit = async () => {
         try {
           const data = new FormData();
@@ -244,8 +246,6 @@ export default function Create({ id }: { id?: string }) {
           });
           const resData = await res.json();
           if (res.ok) {
-            setSubmitting(false);
-
             router.push(`/evaluation`);
             return true;
           } else {
@@ -275,8 +275,6 @@ export default function Create({ id }: { id?: string }) {
           });
           const resData = await res.json();
           if (res.ok) {
-            setSubmitting(false);
-
             router.push(`/evaluation`);
             return true;
           } else {

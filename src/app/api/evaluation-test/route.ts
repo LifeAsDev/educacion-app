@@ -108,10 +108,69 @@ export async function POST(req: Request) {
   }
 }
 export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  let page: number = parseInt(searchParams.get("page") || "1", 10);
+  const pageSize: number = parseInt(searchParams.get("pageSize") || "20", 10);
+  const keyword = searchParams.get("keyword");
+  const type = searchParams.get("type");
+  const difficulty = searchParams.get("difficulty");
+  const asignatura = searchParams.get("asignatura") as string;
+
   try {
     await connectMongoDB();
-    const evaluationTests = await EvaluationTest.find().populate("asignatura");
-    return NextResponse.json({ evaluationTests }, { status: 200 });
+    let aggregatePipeline: any[] = [];
+    if (keyword !== "") {
+      aggregatePipeline.push({
+        $match: {
+          name: { $regex: keyword, $options: "i" },
+        },
+      });
+    }
+    if (asignatura !== "Todas") {
+      aggregatePipeline.push({
+        $match: {
+          asignatura: new Types.ObjectId(asignatura),
+        },
+      });
+    }
+    if (difficulty !== "Todos") {
+      aggregatePipeline.push({
+        $match: {
+          difficulty: difficulty,
+        },
+      });
+    }
+    if (type !== "Todos") {
+      aggregatePipeline.push({
+        $match: {
+          type: type,
+        },
+      });
+    }
+
+    aggregatePipeline.push({
+      $facet: {
+        metadata: [{ $count: "totalCount" }],
+        data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+      },
+    });
+
+    const evaluationAggregate = await EvaluationTest.aggregate(
+      aggregatePipeline
+    );
+    const evaluationTests = await EvaluationTest.populate(
+      evaluationAggregate[0].data,
+      {
+        path: "asignatura",
+      }
+    );
+    return NextResponse.json(
+      {
+        evaluationTests,
+        totalCount: evaluationAggregate[0].metadata[0].totalCount,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({
       success: false,

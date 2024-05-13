@@ -2,16 +2,10 @@
   display: flex;
   margin: auto;
   flex-direction: column;
-  width: 80%;
-  min-height: initial;
-}
-.main {
-  display: flex;
-  margin: auto;
-  flex-direction: column;
   width: 100%;
-  min-height: initial;
+  height: 100vh;
   max-width: 1200px;
+  padding-bottom: 1em;
 }
 .top {
   width: 100%;
@@ -19,7 +13,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 2em;
+  padding: 0 1.5em;
   justify-content: space-between;
   padding-top: 1em;
 }
@@ -33,12 +27,6 @@
 }
 .testList {
   width: 100%;
-}
-.testItem {
-  height: 3em;
-  width: 100%;
-  background-color: #8b93a7;
-  transition: background-color 0.3s ease;
 }
 
 .testItem:nth-child(2n) {
@@ -56,7 +44,7 @@
 .testItem svg {
   cursor: pointer;
   transition: 0.1s;
-  height: 42px;
+  height: 36px;
   width: auto;
 }
 .testItem svg:hover {
@@ -90,7 +78,10 @@
   font-weight: 600;
   padding-left: 1em;
   cursor: pointer;
+  height: 3.25em;
+  margin-left: auto;
 }
+
 .createBtn:hover {
   background-color: var(--secondary-green);
 }
@@ -159,9 +150,15 @@
 .main thead {
   padding: 1em;
 }
+.main th {
+  padding: 1em;
+}
 .main th,
 .main td {
   text-align: left;
+  padding: 0.5em 1em;
+}
+.main th {
   padding: 1em;
 }
 .td div {
@@ -171,4 +168,118 @@
   align-items: center;
   justify-content: flex-start;
   text-align: left;
+}
+
+.tableBox {
+  flex-grow: 1;
+  overflow: auto;
+  position: relative;
+}
+.testItem {
+  height: 2.5em;
+  width: 100%;
+  background-color: #8b93a7;
+  transition: background-color 0.3s ease;
+}
+
+.main thead tr th {
+  background-color: var(--secondary-color-dark-black);
+  position: sticky;
+  top: 0;
+}
+
+.tableBox table {
+  width: 100%;
+}
+
+.pageBox {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+  gap: 1em;
+}
+
+.page {
+  width: 2.5em;
+  height: 2.5em;
+  background-color: white;
+  border-radius: 8px;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page:not(.selected):hover {
+  background-color: var(--light-indigo);
+}
+
+.page.selected {
+  background-color: var(--secondary-color-dark-black);
+  color: white;
+  cursor: initial;
+}
+
+.loader {
+  width: 80px;
+  padding: 10px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #25b09b;
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+  mask: var(--_m);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  animation: l3 1s infinite linear;
+  margin: auto;
+  user-select: none;
+}
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.overlay {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: calc(100% - 3.5em);
+  top: 3.5em;
+  left: 0;
+  z-index: 1;
+}
+
+.main select {
+  font-weight: 500;
+  background-color: var(--third-color-light-black);
+  outline: none;
+  padding: 4px;
+}
+
+.main select:focus {
+  outline: 2px solid white;
+}
+.filterBox {
+  --border-height: 0.5em;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 0.5em;
+  width: 100%;
+  align-items: center;
+  column-gap: 0.5em;
+}
+
+.filterBox p {
+  font-weight: 500;
+}
+.filterBox select {
+  margin-right: 0.75em;
 }
