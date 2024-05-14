@@ -228,7 +228,12 @@ export default function Evaluation() {
           </Link>
         </div>
       </div>
-      <div className={styles.tableBox}>
+      <div
+        id="evaluationList"
+        className={`${fetchingEvaluations ? styles.hidden : ""} ${
+          styles.tableBox
+        }`}
+      >
         <table>
           <thead>
             <tr>
@@ -419,9 +424,9 @@ export default function Evaluation() {
           </tbody>
         </table>
         {fetchingEvaluations ? (
-          <li className={styles.overlay}>
+          <div className={styles.overlay}>
             <div className={styles.loader}></div>
-          </li>
+          </div>
         ) : (
           ""
         )}

@@ -43,6 +43,7 @@ export async function PATCH(req: Request, { params }: any) {
   const apellido = formData.get("apellido");
   const rol = formData.get("rol");
   const rut = formData.get("rut");
+  const password = formData.get("password");
 
   await connectMongoDB();
 
@@ -53,6 +54,7 @@ export async function PATCH(req: Request, { params }: any) {
     dni: rut,
     curso,
     review: false,
+    password,
   });
 
   if (patchedUser) {

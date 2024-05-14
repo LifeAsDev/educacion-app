@@ -30,6 +30,7 @@ export default function EditUserModal({
   const [userId, setUserId] = useState(userSelected._id);
   const [userCursoInput, setUserCursoInput] = useState("N/A");
   const [errors, setErrors] = useState<string[]>([]);
+  const [password, setPassword] = useState(userSelected.password);
   const patchUser = () => {
     const newErrors: string[] = [];
     if (nombre === "" || nombre === "N/A") {
@@ -47,6 +48,9 @@ export default function EditUserModal({
     if (rol === "Estudiante" && curso.length === 0) {
       newErrors.push("curso");
     }
+    if (password === "") {
+      newErrors.push("password");
+    }
     if (newErrors.length === 0) {
       setFetchingUsers(true);
       setUserSelected(null);
@@ -57,6 +61,8 @@ export default function EditUserModal({
           data.set("apellido", apellido as string);
           data.set("rol", rol as string);
           data.set("rut", rut as string);
+          data.set("password", password as string);
+
           if (rol === "Admin" || rol === "Directivo") {
             data.set("curso", JSON.stringify([]));
           }
@@ -109,7 +115,19 @@ export default function EditUserModal({
         <div className={styles.editItem}>
           <div className={`${styles.inputBox} ${styles.id}`}>
             <label>ID</label>
-            <p>{userId}</p>
+            <p>{userId}</p>{" "}
+          </div>
+          <div className={styles.inputBox}>
+            <label>Clave</label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              spellCheck="false"
+              placeholder="Clave"
+              className={`${errors.includes("password") ? styles.wrong : ""}`}
+              type="text"
+              onFocus={() => setErrors([])}
+            />
           </div>
         </div>
         <div className={styles.editItem}>
@@ -168,6 +186,7 @@ export default function EditUserModal({
               onFocus={() => setErrors([])}
             />
           </div>
+
           {rol === "Profesor" ? (
             <div className={styles.inputBox}>
               <label>Agregar Curso</label>
