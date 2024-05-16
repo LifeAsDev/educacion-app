@@ -2,38 +2,6 @@ import { NextResponse } from "next/server";
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/schemas/user";
 
-export async function GET(req: Request, { params }: any) {
-  const { searchParams } = new URL(req.url);
-  const userId = params.id;
-  const rol = searchParams.get("rol");
-
-  await connectMongoDB();
-
-  const getUser = await User.findById(userId).populate("curso").select("-password");
-
-  if (getUser) {
-    return NextResponse.json(
-      { message: "User found", user: getUser },
-      { status: 200 }
-    );
-  } else return NextResponse.json({ error: "User not found" }, { status: 404 });
-}
-
-export async function DELETE(req: Request, { params }: any) {
-  const userId = params.id;
-
-  await connectMongoDB();
-
-  const deleteUser = await User.findByIdAndDelete(userId).select("-password");
-
-  if (deleteUser)
-    return NextResponse.json(
-      { message: "User deleted successfully", user: deleteUser },
-      { status: 200 }
-    );
-  else return NextResponse.json({ error: "User not found" }, { status: 404 });
-}
-
 export async function PATCH(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
   const userId = params.id;
@@ -43,9 +11,16 @@ export async function PATCH(req: Request, { params }: any) {
   const apellido = formData.get("apellido");
   const rol = formData.get("rol");
   const rut = formData.get("rut");
-  const password = formData.get("password");
+  const actualPass = formData.get("actualPass");
+  let newPass = formData.get("newPass");
 
   await connectMongoDB();
+
+  const userPassword = await User.findById(userId).select("password");
+  if (actualPass !== null && userPassword.password !== actualPass) {
+    return NextResponse.json({ error: "Clave Actual" }, { status: 401 });
+  }
+  if (actualPass === null) newPass = userPassword.password;
 
   const patchedUser = await User.findByIdAndUpdate(userId, {
     nombre,
@@ -54,7 +29,7 @@ export async function PATCH(req: Request, { params }: any) {
     dni: rut,
     curso,
     review: false,
-    password,
+    password: newPass,
   });
 
   if (patchedUser) {

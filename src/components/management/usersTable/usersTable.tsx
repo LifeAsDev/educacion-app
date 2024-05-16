@@ -316,7 +316,7 @@ export default function UsersTable({
               fetchingUsers ? styles.hidden : ""
             }`}
           >
-            {fetchingUsers ? (
+            {fetchingUsers && usersArr ? (
               <>
                 <tr className={styles.userItem}>
                   <td></td>
@@ -357,7 +357,7 @@ export default function UsersTable({
                   <td></td>
                   <td></td>
                   <td></td>
-                </tr>{" "}
+                </tr>
                 <tr className={styles.userItem}>
                   <td></td>
                   <td></td>

@@ -3,7 +3,6 @@ import User from "@/models/user";
 import { Dispatch, SetStateAction } from "react";
 import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
-import mongoose from "mongoose";
 
 interface CursoWrap extends Curso {
   edit: Boolean;

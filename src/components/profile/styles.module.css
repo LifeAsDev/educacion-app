@@ -1,11 +1,4 @@
-.overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  top: 0;
-  left: 0;
-  z-index: 5;
+.main {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,6 +13,8 @@
   justify-content: flex-start;
   padding-bottom: 1em;
   width: min-content;
+  min-height: 19em;
+  min-width: 40em;
 }
 .editBox input {
   background-color: transparent;
@@ -74,16 +69,32 @@
   font-size: 1.2em;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn.green {
   background-color: var(--primary-green);
 }
 
+.btn.grey {
+  background-color: var(--grey);
+  cursor:initial;
+  width: 98px;
+}
+
 .btn.green:hover {
   background-color: var(--secondary-green);
 }
 
+.btn.blue {
+  background-color: var(--primary-light-blue);
+}
+
+.btn.blue:hover {
+  background-color: var(--third-light-blue);
+}
 .btn.red {
   background-color: var(--primary-red);
   margin-left: auto;
@@ -151,9 +162,44 @@
   width: 100%;
   gap: 2em;
 }
+.main select {
+  font-weight: 500;
+  background-color: var(--third-color-light-black);
+  outline: none;
+  padding: 4px;
+}
 
+.main select:focus {
+  outline: 2px solid white;
+}
 
+.inputBox input:disabled {
+  font-weight: 600;
+}
 
-.inputBox label, .cursoItem label{
-  text-align: left;
+.loader {
+  width: 80px;
+  padding: 10px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #25b09b;
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+  mask: var(--_m);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  animation: l3 1s infinite linear;
+  margin: auto;
+  user-select: none;
+}
+
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.grey .loader{
+  padding: 3px;
+  width: 20px;
 }
