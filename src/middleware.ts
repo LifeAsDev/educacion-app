@@ -2,7 +2,9 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 const blockedPagesWithoutLogin = ["/home", "/create-event", "/event"];
-const blockedPagesForEstudiantes = ["/create,/edit"];
+const pagesNotAllowedForEstudiantes = ["/create", "/evaluation", "/edit", "management"];
+const pagesNotAllowedForProfesores = ["management"];
+
 export default async function middleware(req: NextRequest) {
   const session = await getToken({
     req,
@@ -26,12 +28,16 @@ export default async function middleware(req: NextRequest) {
     }
     if (
       session.rol === "estudiante" &&
-      blockedPagesForEstudiantes.some((page) => currentUrl.startsWith(page))
+      pagesNotAllowedForEstudiantes.some((page) => currentUrl.startsWith(page))
     ) {
       return NextResponse.redirect(home);
+
+    } else if (session.rol === "profesores" &&
+      pagesNotAllowedForProfesores.some((page) => currentUrl.startsWith(page))) {
+      return NextResponse.redirect(home);
+
     }
   }
-
   return NextResponse.next();
 }
 export const config = {
