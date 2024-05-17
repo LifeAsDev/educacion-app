@@ -1,19 +1,33 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const { MONGODB_URI } = process.env;
-if (!MONGODB_URI) {
-  throw new Error('Invalid enviroment variable: MONGODB_URI');
+const MONGO_URI = process.env.MONGODB_URI;
+const cached: {
+  connection?: typeof mongoose;
+  promise?: Promise<typeof mongoose>;
+} = {};
+
+async function connectMongoDB() {
+  if (!MONGO_URI) {
+    throw new Error(
+      "Please define the MONGO_URI environment variable inside .env.local"
+    );
+  }
+  if (cached.connection) {
+    return cached.connection;
+  }
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+    cached.promise = mongoose.connect(MONGO_URI, opts);
+  }
+  try {
+    cached.connection = await cached.promise;
+  } catch (e) {
+    cached.promise = undefined;
+    throw e;
+  }
+  return cached.connection;
 }
 
-export const connectMongoDB = async () => {
-  try {
-    const { connection } = await mongoose.connect(MONGODB_URI);
-
-    if (connection.readyState === 1) {
-      return;
-    }
-  } catch (error) {
-    console.log('Error connecting to MongoDB: ', error);
-    throw new Error('Error connecting to MongoDB: ' + error);
-  }
-};
+export { connectMongoDB };

@@ -10,8 +10,6 @@ export async function GET(req: Request, { params }: any) {
   await connectMongoDB();
 
   const getUser = await User.findById(userId).select("-password");
-  const populated = await getUser.populate("curso");
-  console.log(populated);
 
   if (getUser) {
     return NextResponse.json(
