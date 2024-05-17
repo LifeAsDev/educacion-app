@@ -1,7 +1,7 @@
 "use client";
 import styles from "./styles.module.css";
 import User from "@/models/user";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
 import { useOnboardingContext } from "@/lib/context";
@@ -26,16 +26,10 @@ export default function Profile({}: {}) {
   const [actualPass, setActualPass] = useState("");
   const [patching, setPatching] = useState(false);
 
+  const cache = useRef(false);
+
   useEffect(() => {
-    if (session) {
-      setRol(session.rol);
-      setApellido(session.apellido);
-      setNombre(session.nombre);
-      setRut(session.dni);
-      setCurso(session.curso);
-      setUserId(session._id);
-    }
-    const fetchSubmit = async () => {
+      const fetchSubmit = async () => {
       try {
         const res = await fetch(`/api/curso`, {
           method: "GET",
@@ -47,6 +41,7 @@ export default function Profile({}: {}) {
             return { ...curso, edit: false };
           });
           setCursosArr(newCursos);
+          cache.current = true;
           return;
         } else {
           return;
@@ -55,7 +50,18 @@ export default function Profile({}: {}) {
         return;
       }
     };
-    fetchSubmit();
+    if (session&&!cache.current) {
+      setRol(session.rol);
+      setApellido(session.apellido);
+      setNombre(session.nombre);
+      setRut(session.dni);
+      setCurso(session.curso);
+      setUserId(session._id); 
+         fetchSubmit();    
+
+    }
+  
+
   }, [session]);
   const patchUser = () => {
     setPatching(true);
