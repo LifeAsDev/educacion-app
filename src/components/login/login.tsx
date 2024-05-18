@@ -21,6 +21,7 @@ export default function Login() {
 
     if (res?.ok) {
       router.push("/home");
+      window.location.reload();
     } else {
       setErrorSignIn(true);
       setLoadingSignIn(false);
