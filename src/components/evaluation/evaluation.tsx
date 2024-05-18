@@ -109,7 +109,6 @@ export default function Evaluation() {
       setPageSelected(1);
     }
   };
-
   const deleteEvaluation = async () => {
     const newEvaluationArr = [...evaluationArr];
     const deleteEvaluation = newEvaluationArr.splice(
@@ -363,11 +362,14 @@ export default function Evaluation() {
                     <div>
                       <svg
                         className={`${
-                          session &&
-                          session.rol !== "Admin" &&
-                          session._id !== (item.creatorId as unknown as any)._id
-                            ? styles.disableRol
-                            : ""
+                          session && session.rol === "Admin"
+                            ? ""
+                            : session && item.creatorId
+                            ? session._id ===
+                              (item.creatorId as unknown as any)._id
+                              ? ""
+                              : styles.disableRol
+                            : styles.disableRol
                         }`}
                         onClick={() => {
                           setEvaluationDeleteIndex(i);
@@ -384,13 +386,16 @@ export default function Evaluation() {
                           fill="var(--primary-red)"
                         />
                       </svg>
-                      <Link
+                      <a
                         className={`${
-                          session &&
-                          session.rol !== "Admin" &&
-                          session._id !== (item.creatorId as unknown as any)._id
-                            ? styles.disableRol
-                            : ""
+                          session && session.rol === "Admin"
+                            ? ""
+                            : session && item.creatorId
+                            ? session._id ===
+                              (item.creatorId as unknown as any)._id
+                              ? ""
+                              : styles.disableRol
+                            : styles.disableRol
                         }`}
                         href={`/edit/${item._id}`}
                       >
@@ -408,14 +413,19 @@ export default function Evaluation() {
                             strokeWidth="1.5"
                           />
                         </svg>
-                      </Link>
+                      </a>
                       <p className={styles.name}>
-                        {`${item.name} por `}
-                        <span className={styles.creatorName}>{`${
-                          (item.creatorId as unknown as any).nombre || ""
-                        } ${
-                          (item.creatorId as unknown as any).apellido || ""
-                        }`}</span>
+                        {`${item.name}`}
+                        <span className={styles.creatorName}>
+                          {item.creatorId
+                            ? ` por ${
+                                (item.creatorId as unknown as any).nombre || ""
+                              } ${
+                                (item.creatorId as unknown as any).apellido ||
+                                ""
+                              }`
+                            : ""}
+                        </span>
                       </p>
                     </div>
                   </td>

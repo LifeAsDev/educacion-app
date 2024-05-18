@@ -19,7 +19,7 @@ export default function Create({ id }: { id?: string }) {
 
   const { session } = useOnboardingContext();
   const router = useRouter();
-  const [editFetch, setEditFetch] = useState(false);
+  const [editFetch, setEditFetch] = useState(true);
   const [questionArr, setQuestionArr] = useState<QuestionWithError[]>([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("formativa");
@@ -101,6 +101,8 @@ export default function Create({ id }: { id?: string }) {
   useEffect(() => {
     const cachedState = localStorage.getItem("createState");
     if (cachedState && !cache.current && !id) {
+      setEditFetch(false);
+
       cache.current = true;
       const parseCachedState = JSON.parse(cachedState);
       if (parseCachedState.questionArr) {
@@ -131,6 +133,8 @@ export default function Create({ id }: { id?: string }) {
       setAsignatura(parseCachedState.asignatura);
     }
     if (id) {
+      cache.current = true;
+
       setEditFetch(true);
       const fetchEvaluationTest = async (id: string) => {
         try {
@@ -152,7 +156,6 @@ export default function Create({ id }: { id?: string }) {
           return data.evaluationTest;
         } catch (error) {
           router.push(`/evaluation`);
-
           console.error("Error fetching evaluation test:", error);
           return null;
         }

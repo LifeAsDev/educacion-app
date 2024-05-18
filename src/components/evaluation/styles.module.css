@@ -71,7 +71,7 @@
   font-weight: 600;
   padding-left: 1em;
   cursor: pointer;
-  height: 3.25em;
+  height: 2.5em;
   margin-left: auto;
 }
 
@@ -264,7 +264,7 @@
   color: white;
   display: flex;
   flex-wrap: wrap;
-  row-gap: 0.5em;
+  row-gap: 1em;
   width: 100%;
   align-items: center;
   column-gap: 0.5em;

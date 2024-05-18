@@ -1,8 +1,16 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { connectMongoDB } from "@/lib/mongodb";
+import EvaluationTest from "@/schemas/evaluationTest";
+
 const blockedPagesWithoutLogin = ["/home", "/create-event", "/event"];
-const pagesNotAllowedForEstudiantes = ["/create", "/evaluation", "/edit", "/management"];
+const pagesNotAllowedForEstudiantes = [
+  "/create",
+  "/evaluation",
+  "/edit",
+  "/management",
+];
 const pagesNotAllowedForProfesores = ["/management"];
 
 export default async function middleware(req: NextRequest) {
@@ -16,8 +24,10 @@ export default async function middleware(req: NextRequest) {
   auth.pathname = "/";
   const afterAuth = req.nextUrl.clone();
   const home = req.nextUrl.clone();
+  const evaluation = req.nextUrl.clone();
   home.pathname = "/home";
   afterAuth.pathname = "/home";
+  evaluation.pathname = "/evaluation";
 
   const currentUrl = req.nextUrl.pathname;
   if (!session && currentUrl !== "/") {
@@ -31,11 +41,37 @@ export default async function middleware(req: NextRequest) {
       pagesNotAllowedForEstudiantes.some((page) => currentUrl.startsWith(page))
     ) {
       return NextResponse.redirect(home);
+    } else if (session.rol === "Profesor") {
+      if (currentUrl.startsWith("/edit")) {
+        const urlParam = currentUrl.split("/");
+        try {
+          const searchParams = new URLSearchParams();
+          searchParams.append("userId", session.sub!);
 
-    } else if (session.rol === "Profesor" &&
-      pagesNotAllowedForProfesores.some((page) => currentUrl.startsWith(page))) {
-      return NextResponse.redirect(home);
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL2}/api/evaluation-test/${
+              urlParam[2]
+            }/check-creatorId?${searchParams.toString()}`,
+            {
+              method: "GET",
+            }
+          );
+          const resData = await res.json();
+          if (resData.ok) {
+          } else {
+            return NextResponse.redirect(evaluation);
+          }
+        } catch (error) {
+          console.log({ error });
+          return NextResponse.redirect(evaluation);
+        }
+      }
 
+      if (
+        pagesNotAllowedForProfesores.some((page) => currentUrl.startsWith(page))
+      ) {
+        return NextResponse.redirect(home);
+      }
     }
   }
   return NextResponse.next();
