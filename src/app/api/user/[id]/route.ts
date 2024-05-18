@@ -9,7 +9,7 @@ export async function GET(req: Request, { params }: any) {
   await connectMongoDB();
 
   const getUser = await User.findById(userId).select("-password");
-
+  d;
   const populated = await getUser.populate("curso");
   if (getUser) {
     return NextResponse.json(
