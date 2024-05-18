@@ -11,5 +11,5 @@ const asignaturaSchema = new Schema<Asignatura>(
   { timestamps: true }
 );
 
-export default models.Asignatura ||
+export default mongoose.models?.Asignatura ||
   mongoose.model("Asignatura", asignaturaSchema);

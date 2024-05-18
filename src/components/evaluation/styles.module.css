@@ -286,3 +286,7 @@
 .hidden {
   overflow: hidden;
 }
+
+.disableRol{
+  stroke: var(--grey);
+}

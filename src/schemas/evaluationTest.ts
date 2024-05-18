@@ -59,5 +59,5 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
   { timestamps: true }
 );
 
-export default models.EvaluationTest ||
+export default mongoose.models?.EvaluationTest ||
   mongoose.model("EvaluationTest", evaluationTestSchema);

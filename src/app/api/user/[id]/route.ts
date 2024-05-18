@@ -1,6 +1,7 @@
+import User from "@/schemas/user";
+import Curso from "@/schemas/curso";
 import { NextResponse } from "next/server";
 import { connectMongoDB } from "@/lib/mongodb";
-import User from "@/schemas/user";
 
 export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
@@ -9,7 +10,7 @@ export async function GET(req: Request, { params }: any) {
   await connectMongoDB();
 
   const getUser = await User.findById(userId).select("-password");
-  const populated = await getUser.populate("curso");
+  const populated = await getUser.populate({ path: "curso", model: Curso });
   if (getUser) {
     return NextResponse.json(
       { message: "User found", user: getUser },

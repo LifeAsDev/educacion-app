@@ -11,4 +11,4 @@ const cursoSchema = new Schema<Curso>(
   { timestamps: true }
 );
 
-export default models.Curso || mongoose.model("Curso", cursoSchema);
+export default mongoose.models?.Curso || mongoose.model("Curso", cursoSchema);
