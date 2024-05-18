@@ -49,7 +49,7 @@ export default async function middleware(req: NextRequest) {
           searchParams.append("userId", session.sub!);
 
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL2}/api/evaluation-test/${
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/evaluation-test/${
               urlParam[2]
             }/check-creatorId?${searchParams.toString()}`,
             {

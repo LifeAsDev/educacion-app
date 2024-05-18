@@ -7,7 +7,6 @@ export async function GET(req: Request, { params }: any) {
 
   const id = params.id;
   const userId = searchParams.get("userId");
-  console.log("Id ", userId);
   try {
     await connectMongoDB();
     const evaluationCreatorId = await EvaluationTest.findById(id);
@@ -17,7 +16,6 @@ export async function GET(req: Request, { params }: any) {
         { status: 400 }
       );
     }
-    console.log("Id ", evaluationCreatorId.creatorId.toString());
 
     if (evaluationCreatorId.creatorId.toString() !== userId) {
       return NextResponse.json(

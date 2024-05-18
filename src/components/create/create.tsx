@@ -496,7 +496,7 @@ export default function Create({ id }: { id?: string }) {
                     className="h-full object-contain"
                     src={
                       typeof question.image === "string"
-                        ? `${process.env.NEXT_PUBLIC_BASE_IMAGES_URL}/api/get-image?photoName=${question.image}`
+                        ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-image?photoName=${question.image}`
                         : (() => {
                             const blob = new Blob([question.image as Buffer]);
 
