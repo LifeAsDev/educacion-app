@@ -12,4 +12,3 @@ const cursoSchema = new Schema<Curso>(
 );
 
 export default models.Curso || mongoose.model("Curso", cursoSchema);
-d;
