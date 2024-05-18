@@ -164,6 +164,13 @@ export async function GET(req: Request) {
         path: "asignatura",
       }
     );
+    const evaluationPopulateCreatorId = await EvaluationTest.populate(
+      evaluationTests,
+      {
+        path: "creatorId",
+        select: "nombre apellido",
+      }
+    );
     return NextResponse.json(
       {
         evaluationTests,

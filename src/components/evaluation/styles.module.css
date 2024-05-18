@@ -17,14 +17,7 @@
   justify-content: space-between;
   padding-top: 1em;
 }
-.info {
-  font-weight: 600;
-  font-size: 1.2em;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+
 .testList {
   width: 100%;
 }
@@ -34,7 +27,7 @@
 }
 
 .testItem p {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1.1em;
 }
 .name {
@@ -287,6 +280,21 @@
   overflow: hidden;
 }
 
-.disableRol{
-  stroke: var(--grey);
+.disableRol {
+  cursor: initial !important;
+  transform: initial !important;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.disableRol path.fill {
+  fill: var(--light-indigo);
+}
+
+.disableRol path.stroke {
+  stroke: var(--light-indigo);
+}
+
+.creatorName {
+  font-weight: 600;
 }
