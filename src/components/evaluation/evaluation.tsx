@@ -6,6 +6,7 @@ import EvaluationTest from "@/models/evaluationTest";
 import Asignatura from "@/models/asignatura";
 import { useOnboardingContext } from "@/lib/context";
 import SearchInput from "../management/searchInput/searchInput";
+import { pages } from "next/dist/build/templates/app-page";
 
 export default function Evaluation() {
   const { session } = useOnboardingContext();
@@ -60,6 +61,12 @@ export default function Evaluation() {
   }, [filterAsignatura, filterType, filterDifficulty]);
 
   const search = () => {
+    console.log({
+      filterAsignatura,
+      filterType,
+      filterDifficulty,
+      pageSelected,
+    });
     const divElement = document.getElementById("evaluationList");
     divElement!.scrollTop = 0;
 
