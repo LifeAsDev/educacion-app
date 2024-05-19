@@ -167,65 +167,71 @@ export default function Evaluation() {
             setInput={setInputSearch}
             action={search}
           />
-          <p>Dificultad:</p>
-          <select
-            value={filterDifficulty}
-            onChange={(e) => setFilterDifficulty(e.target.value)}
-            className={styles.dropdown}
-            name="dificultad"
-            id="dificultad"
-          >
-            <option value="Todos">Todos</option>
-            <option value="basico">Básico</option>
-            <option value="intermedio">Intermedio</option>
-            <option value="avanzado">Avanzado</option>
-          </select>
-          <p>Tipo:</p>
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className={styles.dropdown}
-            name="prueba"
-            id="prueba"
-          >
-            <option value="Todos">Todos</option>
-            <option value="formativa">Formativa</option>
-            <option value="sumativa">Sumativa</option>
-            <option value="simce">Simce</option>
-            <option value="paes">PAES</option>
-          </select>
-          <p>Asignatura:</p>
-          <select
-            onChange={(e) => setFilterAsignatura(e.target.value)}
-            name="asignatura"
-            id="asignatura"
-            value={filterAsignatura}
-          >
-            <option value="Todas">Todos</option>
-            {asignaturasArr.map((asignatura) => (
-              <option key={asignatura._id} value={asignatura._id}>
-                {asignatura.name}
-              </option>
-            ))}
-          </select>
-          <Link className={styles.createBtn} href={"/create"}>
-            <p>Crear evaluación</p>
-            <svg
-              width="48px"
-              height="48px"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          <div className={styles.filterOption}>
+            <p>Dificultad:</p>
+            <select
+              value={filterDifficulty}
+              onChange={(e) => setFilterDifficulty(e.target.value)}
+              className={styles.dropdown}
+              name="dificultad"
+              id="dificultad"
             >
-              <path
-                d="M8 12H16M12 8L12 16"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </Link>
+              <option value="Todos">Todos</option>
+              <option value="basico">Básico</option>
+              <option value="intermedio">Intermedio</option>
+              <option value="avanzado">Avanzado</option>
+            </select>
+          </div>
+          <div className={styles.filterOption}>
+            <p>Tipo:</p>
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className={styles.dropdown}
+              name="prueba"
+              id="prueba"
+            >
+              <option value="Todos">Todos</option>
+              <option value="formativa">Formativa</option>
+              <option value="sumativa">Sumativa</option>
+              <option value="simce">Simce</option>
+              <option value="paes">PAES</option>
+            </select>
+          </div>
+          <div className={styles.filterOption}>
+            <p>Asignatura:</p>
+            <select
+              onChange={(e) => setFilterAsignatura(e.target.value)}
+              name="asignatura"
+              id="asignatura"
+              value={filterAsignatura}
+            >
+              <option value="Todas">Todos</option>
+              {asignaturasArr.map((asignatura) => (
+                <option key={asignatura._id} value={asignatura._id}>
+                  {asignatura.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+        <Link className={styles.createBtn} href={"/create"}>
+          <p>Crear evaluación</p>
+          <svg
+            width="48px"
+            height="48px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 12H16M12 8L12 16"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </Link>
       </div>
       <div
         id="evaluationList"

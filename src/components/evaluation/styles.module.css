@@ -16,6 +16,7 @@
   padding: 0 1.5em;
   justify-content: space-between;
   padding-top: 1em;
+  gap: 0.5em;
 }
 
 .testList {
@@ -69,10 +70,16 @@
   align-items: center;
   color: white;
   font-weight: 600;
-  padding-left: 1em;
+  padding-left: 0.5em;
   cursor: pointer;
   height: 2.5em;
-  margin-left: auto;
+  width: 100%;
+  max-width: max-content;
+  margin-bottom: auto;
+}
+.createBtn svg {
+  width: 32px;
+  transform: scale(1.3);
 }
 
 .createBtn:hover {
@@ -267,15 +274,13 @@
   row-gap: 1em;
   width: 100%;
   align-items: center;
-  column-gap: 0.5em;
+  column-gap: 1em;
 }
 
 .filterBox p {
   font-weight: 500;
 }
-.filterBox select {
-  margin-right: 0.75em;
-}
+
 .hidden {
   overflow: hidden;
 }
@@ -297,4 +302,11 @@
 
 .creatorName {
   font-weight: 600;
+}
+
+.filterOption {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  align-items: center;
 }
