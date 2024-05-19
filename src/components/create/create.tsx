@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useOnboardingContext } from "@/lib/context";
 import NextImage from "next/image";
 import Asignatura from "@/models/asignatura";
+import QuillEditor from "@/components/create/quillEditor/quillEditor";
 
 interface QuestionWithError extends Question {
   error?: string;
@@ -179,13 +180,15 @@ export default function Create({ id }: { id?: string }) {
     const newQuestionErrorArr: string[] = [];
     const newErrors: string[] = [];
     questionArr.forEach((question) => {
+      var regex = /(<([^>]+)>)/gi;
+
       if (question.type === "multiple") {
         if (
-          question.pregunta === "" ||
-          question.correcta === "" ||
-          question.señuelo1 === "" ||
-          question.señuelo2 === "" ||
-          question.señuelo3 === ""
+          !question.pregunta!.replace(regex, "").length ||
+          !question.correcta!.replace(regex, "").length ||
+          !question.señuelo1!.replace(regex, "").length ||
+          !question.señuelo2!.replace(regex, "").length ||
+          !question.señuelo3!.replace(regex, "").length
         ) {
           newQuestionErrorArr.push("error");
         } else {
@@ -193,7 +196,7 @@ export default function Create({ id }: { id?: string }) {
         }
       }
       if (question.type === "open") {
-        if (question.pregunta === "") {
+        if (!question.pregunta.replace(regex, "").length) {
           newQuestionErrorArr.push("error");
         } else {
           newQuestionErrorArr.push("good");
@@ -495,7 +498,7 @@ export default function Create({ id }: { id?: string }) {
               {question.image ? (
                 <div className="relative h-[400px] w-full">
                   <NextImage
-                    className="h-full object-contain"
+                    className="m-auto h-[400px] w-auto object-cover"
                     src={
                       typeof question.image === "string"
                         ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-image?photoName=${question.image}`
@@ -572,13 +575,16 @@ export default function Create({ id }: { id?: string }) {
                   />
                 </svg>
               </div>
-              <textarea
+              <div
                 id={`error${question._id || question.id}`}
-                onChange={(e) => editQuestion("pregunta", e.target.value, i)}
-                value={question.pregunta}
-                placeholder="Pregunta abierta"
                 className={styles.questionInput}
-              ></textarea>
+              >
+                <QuillEditor
+                  placeholder="Pregunta"
+                  value={question.pregunta}
+                  setValue={(value) => editQuestion("pregunta", value, i)}
+                />
+              </div>
               {questionErrorArr[i] === "error" ? (
                 <p className={styles.error}>Campo obligatorio</p>
               ) : (
@@ -671,38 +677,45 @@ export default function Create({ id }: { id?: string }) {
                   />
                 </svg>
               </div>
-              <textarea
+              <div
                 id={`error${question._id || question.id}`}
-                onChange={(e) => editQuestion("pregunta", e.target.value, i)}
-                value={question.pregunta}
-                placeholder="Pregunta"
                 className={styles.questionInput}
-              ></textarea>
+              >
+                <QuillEditor
+                  placeholder="Pregunta"
+                  value={question.pregunta}
+                  setValue={(value) => editQuestion("pregunta", value, i)}
+                />
+              </div>
               <div className={styles.multipleQuestionAnswerBox}>
-                <textarea
-                  onChange={(e) => editQuestion("correcta", e.target.value, i)}
-                  value={question.correcta}
-                  placeholder="Respuesta Correcta"
-                  className={styles.answerInput}
-                ></textarea>
-                <textarea
-                  onChange={(e) => editQuestion("señuelo1", e.target.value, i)}
-                  value={question.señuelo1}
-                  placeholder="Respuesta señuelo"
-                  className={styles.answerInput}
-                ></textarea>
-                <textarea
-                  onChange={(e) => editQuestion("señuelo2", e.target.value, i)}
-                  value={question.señuelo2}
-                  placeholder="Respuesta señuelo"
-                  className={styles.answerInput}
-                ></textarea>
-                <textarea
-                  onChange={(e) => editQuestion("señuelo3", e.target.value, i)}
-                  value={question.señuelo3}
-                  placeholder="Respuesta señuelo"
-                  className={styles.answerInput}
-                ></textarea>
+                <div className={styles.answerInput}>
+                  <QuillEditor
+                    placeholder="Respuesta Correcta"
+                    value={question.correcta!}
+                    setValue={(value) => editQuestion("correcta", value, i)}
+                  />
+                </div>
+                <div className={styles.answerInput}>
+                  <QuillEditor
+                    placeholder="Respuesta señuelo"
+                    value={question.señuelo1!}
+                    setValue={(value) => editQuestion("señuelo1", value, i)}
+                  />
+                </div>
+                <div className={styles.answerInput}>
+                  <QuillEditor
+                    placeholder="Respuesta señuelo"
+                    value={question.señuelo2!}
+                    setValue={(value) => editQuestion("señuelo2", value, i)}
+                  />
+                </div>
+                <div className={styles.answerInput}>
+                  <QuillEditor
+                    placeholder="Respuesta señuelo"
+                    value={question.señuelo3!}
+                    setValue={(value) => editQuestion("señuelo3", value, i)}
+                  />
+                </div>
               </div>
               {questionErrorArr[i] === "error" ? (
                 <p className={styles.error}>Campo obligatorio</p>
