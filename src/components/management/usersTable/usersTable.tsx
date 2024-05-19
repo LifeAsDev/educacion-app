@@ -309,7 +309,6 @@ export default function UsersTable({
               <th className={styles.tableHeadName}></th>
             </tr>
           </thead>
-
           <tbody
             id="usersList"
             className={`${styles.usersList} ${
@@ -318,6 +317,30 @@ export default function UsersTable({
           >
             {fetchingUsers && usersArr ? (
               <>
+                <tr className={styles.userItem}>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr className={styles.userItem}>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr className={styles.userItem}>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
                 <tr className={styles.userItem}>
                   <td></td>
                   <td></td>
