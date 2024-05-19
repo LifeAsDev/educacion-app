@@ -67,7 +67,7 @@ async function deleteFile(pathName: string, fileName: string = "") {
 
   try {
     // Borrar el archivo
-    if (fileName === "") await fs.promises.rmdir(filePath, { recursive: true });
+    if (fileName === "") await fs.promises.rm(filePath, { recursive: true });
     else await fs.promises.unlink(deletePath);
 
     return "Archivo eliminado correctamente";

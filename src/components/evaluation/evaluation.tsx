@@ -123,6 +123,7 @@ export default function Evaluation() {
             method: "DELETE",
           }
         );
+        setPageSelected(0);
         if (!res.ok) {
           return;
         }
@@ -131,7 +132,6 @@ export default function Evaluation() {
       }
     };
     deleteFetch();
-    setEvaluationArr(newEvaluationArr);
     setEvaluationDeleteIndex(null);
   };
   return (

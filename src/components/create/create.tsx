@@ -248,9 +248,9 @@ export default function Create({ id }: { id?: string }) {
             body: data,
           });
           const resData = await res.json();
-          if (res.ok) {
-            router.push(`/evaluation`);
+          router.push(`/evaluation`);
 
+          if (res.ok) {
             return true;
           } else {
             return;
@@ -278,9 +278,9 @@ export default function Create({ id }: { id?: string }) {
             body: data,
           });
           const resData = await res.json();
+          router.push(`/evaluation`);
+
           if (res.ok) {
-            /*             router.push(`/evaluation`);
-             */ window.location.reload();
             return true;
           } else {
             return;
@@ -417,7 +417,7 @@ export default function Create({ id }: { id?: string }) {
         </svg>
         <Link href={"/evaluation"}>Volver</Link>
       </div>
-      <h1>Creación de evaluación</h1>
+      <h1>{id ? "Editar" : "Crear"} evaluación</h1>
       <div className={styles.mainTestOptionsBox}>
         <div className={styles.inputBox}>
           <label>Nombre</label>

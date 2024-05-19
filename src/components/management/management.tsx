@@ -400,7 +400,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-    if (tabSelected === "cursos" || userSelected || cursosArr.length === 0) {
+    if (tabSelected === "cursos" || userSelected) {
       const divElement = document.getElementById("wrapBox");
       if (divElement?.scrollTop) {
         divElement!.scrollTop = 0;
@@ -431,7 +431,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-  }, [tabSelected, userSelected, cursosArr]);
+  }, [tabSelected, userSelected]);
 
   useEffect(() => {
     setPasswordShowArr(
