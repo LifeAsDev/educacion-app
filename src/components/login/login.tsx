@@ -13,16 +13,18 @@ export default function Login() {
   const [errorSignIn, setErrorSignIn] = useState(false);
   const handleLogin = async () => {
     setErrorSignIn(false);
-    const res = await signIn("credentials", {
-      password: inputPassword,
-      dni: inputEmail,
-      redirect: false,
-    });
-
-    if (res?.ok) {
-      router.push("/home");
-      window.location.reload();
-    } else {
+    try {
+      const res = await signIn("credentials", {
+        password: inputPassword,
+        dni: inputEmail,
+        redirect: false,
+      });
+      if (res?.ok) window.location.reload();
+      else {
+        setErrorSignIn(true);
+        setLoadingSignIn(false);
+      }
+    } catch (error) {
       setErrorSignIn(true);
       setLoadingSignIn(false);
     }

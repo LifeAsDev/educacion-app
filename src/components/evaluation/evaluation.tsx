@@ -53,11 +53,10 @@ export default function Evaluation() {
 
   useEffect(() => {
     search();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSelected]);
 
   useEffect(() => {
-    setPageSelected(0); // eslint-disable-next-line react-hooks/exhaustive-deps
+    setPageSelected(0);
   }, [filterAsignatura, filterType, filterDifficulty]);
 
   const search = () => {
