@@ -61,12 +61,6 @@ export default function Evaluation() {
   }, [filterAsignatura, filterType, filterDifficulty]);
 
   const search = () => {
-    console.log({
-      filterAsignatura,
-      filterType,
-      filterDifficulty,
-      pageSelected,
-    });
     const divElement = document.getElementById("evaluationList");
     divElement!.scrollTop = 0;
 

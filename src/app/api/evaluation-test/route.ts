@@ -6,6 +6,7 @@ import Question from "@/models/question";
 import { uploadFile } from "@/lib/functionToFiles";
 import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import { Types } from "mongoose";
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
