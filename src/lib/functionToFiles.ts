@@ -12,10 +12,21 @@ async function getFileTypeFromBuffer(buffer: Buffer) {
 }
 export { getFileTypeFromBuffer };
 
-async function uploadFile(file: Buffer, fileName: string, testId: string) {
+async function uploadFile(
+  file: Buffer,
+  fileName: string,
+  testId: string,
+  oldFileName: string = ""
+) {
   try {
     const uploadDir = `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}/${testId}`; // Directorio donde se guardarán los archivos
     const uploadPath = path.join(uploadDir, fileName); // Ruta de destino para guardar el archivo
+
+    if (oldFileName && oldFileName !== "") {
+      console.log(oldFileName);
+      const deletePath = path.join(uploadDir, oldFileName);
+      await fs.promises.unlink(deletePath);
+    }
 
     // Verificar si el directorio de carga existe, si no, crearlo
     if (!fs.existsSync(uploadDir)) {

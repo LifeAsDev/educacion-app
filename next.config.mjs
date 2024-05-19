@@ -5,7 +5,7 @@
  */
 const nextConfig = {
   images: {
-    domains: [process.env.NEXT_PUBLIC_BASE_URL || ""],
+    domains: [process.env.NEXT_PUBLIC_BASE_URL || "","localhost"],
   },
 };
 

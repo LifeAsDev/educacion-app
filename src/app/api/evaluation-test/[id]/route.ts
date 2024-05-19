@@ -70,9 +70,8 @@ export async function PATCH(req: Request, { params }: any) {
     const parseQuestionArr: Question[] = questionArr.map((question) => {
       const newQuestion: Question = JSON.parse(question);
       if (
+        newQuestion.image &&
         typeof newQuestion.image !== "string" &&
-        newQuestion.image !== null &&
-        typeof newQuestion.image !== "undefined" &&
         "type" in newQuestion.image &&
         newQuestion.image.type === "Buffer"
       ) {
@@ -98,6 +97,7 @@ export async function PATCH(req: Request, { params }: any) {
     if (asignatura === "N/A") {
       asignatura = undefined;
     }
+
     const newEvaluationTest = await EvaluationTest.findByIdAndUpdate(paramId, {
       name: name,
       type,
@@ -105,14 +105,39 @@ export async function PATCH(req: Request, { params }: any) {
       questionArr: questionArrWithoutBuffer,
       asignatura: asignatura ? new Types.ObjectId(asignatura) : null,
     });
+    const deleteImageNull = newEvaluationTest.questionArr.filter(
+      (questionFilter: Question) =>
+        parseQuestionArr.every((questionNew: Question) => {
+          if (
+            questionNew.id === questionFilter.id! &&
+            questionNew.image === null
+          ) {
+            return true;
+          }
+        })
+    );
+
+    if (deleteImageNull.length > 0) {
+      for (const question of deleteImageNull) {
+        if (question.image) {
+          const questionImage = question.image.split("/");
+          const fileDeleted = await deleteFile(
+            questionImage[0],
+            questionImage[1]
+          );
+        }
+      }
+    }
+
     const newEvaluationTest2 = await EvaluationTest.findById(paramId);
 
-    /*   console.log("Create ", newEvaluationTest.questionArr);
-    console.log("Old ", questionArrWithoutBuffer); */
     if (newEvaluationTest) {
       for (const question of parseQuestionArr) {
         // Llamar a una función asíncrona por cada elemento
         const evaluationIndex = newEvaluationTest2.questionArr.findIndex(
+          (questionId: Question) => questionId.id == question.id
+        );
+        const evaluationIndex2 = newEvaluationTest.questionArr.findIndex(
           (questionId: Question) => questionId.id == question.id
         );
         const id = newEvaluationTest2.questionArr[evaluationIndex]._id;
@@ -121,21 +146,37 @@ export async function PATCH(req: Request, { params }: any) {
             question.image as Buffer
           );
 
+          if (
+            evaluationIndex2 !== -1 &&
+            newEvaluationTest.questionArr[evaluationIndex2].image
+          ) {
+            const questionImage =
+              newEvaluationTest.questionArr[evaluationIndex2].image.split("/");
+
+            const fileDeleted = await deleteFile(
+              questionImage[0],
+              questionImage[1]
+            );
+          }
+
           const { imagePath } = await uploadFile(
             question.image as Buffer,
             `${id}.${extension}`,
             newEvaluationTest.id
           );
+
           newEvaluationTest2.questionArr[evaluationIndex].image = imagePath;
         }
       }
     }
+
     const deleteQuestion = newEvaluationTest.questionArr.filter(
       (questionFilter: Question) =>
         parseQuestionArr.every((questionNew: Question) => {
           return questionNew.id !== questionFilter.id!;
         })
     );
+
     for (const question of deleteQuestion) {
       if (question.image) {
         const questionImage = question.image.split("/");
@@ -151,6 +192,7 @@ export async function PATCH(req: Request, { params }: any) {
       { questionArr: newEvaluationTest2.questionArr },
       { new: true }
     );
+
     if (updatedEvaluationTest) {
       return NextResponse.json(
         {

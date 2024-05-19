@@ -250,6 +250,7 @@ export default function Create({ id }: { id?: string }) {
           const resData = await res.json();
           if (res.ok) {
             router.push(`/evaluation`);
+
             return true;
           } else {
             return;
@@ -278,7 +279,8 @@ export default function Create({ id }: { id?: string }) {
           });
           const resData = await res.json();
           if (res.ok) {
-            router.push(`/evaluation`);
+            /*             router.push(`/evaluation`);
+             */ window.location.reload();
             return true;
           } else {
             return;
