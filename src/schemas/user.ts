@@ -33,6 +33,15 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: false,
     },
+    evaluationsOnCourse: {
+      type: [
+        {
+          id: { type: Schema.Types.ObjectId, ref: "EvaluationTest" },
+          answers: [{ id: Schema.Types.ObjectId, answer: String }],
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );

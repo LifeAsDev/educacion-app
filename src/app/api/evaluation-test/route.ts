@@ -117,7 +117,6 @@ export async function GET(req: Request) {
   const type = searchParams.get("type");
   const difficulty = searchParams.get("difficulty");
   const asignatura = searchParams.get("asignatura") as string;
-  console.log({ keyword, page, type, difficulty, asignatura });
   try {
     await connectMongoDB();
     let aggregatePipeline: any[] = [];
@@ -167,7 +166,6 @@ export async function GET(req: Request) {
     const evaluationAggregate = await EvaluationTest.aggregate(
       aggregatePipeline
     );
-    console.log(evaluationAggregate[0].data);
 
     const evaluationTests = await EvaluationTest.populate(
       evaluationAggregate[0].data,
