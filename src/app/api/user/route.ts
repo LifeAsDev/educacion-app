@@ -127,7 +127,6 @@ export async function GET(req: Request) {
 
   for (const updatedUser of usersCursoDelete) {
     // Create a new instance of the User model with the updated user data
-    const userInstance = new User(updatedUser);
     // Save the updated user to the database
     await User.updateOne({ _id: updatedUser._id }, updatedUser); // Update the user document
   }

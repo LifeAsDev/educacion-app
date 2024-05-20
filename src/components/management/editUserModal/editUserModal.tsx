@@ -51,6 +51,8 @@ export default function EditUserModal({
       newErrors.push("password");
     }
     if (newErrors.length === 0) {
+      const divElement = document.getElementById("usersList");
+      divElement!.scrollTop = 0;
       setFetchingUsers(true);
       setUserSelected(null);
       const fetchSubmit = async () => {
@@ -65,8 +67,12 @@ export default function EditUserModal({
           if (rol === "Admin" || rol === "Directivo") {
             data.set("curso", JSON.stringify([]));
           }
-          if (rol === "Profesor" || rol === "Estudiante") {
+          if (rol === "Profesor") {
             const cursoArr = (curso as Curso[]).map((c) => c._id);
+            data.set("curso", JSON.stringify(cursoArr));
+          }
+          if (rol === "Estudiante") {
+            const cursoArr = [curso[0]];
             data.set("curso", JSON.stringify(cursoArr));
           }
 

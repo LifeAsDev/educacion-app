@@ -1,5 +1,25 @@
 import User from "@/models/user";
-import mongoose, { Schema, models } from "mongoose";
+import mongoose, { Schema, Types, models } from "mongoose";
+
+interface Answer {
+  questionId: Types.ObjectId;
+  answer: string;
+}
+
+interface EvaluationsOnCourse {
+  evaluationId: Types.ObjectId;
+  answers: Answer[];
+}
+
+const answerSchema = new Schema<Answer>({
+  questionId: Schema.Types.ObjectId,
+  answer: String,
+});
+
+const evaluationsOnCourseSchema = new Schema<EvaluationsOnCourse>({
+  evaluationId: { type: Schema.Types.ObjectId, ref: "EvaluationTest" },
+  answers: [answerSchema],
+});
 
 const userSchema = new Schema<User>(
   {
@@ -34,14 +54,10 @@ const userSchema = new Schema<User>(
       default: false,
     },
     evaluationsOnCourse: {
-      type: [
-        {
-          id: { type: Schema.Types.ObjectId, ref: "EvaluationTest" },
-          answers: [{ id: Schema.Types.ObjectId, answer: String }],
-        },
-      ],
+      type: [evaluationsOnCourseSchema],
       default: [],
     },
+    yo: { type: String, default: "yto" },
   },
   { timestamps: true }
 );

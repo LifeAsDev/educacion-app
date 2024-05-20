@@ -9,6 +9,7 @@ import { Types } from "mongoose";
 export const dynamic = "force-dynamic";
 import Asignatura from "@/schemas/asignatura";
 import user from "@/schemas/user";
+
 export async function POST(req: Request) {
   try {
     const data = await req.formData();

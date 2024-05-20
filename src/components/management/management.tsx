@@ -11,6 +11,7 @@ import UsersTable from "@/components/management/usersTable/usersTable";
 import CursoTable from "@/components/management/cursoTable/cursoTable";
 import AsignaturaTable from "@/components/management/asignaturaTable/asignaturaTable";
 import EditUserModal from "@/components/management/editUserModal/editUserModal";
+import { pages } from "next/dist/build/templates/app-page";
 
 interface CursoWrap extends Curso {
   edit: Boolean;
@@ -277,21 +278,23 @@ export default function Management() {
 
   const deleteUser = async () => {
     const newUsersArr = [...usersArr];
-    const deleteUser = newUsersArr.splice(userDeleteIndex as number, 1);
+    const deleteUser = newUsersArr[userDeleteIndex!];
+    setFetchingUsers(true);
     const deleteFetch = async () => {
       try {
-        const res = await fetch(`/api/user/${deleteUser[0]._id}`, {
+        const res = await fetch(`/api/user/${deleteUser._id}`, {
           method: "DELETE",
         });
-        if (!res.ok) {
-          return;
+        if (res.ok) {
+          setPageSelected(0);
+        } else {
+          setFetchingUsers(false);
         }
       } catch (error) {
         return;
       }
     };
     deleteFetch();
-    setUsersArr(newUsersArr);
     setUserDeleteIndex(null);
   };
 
@@ -316,7 +319,6 @@ export default function Management() {
       divElement!.scrollTop = 0;
       setDeleteUsersConfirm(false);
       setDeleteUsers(null);
-      setFetchingUsers(true);
 
       const page = pageSelected.toString();
 
@@ -440,6 +442,8 @@ export default function Management() {
   }, [usersArr]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const divElement = document.getElementById("usersList");
+    divElement!.scrollTop = 0;
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -520,6 +524,8 @@ export default function Management() {
   };
 
   const submitDeleteUsers = () => {
+    const divElement = document.getElementById("usersList");
+    divElement!.scrollTop = 0;
     setDeleteUsers(null);
     setDeleteUsersConfirm(false);
     const fetchDeleteUsers = async () => {

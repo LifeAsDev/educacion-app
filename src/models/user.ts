@@ -15,6 +15,7 @@ interface User {
   curso: (Types.ObjectId | Curso | string)[];
   _id: string;
   review?: boolean;
-  evaluationsOnCourse: EvaluationOnCourse[];
+  evaluationsOnCourse?: EvaluationOnCourse[];
+  yo?: string;
 }
 export default User;
