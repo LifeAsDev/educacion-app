@@ -6,7 +6,6 @@ interface EvaluationTest {
   name: string;
   type: string;
   difficulty: string;
-  curso?: string;
   questionArr: Question[];
   _id: string;
   asignatura?: string | Types.ObjectId | Asignatura;

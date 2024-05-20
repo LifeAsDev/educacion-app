@@ -149,16 +149,25 @@ export async function GET(req: Request) {
       });
     }
 
-    aggregatePipeline.push({
-      $facet: {
-        metadata: [{ $count: "totalCount" }],
-        data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+    aggregatePipeline.push(
+      {
+        $project: {
+          questionArr: 0,
+        },
       },
-    });
+      {
+        $facet: {
+          metadata: [{ $count: "totalCount" }],
+          data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+        },
+      }
+    );
 
     const evaluationAggregate = await EvaluationTest.aggregate(
       aggregatePipeline
     );
+    console.log(evaluationAggregate[0].data);
+
     const evaluationTests = await EvaluationTest.populate(
       evaluationAggregate[0].data,
       {
@@ -172,18 +181,21 @@ export async function GET(req: Request) {
         select: "nombre apellido",
       }
     );
-    console.log(evaluationTests);
     return NextResponse.json(
       {
         evaluationTests,
-        totalCount: evaluationAggregate[0].metadata[0].totalCount,
+        totalCount: evaluationAggregate[0]?.metadata[0]?.totalCount ?? 0,
       },
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: "error retrieving evaluation tests",
-    });
+    console.log(error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "error retrieving evaluation tests",
+      },
+      { status: 400 }
+    );
   }
 }

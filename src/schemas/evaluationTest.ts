@@ -37,10 +37,7 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
       type: String,
       required: false,
     },
-    curso: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Curso" }],
-      required: false,
-    },
+
     asignatura: {
       type: Schema.Types.Mixed,
       ref: "Asignatura",

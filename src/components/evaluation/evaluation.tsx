@@ -185,9 +185,9 @@ export default function Evaluation() {
               id="dificultad"
             >
               <option value="Todos">Todos</option>
-              <option value="basico">Básico</option>
-              <option value="intermedio">Intermedio</option>
-              <option value="avanzado">Avanzado</option>
+              <option value="Básico">Básico</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Avanzado">Avanzado</option>
             </select>
           </div>
           <div className={styles.filterOption}>
@@ -200,10 +200,10 @@ export default function Evaluation() {
               id="prueba"
             >
               <option value="Todos">Todos</option>
-              <option value="formativa">Formativa</option>
-              <option value="sumativa">Sumativa</option>
-              <option value="simce">Simce</option>
-              <option value="paes">PAES</option>
+              <option value="Formativa">Formativa</option>
+              <option value="Sumativa">Sumativa</option>
+              <option value="Simce">Simce</option>
+              <option value="PAES">PAES</option>
             </select>
           </div>
           <div className={styles.filterOption}>
