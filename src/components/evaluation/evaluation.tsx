@@ -73,6 +73,13 @@ export default function Evaluation() {
         const data = new FormData();
         const searchParams = new URLSearchParams();
 
+        console.log({
+          inputSearch,
+          page,
+          filterType,
+          filterDifficulty,
+          filterAsignatura,
+        });
         searchParams.append("keyword", inputSearch);
         searchParams.append("page", page);
         searchParams.append("type", filterType);

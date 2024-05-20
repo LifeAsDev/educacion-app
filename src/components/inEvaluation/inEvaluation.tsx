@@ -13,6 +13,16 @@ interface QuestionWithError extends Question {
 }
 
 const shuffleArray = (array: any) => {
+  const shuffleArray = (array: any) => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
+  const newArray = shuffleArray(array);
+
   // Función para mezclar un subarreglo
   const shuffleSubArray = (subArray: any) => {
     const newArray = [...subArray];
@@ -23,7 +33,7 @@ const shuffleArray = (array: any) => {
     return newArray;
   };
 
-  return array.map((item: any) => {
+  return newArray.map((item: any) => {
     if (item.type === "multiple") {
       const answerArr = shuffleSubArray([
         item.correcta,
@@ -227,6 +237,7 @@ export default function InEvaluation({ id }: { id?: string }) {
                           name={`question-${i}`}
                           id={id}
                           value={id}
+                          defaultChecked={id === "a"}
                         />
                         <span
                           dangerouslySetInnerHTML={{
