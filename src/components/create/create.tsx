@@ -449,10 +449,10 @@ export default function Create({ id }: { id?: string }) {
             name="prueba"
             id="prueba"
           >
-            <option value="formativa">Formativa</option>
-            <option value="sumativa">Sumativa</option>
-            <option value="simce">Simce</option>
-            <option value="paes">PAES</option>
+            <option value="Formativa">Formativa</option>
+            <option value="Sumativa">Sumativa</option>
+            <option value="Simce">Simce</option>
+            <option value="PAES">PAES</option>
           </select>
         </div>
         <div className={styles.inputBox}>
@@ -464,9 +464,9 @@ export default function Create({ id }: { id?: string }) {
             name="dificultad"
             id="dificultad"
           >
-            <option value="basico">Básico</option>
-            <option value="intermedio">Intermedio</option>
-            <option value="avanzado">Avanzado</option>
+            <option value="Básico">Básico</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Avanzado">Avanzado</option>
           </select>
         </div>
         <div className={styles.inputBox}>
@@ -501,7 +501,7 @@ export default function Create({ id }: { id?: string }) {
                     className="m-auto h-[400px] w-auto object-cover"
                     src={
                       typeof question.image === "string"
-                        ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-image?photoName=${question.image}`
+                        ? `/api/get-image?photoName=${question.image}`
                         : (() => {
                             const blob = new Blob([question.image as Buffer]);
 
@@ -602,7 +602,7 @@ export default function Create({ id }: { id?: string }) {
                     className="h-full object-contain"
                     src={
                       typeof question.image === "string"
-                        ? `${process.env.NEXT_PUBLIC_BASE_IMAGES_URL}/api/get-image?photoName=${question.image}`
+                        ? `/api/get-image?photoName=${question.image}`
                         : (() => {
                             const blob = new Blob([question.image as Buffer]);
 

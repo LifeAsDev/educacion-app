@@ -1,8 +1,16 @@
 "use client";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
-import Question from "@/models/question";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import React, { useState, useRef, useEffect } from "react";
+
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+    // @ts-ignore
+    return ({ forwardedRef, ...props }) => <RQ ref={forwardedRef} {...props} />;
+  },
+  { ssr: false }
+);
 
 export default function QuillEditor({
   value,
@@ -13,23 +21,34 @@ export default function QuillEditor({
   setValue: (value: string) => void;
   placeholder: string;
 }) {
+  const quillRef = useRef(null);
+  var regex = /(<([^>]+)>)/gi;
+
   const modules = {
     toolbar: [["bold", "italic", "underline", "strike", "blockquote"]],
   };
-  const options = {
-    debug: "info",
-    modules: {
-      toolbar: true,
-    },
-    theme: "snow",
-  };
+
+  useEffect(() => {
+    if (
+      quillRef.current &&
+      placeholder === "Pregunta" &&
+      !value.replace(regex, "").length
+    ) {
+      // @ts-ignore
+      const editor = quillRef.current.getEditor();
+      const delta = editor.format("bold", true);
+    }
+  }, [placeholder, value]);
+
   return (
     <ReactQuill
+      // @ts-ignore
+      forwardedRef={quillRef}
       placeholder={placeholder}
       modules={modules}
       theme="snow"
       value={value}
-      onChange={(value) => setValue(value)}
+      onChange={(value: string) => setValue(value)}
     />
   );
 }

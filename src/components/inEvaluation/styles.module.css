@@ -29,19 +29,22 @@
 
 .inputBox {
   display: flex;
-  flex-direction: column;
-  width: 14em;
+  flex-direction: row;
+  gap: 0.5em;
 }
 
 .inputBox label {
   font-weight: 600;
-  padding-left: 8px;
 }
 
 .inputBox .error {
   font-size: 0.9em;
   padding-left: 6px;
   padding-top: 4px;
+}
+
+.inputBox span {
+  font-weight: 500;
 }
 
 .dropdown {
@@ -117,14 +120,28 @@
 .multipleQuestionBox,
 .openQuestionBox {
   min-height: 12em;
-  border: 2px dashed var(--grey-disabled);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25em;
-  padding: 1em;
+  gap: 0.75em;
   width: 100%;
-  position: relative;
+  text-align: left;
+}
+
+.pregunta {
+  text-align: left;
+  width: 100%;
+  padding: 8px;
+}
+
+.main textarea {
+  width: 100%;
+  min-height: 4em;
+  padding: 8px;
+}
+
+.main textarea:focus {
+  outline: 2px solid black;
 }
 
 .multipleQuestionAnswerBox {
@@ -248,4 +265,38 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+.main #radios label {
+  cursor: pointer;
+  position: relative;
+}
+
+.main #radios label + label {
+  margin-left: 15px;
+}
+
+.main input[type="radio"] {
+  opacity: 0; /* hidden but still tabable */
+  position: absolute;
+}
+
+.main input[type="radio"] + span {
+  font-weight: 500;
+  padding: 12px;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  display: block;
+  cursor: pointer;
+  background-color: #b3cefb;
+  height: 100%;
+}
+
+.main input[type="radio"]:checked + span {
+  color: #d9e7fd;
+  background-color: #4285f4;
+}
+
+.main input[type="radio"]:focus + span {
+  color: #fff;
 }

@@ -421,7 +421,10 @@ export default function Evaluation() {
                         </svg>
                       </a>
                       <p className={styles.name}>
-                        {`${item.name}`}
+                        <Link
+                          className={styles.evaluationName}
+                          href={`/evaluation/${item._id}`}
+                        >{`${item.name}`}</Link>
                         <span className={styles.creatorName}>
                           {item.creatorId
                             ? ` por ${

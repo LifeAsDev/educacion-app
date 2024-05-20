@@ -39,3 +39,13 @@ button {
   outline: none;
   padding: 8px;
 }
+
+blockquote {
+  border-left: 4px solid #ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 0 16px;
+  background-color: white;
+  color: black;
+  width: max-content;
+}
