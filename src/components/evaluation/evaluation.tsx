@@ -54,6 +54,7 @@ export default function Evaluation() {
 
   useEffect(() => {
     search();
+    // eslint-disable-next-line
   }, [pageSelected]);
 
   useEffect(() => {
