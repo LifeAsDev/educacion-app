@@ -97,6 +97,7 @@ export async function GET(req: Request) {
 
     const populatedUsers = await User.populate(updatedUsers[0].data, {
       path: "curso",
+      model: Curso,
     });
 
     return NextResponse.json(
@@ -113,6 +114,7 @@ export async function GET(req: Request) {
 
   const populatedUsers = await User.populate(allUsers[0].data, {
     path: "curso",
+    model: Curso,
   });
 
   const usersCursoDelete = populatedUsers.map((user: UserType) => {

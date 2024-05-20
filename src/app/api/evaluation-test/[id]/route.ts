@@ -6,6 +6,7 @@ import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import Question from "@/models/question";
 import { deleteFile } from "@/lib/functionToFiles";
 import { Types } from "mongoose";
+import asignatura from "@/schemas/asignatura";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;
@@ -33,9 +34,10 @@ export async function GET(req: Request, { params }: any) {
   try {
     await connectMongoDB();
 
-    const evaluationTest = await EvaluationTest.findById(id).populate(
-      "asignatura"
-    );
+    const evaluationTest = await EvaluationTest.findById(id).populate({
+      path: "asignatura",
+      model: asignatura,
+    });
 
     if (!evaluationTest) {
       return NextResponse.json(

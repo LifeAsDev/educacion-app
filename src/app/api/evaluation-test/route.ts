@@ -7,7 +7,8 @@ import { uploadFile } from "@/lib/functionToFiles";
 import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import { Types } from "mongoose";
 export const dynamic = "force-dynamic";
-
+import Asignatura from "@/schemas/asignatura";
+import user from "@/schemas/user";
 export async function POST(req: Request) {
   try {
     const data = await req.formData();
@@ -172,6 +173,7 @@ export async function GET(req: Request) {
       evaluationAggregate[0].data,
       {
         path: "asignatura",
+        model: Asignatura,
       }
     );
     const evaluationPopulateCreatorId = await EvaluationTest.populate(
@@ -179,6 +181,7 @@ export async function GET(req: Request) {
       {
         path: "creatorId",
         select: "nombre apellido",
+        model: user,
       }
     );
     return NextResponse.json(
