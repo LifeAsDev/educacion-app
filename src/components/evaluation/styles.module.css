@@ -314,3 +314,84 @@
 .evaluationName:hover {
   color: white;
 }
+
+.modalOverlay {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 5;
+  justify-content: center;
+  align-items: center;
+}
+
+.evalOnCourse {
+  background-color: white;
+  display: flex;
+  padding: 1em;
+  width: 24em;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.evalOnCourse p {
+  font-weight: 500;
+  text-align: center;
+}
+.evalOnCourse p span {
+  font-weight: 600;
+}
+
+.evalOnCourseOptions {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: center;
+}
+
+.btn {
+  width: 8em;
+  padding: 0.5em 0;
+  text-align: center;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+}
+
+.btn.cancel {
+  background-color: var(--primary-red);
+}
+
+.btn.cancel:hover {
+  background-color: var(--third-red);
+}
+
+.btn.yes {
+  background-color: var(--primary-green);
+}
+
+.btn.yes:hover {
+  background-color: var(--secondary-green);
+}
+
+.cursoAssignBox {
+  display: flex;
+  text-align: left;
+  margin: auto;
+  width: min-content;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-bottom: 0.4em;
+}
+
+.cursoAssignBox select {
+  color: white;
+}
+
+.wrong {
+  outline: 2px solid red !important;
+}

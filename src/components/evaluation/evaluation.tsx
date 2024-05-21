@@ -5,7 +5,9 @@ import { useState, useEffect, useRef } from "react";
 import EvaluationTest from "@/models/evaluationTest";
 import Asignatura from "@/models/asignatura";
 import { useOnboardingContext } from "@/lib/context";
-import SearchInput from "../management/searchInput/searchInput";
+import SearchInput from "@/components/management/searchInput/searchInput";
+import EvaluationOnCourseModal from "@/components/evaluation/evaluationOnCourseModal/evaluationOnCourseModal";
+import { CursoWrap } from "@/components/management/management";
 
 export default function Evaluation() {
   const { session } = useOnboardingContext();
@@ -22,6 +24,34 @@ export default function Evaluation() {
   const [filterType, setFilterType] = useState("Todos");
   const [filterAsignatura, setFilterAsignatura] = useState("Todas");
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
+  const [assign, setAssign] = useState<null | { id: string; name: string }>(
+    null
+  );
+  const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
+
+  useEffect(() => {
+    const fetchSubmit = async () => {
+      try {
+        const res = await fetch(`/api/curso`, {
+          method: "GET",
+        });
+
+        const resData = await res.json();
+        if (res.ok) {
+          const newCursos = resData.cursos.map((curso: CursoWrap) => {
+            return { ...curso, edit: false };
+          });
+          setCursosArr(newCursos);
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    fetchSubmit();
+  }, []);
 
   useEffect(() => {
     const fetchAsignaturas = async () => {
@@ -133,8 +163,19 @@ export default function Evaluation() {
     deleteFetch();
     setEvaluationDeleteIndex(null);
   };
+
   return (
     <main className={styles.main}>
+      {assign ? (
+        <EvaluationOnCourseModal
+          cursos={cursosArr}
+          cancel={() => setAssign(null)}
+          evaluationName={assign.name}
+          evaluationId={assign.id}
+        />
+      ) : (
+        ""
+      )}
       {evaluationDeleteIndex !== null ? (
         <div className={styles.deleteEvaluationBox}>
           <div className={styles.deleteEvaluationModal}>
@@ -424,6 +465,9 @@ export default function Evaluation() {
                         </svg>
                       </a>
                       <svg
+                        onClick={() =>
+                          setAssign({ id: item._id, name: item.name })
+                        }
                         className="ml-[1px]"
                         viewBox="0 0 24 24"
                         fill="none"
