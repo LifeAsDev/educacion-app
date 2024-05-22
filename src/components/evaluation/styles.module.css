@@ -395,3 +395,35 @@
 .wrong {
   outline: 2px solid red !important;
 }
+
+.tabsBox {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.tabBox {
+  background-color: var(--third-color-light-black);
+  color: white;
+  padding: 0 1em;
+  padding-top: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tabBox p {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.tabBox.tabSelected {
+  background-color: var(--secondary-color-dark-black);
+}
+
+.tabBox:hover {
+  background-color: var(--secondary-color-dark-black);
+}

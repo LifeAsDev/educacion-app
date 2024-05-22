@@ -635,7 +635,6 @@ export default function Management() {
         >
           <p>Usuarios</p>
         </div>
-
         <div
           onClick={() => setTabSelected("cursos")}
           className={`${styles.tabBox} ${
