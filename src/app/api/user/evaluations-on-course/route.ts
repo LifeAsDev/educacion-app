@@ -87,7 +87,6 @@ export async function GET(req: Request) {
         }
       }
     }
-    console.log(usersMonitor);
     return NextResponse.json({
       users: usersMonitor,
       message: "Evaluation added successfully",

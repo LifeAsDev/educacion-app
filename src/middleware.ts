@@ -5,12 +5,7 @@ import { connectMongoDB } from "@/lib/mongodb";
 import EvaluationTest from "@/schemas/evaluationTest";
 
 const blockedPagesWithoutLogin = ["/home", "/create-event", "/event"];
-const pagesNotAllowedForEstudiantes = [
-  "/create",
-  "/evaluation",
-  "/edit",
-  "/management",
-];
+const pagesNotAllowedForEstudiantes = ["/create", "/edit", "/management"];
 const pagesNotAllowedForProfesores = ["/management"];
 
 export default async function middleware(req: NextRequest) {

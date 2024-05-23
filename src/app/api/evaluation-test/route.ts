@@ -5,7 +5,7 @@ import EvaluationTest from "@/schemas/evaluationTest";
 import Question from "@/models/question";
 import { uploadFile } from "@/lib/functionToFiles";
 import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 export const dynamic = "force-dynamic";
 import Asignatura from "@/schemas/asignatura";
 import user from "@/schemas/user";
@@ -118,9 +118,25 @@ export async function GET(req: Request) {
   const type = searchParams.get("type");
   const difficulty = searchParams.get("difficulty");
   const asignatura = searchParams.get("asignatura") as string;
+  const evaluationIds = searchParams.getAll("evaluationsId");
+
   try {
     await connectMongoDB();
     let aggregatePipeline: any[] = [];
+    console.log(evaluationIds);
+    if (evaluationIds.length > 0) {
+      aggregatePipeline.push({
+        $match: {
+          _id: {
+            $in: evaluationIds
+              .filter((id) => mongoose.Types.ObjectId.isValid(id))
+              .map((id) => {
+                return new mongoose.Types.ObjectId(id);
+              }),
+          },
+        },
+      });
+    }
     if (keyword !== "") {
       aggregatePipeline.push({
         $match: {
