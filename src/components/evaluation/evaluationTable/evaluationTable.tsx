@@ -159,7 +159,6 @@ export default function EvaluationTable({
                   <div>
                     {session && session.rol !== "Estudiante" && (
                       <>
-                        {" "}
                         <svg
                           className={`${
                             session &&

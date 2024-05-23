@@ -9,6 +9,7 @@ import { CursoWrap } from "@/components/management/management";
 import { MonitorArr } from "@/components/evaluation/evaluation";
 import EvaluationTest from "@/models/evaluationTest";
 import EvaluationTable from "../evaluationTable/evaluationTable";
+import curso from "@/schemas/curso";
 
 export default function ManageEvaluations({
   setTabSelected,
@@ -351,6 +352,7 @@ export default function ManageEvaluations({
                     </tr>
                   </>
                 ) : (
+                  cursoInput !== "N/A" &&
                   monitorEvaluationArr &&
                   monitorEvaluationArr.map((item, i) => (
                     <tr key={item.userId} className={styles.testItem}>
@@ -381,6 +383,10 @@ export default function ManageEvaluations({
                 )}
               </tbody>
             </table>
+            {cursoInput === "N/A" && (
+              <div className={styles.tableNone}>Escoja un curso</div>
+            )}
+
             {fetchingMonitor ? (
               <div className={styles.overlay}>
                 <div className={styles.loader}></div>
