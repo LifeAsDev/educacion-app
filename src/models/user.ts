@@ -1,9 +1,17 @@
 import { Types } from "mongoose";
 import Curso from "@/models/curso";
+interface Answer {
+  questionId: Types.ObjectId;
+  answer: string;
+}
 
 interface EvaluationOnCourse {
-  id: Types.ObjectId;
-  answers: [{ id: Types.ObjectId; answer: String }];
+  evaluationId: Types.ObjectId;
+  answers: Answer[];
+  startTime?: Date;
+  endTime?: Date;
+  state: string;
+  progress: number[];
 }
 
 interface User {
@@ -19,3 +27,4 @@ interface User {
   yo?: string;
 }
 export default User;
+export type { Answer, EvaluationOnCourse };

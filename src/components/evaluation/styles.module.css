@@ -427,3 +427,14 @@
 .tabBox:hover {
   background-color: var(--secondary-color-dark-black);
 }
+
+.top .cursoAssignBox {
+  margin: 0;
+  margin-left: auto;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+  font-weight: 500;
+}

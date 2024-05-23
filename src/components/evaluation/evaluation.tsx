@@ -8,7 +8,19 @@ import { useOnboardingContext } from "@/lib/context";
 import SearchInput from "@/components/management/searchInput/searchInput";
 import EvaluationOnCourseModal from "@/components/evaluation/evaluationOnCourseModal/evaluationOnCourseModal";
 import { CursoWrap } from "@/components/management/management";
+import curso from "@/schemas/curso";
 
+interface MonitorArr {
+  nombre: string;
+  prueba: string;
+  state: string;
+  progress: number[];
+  startTime?: string;
+  endTime?: string;
+  userId: string;
+  pruebaId: string;
+}
+export type { MonitorArr };
 export default function Evaluation() {
   const { session } = useOnboardingContext();
   const fetchedEvaluations = useRef(false);
@@ -29,6 +41,11 @@ export default function Evaluation() {
   );
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
   const [tabSelected, setTabSelected] = useState("Evaluation");
+  const [monitorEvaluationArr, setMonitorEvaluationArr] = useState<
+    MonitorArr[]
+  >([]);
+  const [fetchingMonitor, setFetchingMonitor] = useState(false);
+  const [cursoInput, setCursoInput] = useState("N/A");
 
   useEffect(() => {
     const fetchSubmit = async () => {
@@ -165,6 +182,56 @@ export default function Evaluation() {
     setEvaluationDeleteIndex(null);
   };
 
+  useEffect(() => {
+    if (
+      session &&
+      session.rol !== "Estudiante" &&
+      tabSelected === "Monitor" &&
+      cursoInput !== "N/A"
+    )
+      fetchMonitor();
+  }, [session, tabSelected, cursoInput]);
+
+  useEffect(() => {
+    if (cursoInput !== "N/A") setFetchingMonitor(true);
+  }, [cursoInput]);
+
+  const fetchMonitor = () => {
+    const fetchSubmit = async () => {
+      try {
+        const searchParams = new URLSearchParams();
+        if (session.rol === "Profesor") {
+          session.curso.forEach((curso: string, i: number) => {
+            searchParams.append("curso", curso);
+          });
+        }
+
+        if (session.rol === "Admin" || session.rol === "Directivo") {
+          searchParams.append("curso", cursoInput);
+        }
+
+        const res = await fetch(
+          `/api/user/evaluations-on-course?${searchParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+
+        const resData = await res.json();
+        setFetchingMonitor(false);
+        if (res.ok) {
+          setMonitorEvaluationArr(resData.users);
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    fetchSubmit();
+  };
+
   return (
     <main className={styles.main}>
       {assign ? (
@@ -221,7 +288,6 @@ export default function Evaluation() {
       </div>
       {tabSelected === "Evaluation" ? (
         <>
-          {" "}
           <div className={styles.top}>
             <div className={styles.filterBox}>
               <SearchInput
@@ -599,9 +665,229 @@ export default function Evaluation() {
             ))}
           </div>
         </>
+      ) : tabSelected === "Monitor" ? (
+        <>
+          <div className={styles.top}>
+            <div className={`${styles.cursoAssignBox}`}>
+              <p>Curso:</p>
+              <select
+                onChange={(e) => setCursoInput(e.target.value)}
+                name="cursoInput"
+                id="cursoInput"
+                value={cursoInput}
+              >
+                <option value="N/A">Escoja un curso</option>
+                {session &&
+                  cursosArr
+                    .filter(
+                      (curso) =>
+                        session.rol === "Admin" ||
+                        session.rol === "Directivo" ||
+                        session.curso.some(
+                          (sessionCurso: { _id: string }) =>
+                            sessionCurso._id === curso._id
+                        )
+                    )
+                    .map((curso) => (
+                      <option key={curso._id} value={curso._id}>
+                        {curso.name}
+                      </option>
+                    ))}
+              </select>
+            </div>
+          </div>
+          <div
+            id="evaluationList"
+            className={`${fetchingMonitor ? styles.hidden : ""} ${
+              styles.tableBox
+            }`}
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Prueba</th>
+                  <th>Estado</th>
+                  <th>Tiempo</th>
+                </tr>
+              </thead>
+              <tbody id="evaluationList" className={styles.tbody}>
+                {fetchingMonitor ? (
+                  <>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                    <tr className={styles.testItem}>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                      <td className={styles.td}></td>
+                    </tr>
+                  </>
+                ) : (
+                  monitorEvaluationArr &&
+                  monitorEvaluationArr.map((item, i) => (
+                    <tr key={item.userId} className={styles.testItem}>
+                      <td className={styles.td}>
+                        <div>
+                          <p>{item.nombre}</p>
+                        </div>
+                      </td>
+                      <td className={styles.td}>
+                        <div>
+                          <p>{item.prueba}</p>
+                        </div>
+                      </td>
+                      <td className={styles.td}>
+                        <div>
+                          <p>{item.state}</p>
+                        </div>
+                      </td>
+                      <td className={styles.td}>
+                        <div>
+                          <p>
+                            {calculateRemainingTime(item.startTime) || "90:00"}
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+            {fetchingMonitor ? (
+              <div className={styles.overlay}>
+                <div className={styles.loader}></div>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        </>
       ) : (
         ""
       )}
     </main>
   );
+}
+function calculateRemainingTime(startTime: string | undefined): number | null {
+  if (!startTime) return null;
+  const startTimeMs = new Date(startTime).getTime(); // Convertir startTime a milisegundos
+  const nowMs = Date.now(); // Obtener el tiempo actual en milisegundos
+
+  const differenceMs = nowMs - startTimeMs; // Calcular la diferencia en milisegundos
+  const ninetyMinutesMs = 90 * 60 * 1000; // 90 minutos en milisegundos
+
+  let remainingTimeMs = ninetyMinutesMs - differenceMs; // Restar la diferencia a 90 minutos
+
+  // Obtener la hora actual y ajustarla a la medianoche para comprobar si cruzamos el límite
+  const currentTime = new Date();
+  currentTime.setHours(0, 0, 0, 0); // Establecer la hora actual a las 00:00
+  const midnightMs = currentTime.getTime();
+
+  // Si el tiempo restante es menor que cero, ajustarlo a la medianoche
+  if (remainingTimeMs < midnightMs) {
+    remainingTimeMs = 0;
+  }
+
+  return remainingTimeMs;
 }
