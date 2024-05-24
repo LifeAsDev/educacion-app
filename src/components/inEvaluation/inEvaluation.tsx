@@ -82,41 +82,23 @@ export default function InEvaluation({ id }: { id?: string }) {
     fetchAsignaturas();
   }, []);
 
+  useEffect(() => {
+    if (session && asignatura !== "") {
+      if (
+        session.rol === "Estudiante" &&
+        !session.evaluationsOnCourse.some(
+          (evaluation: { evaluationId: string }) =>
+            evaluation.evaluationId === id
+        )
+      ) {
+        router.push(`/evaluation`);
+      } else {
+        setEditFetch(false);
+      }
+    }
+  }, [session, asignatura]);
   const cache = useRef(false);
   useEffect(() => {
-    const cachedState = localStorage.getItem("createState");
-    if (cachedState && !cache.current && !id) {
-      setEditFetch(false);
-
-      cache.current = true;
-      const parseCachedState = JSON.parse(cachedState);
-      if (parseCachedState.questionArr) {
-        // Convertir los datos de imagen a Buffer si es necesario
-        const questionsWithBuffer = parseCachedState.questionArr.map(
-          (question: Question) => {
-            if (
-              typeof question.image !== "string" &&
-              question.image !== null &&
-              typeof question.image !== "undefined" &&
-              "type" in question.image &&
-              question.image.type === "Buffer"
-            ) {
-              return {
-                ...question,
-                image: Buffer.from(question.image.data),
-              };
-            }
-            return question;
-          }
-        );
-
-        setQuestionArr(questionsWithBuffer);
-      }
-      setName(parseCachedState.name);
-      setType(parseCachedState.type);
-      setDifficulty(parseCachedState.difficulty);
-      setAsignatura(parseCachedState.asignatura);
-    }
     if (id) {
       cache.current = true;
 
@@ -135,7 +117,6 @@ export default function InEvaluation({ id }: { id?: string }) {
           setQuestionArr(shuffleArray(data.evaluationTest.questionArr));
           setType(data.evaluationTest.type);
           setDifficulty(data.evaluationTest.difficulty);
-          setEditFetch(false);
           setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
           return data.evaluationTest;
         } catch (error) {
@@ -187,71 +168,72 @@ export default function InEvaluation({ id }: { id?: string }) {
         </div>
       </div>
       <div className={styles.questionBox}>
-        {questionArr.map((question, i) =>
-          question.type === "open" ? (
-            <div
-              key={question._id || question.id}
-              className={styles.openQuestionBox}
-            >
-              {typeof question.image === "string" && (
-                <NextImage
-                  className="h-full object-contain"
-                  src={`/api/get-image?photoName=${question.image}`}
-                  alt={`Image of question ${i}`}
-                  width={1200} // Agrega el ancho de la imagen
-                  height={400} // Agrega la altura de la imagen
-                />
-              )}
+        {!editFetch &&
+          questionArr.map((question, i) =>
+            question.type === "open" ? (
               <div
-                className={styles.pregunta}
-                dangerouslySetInnerHTML={{ __html: question.pregunta }}
-              ></div>
-              <textarea placeholder="Respuesta"></textarea>
-            </div>
-          ) : (
-            <div
-              key={question._id || question.id}
-              className={styles.multipleQuestionBox}
-            >
-              {typeof question.image === "string" && (
-                <NextImage
-                  className="h-full object-contain"
-                  src={`/api/get-image?photoName=${question.image}`}
-                  alt={`Image of question ${i}`}
-                  width={1200} // Agrega el ancho de la imagen
-                  height={400} // Agrega la altura de la imagen
-                />
-              )}
+                key={question._id || question.id}
+                className={styles.openQuestionBox}
+              >
+                {typeof question.image === "string" && (
+                  <NextImage
+                    className="h-full object-contain"
+                    src={`/api/get-image?photoName=${question.image}`}
+                    alt={`Image of question ${i}`}
+                    width={1200} // Agrega el ancho de la imagen
+                    height={400} // Agrega la altura de la imagen
+                  />
+                )}
+                <div
+                  className={styles.pregunta}
+                  dangerouslySetInnerHTML={{ __html: question.pregunta }}
+                ></div>
+                <textarea placeholder="Respuesta"></textarea>
+              </div>
+            ) : (
               <div
-                className={styles.pregunta}
-                dangerouslySetInnerHTML={{ __html: question.pregunta }}
-              ></div>
-              <ul className={styles.multipleQuestionAnswerBox}>
-                {question.answerArr.map((answer: any, index: number) => {
-                  const id = getIdFromIndex(index);
-                  return (
-                    <li key={id}>
-                      <label htmlFor={id}>
-                        <input
-                          type="radio"
-                          name={`question-${i}`}
-                          id={id}
-                          value={id}
-                          defaultChecked={id === "a"}
-                        />
-                        <span
-                          dangerouslySetInnerHTML={{
-                            __html: answer,
-                          }}
-                        ></span>
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )
-        )}
+                key={question._id || question.id}
+                className={styles.multipleQuestionBox}
+              >
+                {typeof question.image === "string" && (
+                  <NextImage
+                    className="h-full object-contain"
+                    src={`/api/get-image?photoName=${question.image}`}
+                    alt={`Image of question ${i}`}
+                    width={1200} // Agrega el ancho de la imagen
+                    height={400} // Agrega la altura de la imagen
+                  />
+                )}
+                <div
+                  className={styles.pregunta}
+                  dangerouslySetInnerHTML={{ __html: question.pregunta }}
+                ></div>
+                <ul className={styles.multipleQuestionAnswerBox}>
+                  {question.answerArr.map((answer: any, index: number) => {
+                    const id = getIdFromIndex(index);
+                    return (
+                      <li key={id}>
+                        <label htmlFor={id}>
+                          <input
+                            type="radio"
+                            name={`question-${i}`}
+                            id={id}
+                            value={id}
+                            defaultChecked={id === "a"}
+                          />
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: answer,
+                            }}
+                          ></span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )
+          )}
       </div>
       <div
         className={`${styles.createQuestionBtn} ${styles.btn} ${
