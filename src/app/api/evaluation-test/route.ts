@@ -123,7 +123,6 @@ export async function GET(req: Request) {
   try {
     await connectMongoDB();
     let aggregatePipeline: any[] = [];
-    console.log(evaluationIds);
     if (evaluationIds.length > 0) {
       aggregatePipeline.push({
         $match: {

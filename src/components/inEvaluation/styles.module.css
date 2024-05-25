@@ -231,6 +231,7 @@
   color: red;
   font-weight: 600;
   margin-right: auto;
+  margin-left: 8px;
 }
 
 .inputEventPhoto {

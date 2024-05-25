@@ -7,10 +7,34 @@ import { useOnboardingContext } from "@/lib/context";
 import NextImage from "next/image";
 import Asignatura from "@/models/asignatura";
 
-interface QuestionWithError extends Question {
-  answerArr: any;
-  error?: string;
+function generateUniqueId(existingIds: Set<string>): string {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let result = "";
+
+  do {
+    result = "";
+    for (let i = 0; i < 4; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+  } while (existingIds.has(result));
+
+  return result;
 }
+
+interface QuestionWithError extends Question {
+  answerArr: { answer: string; id: string; indexId: string }[];
+  error?: boolean;
+}
+
+interface Answers {
+  questionId: string;
+  answer: string;
+}
+const getIdFromIndex = (index: number) => {
+  return String.fromCharCode(97 + index); // 97 is the ASCII code for 'a'
+};
 
 const shuffleArray = (array: any) => {
   const shuffleArray = (array: any) => {
@@ -25,7 +49,18 @@ const shuffleArray = (array: any) => {
 
   // Función para mezclar un subarreglo
   const shuffleSubArray = (subArray: any) => {
-    const newArray = [...subArray];
+    const existingIds = new Set<string>();
+
+    const newArray = [...subArray].map((sub, i) => {
+      const id = generateUniqueId(existingIds);
+      existingIds.add(id);
+
+      return {
+        answer: sub,
+        indexId: getIdFromIndex(i),
+        id: id,
+      };
+    });
     for (let i = newArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
@@ -58,6 +93,7 @@ export default function InEvaluation({ id }: { id?: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [asignatura, setAsignatura] = useState<string>("");
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
+  const [answers, setAnswers] = useState<Answers[]>([]);
 
   useEffect(() => {
     const fetchAsignaturas = async () => {
@@ -93,11 +129,43 @@ export default function InEvaluation({ id }: { id?: string }) {
       ) {
         router.push(`/evaluation`);
       } else {
+        const blankAnswers = questionArr.map((question, i): Answers => {
+          return { questionId: question._id!, answer: "" };
+        });
+        const newAnswers: Answers[] = blankAnswers.map((answer, i) => {
+          const evaluationIndex = session.evaluationsOnCourse
+            ? session.evaluationsOnCourse.findIndex(
+                (evaluation: { evaluationId: string }) =>
+                  evaluation.evaluationId === id
+              )
+            : -1;
+
+          const answerIndex =
+            evaluationIndex === -1
+              ? -1
+              : session.evaluationsOnCourse[evaluationIndex].answers.findIndex(
+                  (evaluationAnswer: { questionId: string }) =>
+                    answer.questionId === evaluationAnswer.questionId
+                );
+
+          const newAnswer =
+            answerIndex === -1
+              ? ""
+              : session.evaluationsOnCourse[evaluationIndex].answers[
+                  answerIndex
+                ].answer;
+
+          return { ...answer, answer: newAnswer };
+        });
+
+        setAnswers(newAnswers);
         setEditFetch(false);
       }
     }
   }, [session, asignatura]);
+
   const cache = useRef(false);
+
   useEffect(() => {
     if (id) {
       cache.current = true;
@@ -114,10 +182,15 @@ export default function InEvaluation({ id }: { id?: string }) {
             throw new Error("Failed to fetch evaluation test");
           }
           setName(data.evaluationTest.name);
-          setQuestionArr(shuffleArray(data.evaluationTest.questionArr));
+          const shuffleQuestionArr = shuffleArray(
+            data.evaluationTest.questionArr
+          );
+          console.log(shuffleQuestionArr);
+          setQuestionArr(shuffleQuestionArr);
           setType(data.evaluationTest.type);
           setDifficulty(data.evaluationTest.difficulty);
           setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
+
           return data.evaluationTest;
         } catch (error) {
           router.push(`/evaluation`);
@@ -128,8 +201,47 @@ export default function InEvaluation({ id }: { id?: string }) {
       fetchEvaluationTest(id);
     }
   }, [id, router]);
-  const getIdFromIndex = (index: number) => {
-    return String.fromCharCode(97 + index); // 97 is the ASCII code for 'a'
+
+  const handleAnswer = (answer: string, questionId: string) => {
+    clearError();
+    const newAnswers = [...answers];
+    newAnswers[
+      answers.findIndex((answer) => answer.questionId === questionId)
+    ].answer = answer;
+    setAnswers(newAnswers);
+  };
+  const submitAnswer = () => {
+    const newQuestionArr = [...questionArr];
+    for (const answer of answers) {
+      if (answer.answer === "") {
+        const questionIndex = questionArr.findIndex(
+          (question) => question._id === answer.questionId
+        );
+
+        if (questionIndex !== -1) {
+          newQuestionArr[questionIndex].error = true;
+          const element = document.getElementById(`${answer.questionId}`);
+          if (element) {
+            const elementTop =
+              element.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo(0, elementTop);
+          }
+        }
+        setQuestionArr(newQuestionArr);
+        return;
+      }
+    }
+  };
+
+  const clearError = () => {
+    const newQuestionArr = [...questionArr];
+
+    // Marcar error como false en todas las preguntas
+    newQuestionArr.forEach((question, index) => {
+      newQuestionArr[index].error = false;
+    });
+
+    setQuestionArr(newQuestionArr);
   };
   return (
     <main className={styles.main}>
@@ -185,10 +297,24 @@ export default function InEvaluation({ id }: { id?: string }) {
                   />
                 )}
                 <div
+                  id={question._id}
                   className={styles.pregunta}
                   dangerouslySetInnerHTML={{ __html: question.pregunta }}
                 ></div>
-                <textarea placeholder="Respuesta"></textarea>
+                {question.error && (
+                  <p className={styles.error}>Campo obligatorio</p>
+                )}
+                <textarea
+                  onChange={(e) => handleAnswer(e.target.value, question._id!)}
+                  placeholder="Respuesta"
+                  defaultValue={
+                    answers[
+                      answers.findIndex(
+                        (answer) => answer.questionId === question._id!
+                      )
+                    ].answer
+                  }
+                ></textarea>
               </div>
             ) : (
               <div
@@ -205,37 +331,57 @@ export default function InEvaluation({ id }: { id?: string }) {
                   />
                 )}
                 <div
+                  id={question._id}
                   className={styles.pregunta}
                   dangerouslySetInnerHTML={{ __html: question.pregunta }}
                 ></div>
+                {question.error && (
+                  <p className={styles.error}>Campo obligatorio</p>
+                )}
                 <ul className={styles.multipleQuestionAnswerBox}>
-                  {question.answerArr.map((answer: any, index: number) => {
-                    const id = getIdFromIndex(index);
-                    return (
-                      <li key={id}>
-                        <label htmlFor={id}>
-                          <input
-                            type="radio"
-                            name={`question-${i}`}
-                            id={id}
-                            value={id}
-                            defaultChecked={id === "a"}
-                          />
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: answer,
-                            }}
-                          ></span>
-                        </label>
-                      </li>
-                    );
-                  })}
+                  {question.answerArr.map(
+                    (
+                      answer: { answer: string; id: string; indexId: string },
+                      index: number
+                    ) => {
+                      const id = answer.id;
+                      return (
+                        <li key={`${id}-${question._id}`}>
+                          <label htmlFor={`${id}-${question._id}`}>
+                            <input
+                              type="radio"
+                              name={`question-${question._id}`}
+                              id={`${id}-${question._id}`}
+                              value={id}
+                              onChange={(e) =>
+                                handleAnswer(answer.indexId, question._id!)
+                              }
+                              defaultChecked={
+                                answers[
+                                  answers.findIndex(
+                                    (answer) =>
+                                      answer.questionId === question._id!
+                                  )
+                                ].answer === answer.indexId
+                              }
+                            />
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: answer.answer,
+                              }}
+                            ></span>
+                          </label>
+                        </li>
+                      );
+                    }
+                  )}
                 </ul>
               </div>
             )
           )}
       </div>
       <div
+        onClick={submitAnswer}
         className={`${styles.createQuestionBtn} ${styles.btn} ${
           submitting ? "cursor-default" : "submitEvaluationTest"
         }`}
