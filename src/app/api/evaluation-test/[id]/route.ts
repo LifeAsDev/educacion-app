@@ -7,6 +7,8 @@ import Question from "@/models/question";
 import { deleteFile } from "@/lib/functionToFiles";
 import { Types } from "mongoose";
 import asignatura from "@/schemas/asignatura";
+import User from "@/schemas/user";
+import UserModel from "@/models/user";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;
@@ -30,6 +32,38 @@ export async function DELETE(req: Request, { params }: any) {
 
 export async function GET(req: Request, { params }: any) {
   const id = params.id;
+  const { searchParams } = new URL(req.url);
+
+  const userId = searchParams.get("userId");
+  const rol = searchParams.get("rol");
+
+  if (rol && rol === "Estudiante") {
+    const userEstudiante = await User.findById(userId);
+
+    if (userEstudiante) {
+      const evaluationIndex = userEstudiante.evaluationsOnCourse?.findIndex(
+        (evaluation: { evaluationId: { toString: () => any } }) => {
+          return (
+            evaluation.evaluationId && evaluation.evaluationId.toString() === id
+          );
+        }
+      );
+
+      if (
+        evaluationIndex &&
+        evaluationIndex !== -1 &&
+        userEstudiante.evaluationsOnCourse![evaluationIndex].state ===
+          "Asignada"
+      ) {
+        userEstudiante.evaluationsOnCourse![evaluationIndex].state =
+          "En progreso";
+        userEstudiante.evaluationsOnCourse![evaluationIndex].startTime =
+          new Date();
+
+        await userEstudiante.save();
+      }
+    }
+  }
 
   try {
     await connectMongoDB();

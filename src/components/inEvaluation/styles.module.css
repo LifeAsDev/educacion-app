@@ -301,3 +301,13 @@
 .main input[type="radio"]:focus + span {
   color: #fff;
 }
+
+.remainingTime {
+  position: fixed;
+  right: 1em;
+  font-size: 1.3em;
+  background-color: white;
+  color: black;
+  padding: 0.2em 0.5em;
+  font-weight: 500;
+}

@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import { useOnboardingContext } from "@/lib/context";
 import NextImage from "next/image";
 import Asignatura from "@/models/asignatura";
+import {
+  formatSecondsToMinutes,
+  calculateRemainingTime,
+} from "@/lib/calculationFunctions";
 
 function generateUniqueId(existingIds: Set<string>): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -94,7 +98,8 @@ export default function InEvaluation({ id }: { id?: string }) {
   const [asignatura, setAsignatura] = useState<string>("");
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
   const [answers, setAnswers] = useState<Answers[]>([]);
-
+  const [time, setTime] = useState(-1);
+  const [startTime, setStartTime] = useState<undefined | string>();
   useEffect(() => {
     const fetchAsignaturas = async () => {
       try {
@@ -123,12 +128,28 @@ export default function InEvaluation({ id }: { id?: string }) {
       if (
         session.rol === "Estudiante" &&
         !session.evaluationsOnCourse.some(
-          (evaluation: { evaluationId: string }) =>
-            evaluation.evaluationId === id
+          (evaluation: { evaluationId: string; state: string }) =>
+            evaluation.evaluationId === id && evaluation.state !== "Completada"
         )
       ) {
         router.push(`/evaluation`);
-      } else {
+      } else if (answers.length === 0) {
+        const evaluationOnCourseIndex = session.evaluationsOnCourse.findIndex(
+          (evaluation: { evaluationId: string }) =>
+            evaluation.evaluationId === id
+        );
+        if (
+          evaluationOnCourseIndex !== -1 &&
+          session.evaluationsOnCourse &&
+          session.evaluationsOnCourse[evaluationOnCourseIndex].startTime &&
+          session.rol === "Estudiante"
+        ) {
+          setStartTime(
+            session.evaluationsOnCourse[evaluationOnCourseIndex].startTime
+          );
+        } else if (session.rol === "Estudiante") {
+          setStartTime(new Date().toISOString());
+        }
         const blankAnswers = questionArr.map((question, i): Answers => {
           return { questionId: question._id!, answer: "" };
         });
@@ -167,15 +188,33 @@ export default function InEvaluation({ id }: { id?: string }) {
   const cache = useRef(false);
 
   useEffect(() => {
-    if (id) {
+    if (startTime) {
+      const intervalId = setInterval(() => {
+        setTime(calculateRemainingTime(startTime));
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [startTime]);
+
+  useEffect(() => {
+    if (id && !cache.current && asignatura === "" && session) {
       cache.current = true;
 
       setEditFetch(true);
       const fetchEvaluationTest = async (id: string) => {
         try {
-          const response = await fetch(`/api/evaluation-test/${id}`, {
-            method: "GET",
-          });
+          const searchParams = new URLSearchParams();
+
+          searchParams.append("rol", session.rol);
+          searchParams.append("userId", session._id);
+
+          const response = await fetch(
+            `/api/evaluation-test/${id}?${searchParams.toString()}`,
+            {
+              method: "GET",
+            }
+          );
 
           const data = await response.json();
           if (!response.ok) {
@@ -185,7 +224,6 @@ export default function InEvaluation({ id }: { id?: string }) {
           const shuffleQuestionArr = shuffleArray(
             data.evaluationTest.questionArr
           );
-          console.log(shuffleQuestionArr);
           setQuestionArr(shuffleQuestionArr);
           setType(data.evaluationTest.type);
           setDifficulty(data.evaluationTest.difficulty);
@@ -200,9 +238,13 @@ export default function InEvaluation({ id }: { id?: string }) {
       };
       fetchEvaluationTest(id);
     }
-  }, [id, router]);
+  }, [id, router, session]);
 
-  const handleAnswer = (answer: string, questionId: string) => {
+  const handleAnswer = (
+    answer: string,
+    questionId: string,
+    answerType: string = "open"
+  ) => {
     clearError();
     const newAnswers = [...answers];
     newAnswers[
@@ -223,7 +265,7 @@ export default function InEvaluation({ id }: { id?: string }) {
           const element = document.getElementById(`${answer.questionId}`);
           if (element) {
             const elementTop =
-              element.getBoundingClientRect().top + window.scrollY;
+              element.getBoundingClientRect().top + window.scrollY - 100;
             window.scrollTo(0, elementTop);
           }
         }
@@ -252,6 +294,13 @@ export default function InEvaluation({ id }: { id?: string }) {
         </div>
       ) : (
         ""
+      )}
+      {time === -1 ? (
+        ""
+      ) : (
+        <div className={styles.remainingTime}>
+          {formatSecondsToMinutes(time)}
+        </div>
       )}
       <h1>{name}</h1>
       <div className={styles.mainTestOptionsBox}>
@@ -354,7 +403,11 @@ export default function InEvaluation({ id }: { id?: string }) {
                               id={`${id}-${question._id}`}
                               value={id}
                               onChange={(e) =>
-                                handleAnswer(answer.indexId, question._id!)
+                                handleAnswer(
+                                  answer.indexId,
+                                  question._id!,
+                                  "multiple"
+                                )
                               }
                               defaultChecked={
                                 answers[
