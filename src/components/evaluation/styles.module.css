@@ -156,12 +156,12 @@
 .main th,
 .main td {
   text-align: left;
-  padding: 0.5em 1em;
+  padding: 0 1em;
 }
 .main th {
   padding: 1em;
 }
-.td div {
+.td > div {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -177,7 +177,7 @@
   background-color: var(--third-color-light-black);
 }
 .testItem {
-  height: 2.5em;
+  height: 3.25em;
   width: 100%;
   background-color: #8b93a7;
   transition: background-color 0.3s ease;
@@ -393,10 +393,6 @@
   color: white;
 }
 
-.wrong {
-  outline: 2px solid red !important;
-}
-
 .tabsBox {
   display: flex;
   flex-direction: row;
@@ -449,4 +445,44 @@
   justify-content: center;
   align-items: center;
   font-size: 1.5em;
+}
+
+.progressGrid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  flex-grow: 1;
+  column-gap: 0.25em;
+  padding: 0.25em;
+  background-color: var(--secondary-color-dark-black);
+}
+
+.progressItem {
+  width: 100%;
+  height: 100%;
+  background-color: green;
+}
+
+.progressItem.empty {
+  background-color: var(--secondary-color-dark-black);
+}
+
+.progressItem.correct {
+  background-color: var(--primary-green);
+}
+
+.progressItem.wrong {
+  background-color: var(--primary-red);
+}
+
+.progressItem.open {
+  background-color: var(--primary-light-blue);
+}
+
+.progressBox {
+  display: flex;
+  flex-direction: column;
+  height: 3.25em;
+  padding: 0.3em 0;
+  flex-grow: 1;
 }

@@ -70,18 +70,58 @@ export async function GET(req: Request) {
       path: "evaluationsOnCourse.evaluationId",
       model: evaluationTest,
     });
+
     const usersMonitor: MonitorArr[] = [];
+    console.log("Start");
     for (const user of users) {
       for (const evaluationOnCourse of user.evaluationsOnCourse) {
         if (evaluationOnCourse.evaluationId) {
+          const progress: number[] = [];
+          const questionCount =
+            evaluationOnCourse.evaluationId.questionArr.length;
+
+          evaluationOnCourse.answers.forEach(
+            (answerItem: { questionId: any; answer: any }) => {
+              const questionArrItem =
+                evaluationOnCourse.evaluationId.questionArr.find(
+                  (questionItem: { _id: any }) => {
+                    console.log({
+                      question: questionItem._id.toString(),
+                      answer: answerItem.questionId.toString(),
+                      return:
+                        questionItem._id.toString() ===
+                        answerItem.questionId.toString(),
+                    });
+                    return (
+                      questionItem._id.toString() ===
+                      answerItem.questionId.toString()
+                    );
+                  }
+                );
+              if (questionArrItem) {
+                if (questionArrItem.type === "multiple") {
+                  if (answerItem.answer === "a") progress.push(1);
+                  else progress.push(0);
+                } else {
+                  progress.push(2);
+                }
+              }
+            }
+          );
+
           const userMonitor: MonitorArr = {
             nombre: `${user.nombre} ${user.apellido}`,
             prueba: evaluationOnCourse.evaluationId.name,
             state: evaluationOnCourse.state,
-            progress: evaluationOnCourse.progress,
+            progress: progress,
+            questionCount,
             userId: user._id,
             pruebaId: evaluationOnCourse.evaluationId._id,
           };
+
+          while (progress.length < questionCount) {
+            progress.push(3);
+          }
 
           usersMonitor.push(userMonitor);
         }

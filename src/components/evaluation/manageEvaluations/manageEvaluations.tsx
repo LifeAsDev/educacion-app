@@ -368,13 +368,39 @@ export default function ManageEvaluations({
                       </td>
                       <td className={styles.td}>
                         <div>
-                          <p>{item.state}</p>
+                          {item.state === "En progreso" ? (
+                            <div className={styles.progressBox}>
+                              <p>En progreso</p>
+                              <div className={styles.progressGrid}>
+                                {item.progress.map((progressItem, i) => (
+                                  <div
+                                    key={i}
+                                    className={`${styles.progressItem} ${
+                                      progressItem === 3
+                                        ? styles.empty
+                                        : progressItem === 2
+                                        ? styles.open
+                                        : progressItem === 1
+                                        ? styles.correct
+                                        : progressItem === 0
+                                        ? styles.wrong
+                                        : ""
+                                    }`}
+                                  ></div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <p>{item.state}</p>
+                          )}
                         </div>
                       </td>
                       <td className={styles.td}>
                         <div>
                           <p>
-                            {calculateRemainingTime(item.startTime) || "90:00"}
+                            {item.startTime
+                              ? calculateRemainingTime(item.startTime)
+                              : "90:00"}
                           </p>
                         </div>
                       </td>

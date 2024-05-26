@@ -21,6 +21,7 @@ interface MonitorArr {
   endTime?: string;
   userId: string;
   pruebaId: string;
+  questionCount: number;
 }
 export type { MonitorArr };
 export default function Evaluation() {
