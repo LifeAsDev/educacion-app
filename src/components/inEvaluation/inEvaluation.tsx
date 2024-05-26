@@ -251,8 +251,35 @@ export default function InEvaluation({ id }: { id?: string }) {
       answers.findIndex((answer) => answer.questionId === questionId)
     ].answer = answer;
     setAnswers(newAnswers);
+    if (answerType === "multiple") fetchAnswer(answer, questionId);
   };
-  const submitAnswer = () => {
+
+  const fetchAnswer = async (answer: string, questionId: string) => {
+    try {
+      const data = new FormData();
+      data.append("answer", answer);
+      data.append("evaluationId", id!);
+      data.append("questionId", questionId);
+      data.append("userId", session._id);
+
+      const response = await fetch(`/api/user/evaluations-on-course/answer`, {
+        method: "POST",
+        body: data,
+      });
+
+      const resdata = await response.json();
+      if (!response.ok) {
+        console.log(resdata.message);
+        throw new Error("Failed to fetch evaluation test");
+      }
+      return;
+    } catch (error) {
+      console.error("Error fetching evaluation test:", error);
+      return null;
+    }
+  };
+
+  const submitEvaluationTest = () => {
     const newQuestionArr = [...questionArr];
     for (const answer of answers) {
       if (answer.answer === "") {
@@ -354,6 +381,7 @@ export default function InEvaluation({ id }: { id?: string }) {
                   <p className={styles.error}>Campo obligatorio</p>
                 )}
                 <textarea
+                  onBlur={(e) => fetchAnswer(e.target.value, question._id!)}
                   onChange={(e) => handleAnswer(e.target.value, question._id!)}
                   placeholder="Respuesta"
                   defaultValue={
@@ -434,7 +462,7 @@ export default function InEvaluation({ id }: { id?: string }) {
           )}
       </div>
       <div
-        onClick={submitAnswer}
+        onClick={submitEvaluationTest}
         className={`${styles.createQuestionBtn} ${styles.btn} ${
           submitting ? "cursor-default" : "submitEvaluationTest"
         }`}
