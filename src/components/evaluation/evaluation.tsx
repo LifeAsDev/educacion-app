@@ -320,6 +320,8 @@ export default function Evaluation() {
             cursosArr={cursosArr}
             fetchingMonitor={fetchingMonitor}
             monitorEvaluationArr={monitorEvaluationArr}
+            setFetchingMonitor={setFetchingMonitor}
+            fetchMonitor={fetchMonitor}
           />
         )
       ) : (

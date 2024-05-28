@@ -66,21 +66,40 @@ export async function GET(req: Request) {
     await connectMongoDB();
     const users = await User.find({
       $and: [{ "curso.0": { $in: curso } }, { rol: "Estudiante" }],
-    }).populate({
-      path: "evaluationsOnCourse.evaluationId",
-      model: evaluationTest,
     });
+
+    for (const user of users) {
+      // Paso 2: Obtener el array evaluationsOnCourse del usuario
+      const evaluationsOnCourse = user.evaluationsOnCourse;
+
+      // Paso 3: Filtrar los elementos que tienen un evaluationId válido (no null)
+      const validEvaluations = evaluationsOnCourse.filter(
+        (evaluation: { evaluationId: null }) => {
+          return !!evaluation.evaluationId;
+        }
+      );
+
+      // Paso 4: Si el array filtrado es diferente al original, actualizar el documento del usuario
+      if (evaluationsOnCourse.length !== validEvaluations.length) {
+        user.evaluationsOnCourse = validEvaluations;
+        await user.save();
+      }
+    }
 
     const usersMonitor: MonitorArr[] = [];
     const currentTime = new Date();
 
     for (const user of users) {
+      await user.populate({
+        path: "evaluationsOnCourse.evaluationId",
+        model: evaluationTest,
+      });
+
       for (const evaluationOnCourse of user.evaluationsOnCourse) {
         if (evaluationOnCourse.evaluationId) {
           const startTime = new Date(evaluationOnCourse.startTime);
           const elapsedMinutes =
             (currentTime.getTime() - startTime.getTime()) / 6000;
-          console.log(elapsedMinutes);
           if (
             elapsedMinutes > 90 &&
             evaluationOnCourse.state !== "Completada"
@@ -98,13 +117,6 @@ export async function GET(req: Request) {
               const questionArrItem =
                 evaluationOnCourse.evaluationId.questionArr.find(
                   (questionItem: { _id: any }) => {
-                    console.log({
-                      question: questionItem._id.toString(),
-                      answer: answerItem.questionId.toString(),
-                      return:
-                        questionItem._id.toString() ===
-                        answerItem.questionId.toString(),
-                    });
                     return (
                       questionItem._id.toString() ===
                       answerItem.questionId.toString()

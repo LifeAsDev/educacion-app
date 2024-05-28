@@ -36,6 +36,8 @@ export default function ManageEvaluations({
   cursosArr,
   fetchingMonitor,
   monitorEvaluationArr,
+  setFetchingMonitor,
+  fetchMonitor,
 }: {
   setTabSelected: Dispatch<SetStateAction<string>>;
   tabSelected: string;
@@ -66,9 +68,34 @@ export default function ManageEvaluations({
   cursosArr: CursoWrap[];
   fetchingMonitor: boolean;
   monitorEvaluationArr: MonitorArr[];
+  setFetchingMonitor: Dispatch<SetStateAction<boolean>>;
+  fetchMonitor: () => void;
 }) {
   const { session } = useOnboardingContext();
 
+  const deleteEvaluationOnCourseFromUser = async (
+    userId: string,
+    evaluationId: string
+  ) => {
+    setFetchingMonitor(true);
+
+    try {
+      const res = await fetch(`/api/user/${userId}/${evaluationId}`, {
+        method: "PATCH",
+      });
+
+      const resData = await res.json();
+
+      fetchMonitor();
+      if (res.ok) {
+        return;
+      } else {
+        return;
+      }
+    } catch (error) {
+      return;
+    }
+  };
   return (
     <>
       <div className={styles.tabsBox}>
@@ -397,12 +424,23 @@ export default function ManageEvaluations({
                         </div>
                       </td>
                       <td className={styles.td}>
-                        <div>
+                        <div className={styles.timeBox}>
                           <p>
                             {item.startTime
                               ? calculateRemainingTime(item.startTime)
                               : "90:00"}
                           </p>
+                          <div
+                            onClick={() =>
+                              deleteEvaluationOnCourseFromUser(
+                                item.userId,
+                                item.pruebaId
+                              )
+                            }
+                            className={`${styles.btn} ${styles.cancel}`}
+                          >
+                            Borrar
+                          </div>
                         </div>
                       </td>
                     </tr>
