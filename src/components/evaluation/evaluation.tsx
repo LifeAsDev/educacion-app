@@ -132,8 +132,9 @@ export default function Evaluation() {
         if (session.rol === "Estudiante") {
           searchParams.append("pageSize", "1000");
           session.evaluationsOnCourse.forEach(
-            (evaluation: { evaluationId: string }) => {
-              searchParams.append("evaluationsId", evaluation.evaluationId);
+            (evaluation: { state: string; evaluationId: string }) => {
+              if (evaluation.state !== "Completada")
+                searchParams.append("evaluationsId", evaluation.evaluationId);
             }
           );
         }

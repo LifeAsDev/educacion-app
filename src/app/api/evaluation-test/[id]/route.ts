@@ -62,6 +62,17 @@ export async function GET(req: Request, { params }: any) {
 
         await userEstudiante.save();
       }
+      if (
+        evaluationIndex &&
+        evaluationIndex !== -1 &&
+        userEstudiante.evaluationsOnCourse![evaluationIndex].state ===
+          "Completada"
+      ) {
+        return NextResponse.json(
+          { message: "EvaluationTest completed" },
+          { status: 404 }
+        );
+      }
     }
   }
 

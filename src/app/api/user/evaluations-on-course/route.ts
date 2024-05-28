@@ -72,10 +72,23 @@ export async function GET(req: Request) {
     });
 
     const usersMonitor: MonitorArr[] = [];
-    console.log("Start");
+    const currentTime = new Date();
+
     for (const user of users) {
       for (const evaluationOnCourse of user.evaluationsOnCourse) {
         if (evaluationOnCourse.evaluationId) {
+          const startTime = new Date(evaluationOnCourse.startTime);
+          const elapsedMinutes =
+            (currentTime.getTime() - startTime.getTime()) / 6000;
+          console.log(elapsedMinutes);
+          if (
+            elapsedMinutes > 90 &&
+            evaluationOnCourse.state !== "Completada"
+          ) {
+            evaluationOnCourse.state = "Completada";
+            await user.save();
+          }
+
           const progress: number[] = [];
           const questionCount =
             evaluationOnCourse.evaluationId.questionArr.length;
@@ -120,7 +133,11 @@ export async function GET(req: Request) {
           };
 
           while (progress.length < questionCount) {
-            progress.push(3);
+            if (evaluationOnCourse.state === "Completada") {
+              progress.push(0);
+            } else {
+              progress.push(3);
+            }
           }
 
           usersMonitor.push(userMonitor);

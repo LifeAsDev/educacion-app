@@ -215,20 +215,19 @@ export default function InEvaluation({ id }: { id?: string }) {
               method: "GET",
             }
           );
-
           const data = await response.json();
-          if (!response.ok) {
-            throw new Error("Failed to fetch evaluation test");
+          if (response.ok) {
+            setName(data.evaluationTest.name);
+            const shuffleQuestionArr = shuffleArray(
+              data.evaluationTest.questionArr
+            );
+            setQuestionArr(shuffleQuestionArr);
+            setType(data.evaluationTest.type);
+            setDifficulty(data.evaluationTest.difficulty);
+            setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
+          } else {
+            router.push(`/evaluation`);
           }
-          setName(data.evaluationTest.name);
-          const shuffleQuestionArr = shuffleArray(
-            data.evaluationTest.questionArr
-          );
-          setQuestionArr(shuffleQuestionArr);
-          setType(data.evaluationTest.type);
-          setDifficulty(data.evaluationTest.difficulty);
-          setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
-
           return data.evaluationTest;
         } catch (error) {
           router.push(`/evaluation`);

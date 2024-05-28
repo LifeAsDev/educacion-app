@@ -368,9 +368,10 @@ export default function ManageEvaluations({
                       </td>
                       <td className={styles.td}>
                         <div>
-                          {item.state === "En progreso" ? (
+                          {item.state === "En progreso" ||
+                          item.state === "Completada" ? (
                             <div className={styles.progressBox}>
-                              <p>En progreso</p>
+                              <p>{item.state}</p>
                               <div className={styles.progressGrid}>
                                 {item.progress.map((progressItem, i) => (
                                   <div
