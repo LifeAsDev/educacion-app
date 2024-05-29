@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import UserType from "@/models/user";
 import { MonitorArr } from "@/components/evaluation/evaluation";
 import evaluationTest from "@/schemas/evaluationTest";
+import { formatSecondsToMinutes } from "@/lib/calculationFunctions";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -23,7 +24,8 @@ export async function POST(req: Request) {
       const evaluations = user.evaluationsOnCourse || [];
 
       const evaluationExists = evaluations.some(
-        (evaluation: { id: string }) => evaluation.id === evaluationId
+        (evaluation: { evaluationId: string }) =>
+          evaluation.evaluationId.toString() === evaluationId
       );
 
       const newEvaluations = evaluationExists
@@ -89,22 +91,41 @@ export async function GET(req: Request) {
     const usersMonitor: MonitorArr[] = [];
     const currentTime = new Date();
 
+    let yo = 0;
+
     for (const user of users) {
       await user.populate({
         path: "evaluationsOnCourse.evaluationId",
         model: evaluationTest,
       });
-
       for (const evaluationOnCourse of user.evaluationsOnCourse) {
         if (evaluationOnCourse.evaluationId) {
+          yo++;
+
           const startTime = new Date(evaluationOnCourse.startTime);
           const elapsedMinutes =
-            (currentTime.getTime() - startTime.getTime()) / 6000;
+            (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
+          /* 
+          if (yo === 1) {
+            console.log({
+              startTime,
+              currentTime,
+              beautifulTime: formatSecondsToMinutes(elapsedMinutes * 60),
+              elapsedMinutes,
+              name: `${user.nombre} ${user.apellido}`,
+              state: evaluationOnCourse.state,
+            });
+          } */
+
           if (
+            elapsedMinutes &&
             elapsedMinutes > 90 &&
-            evaluationOnCourse.state !== "Completada"
+            evaluationOnCourse.state === "En progreso"
           ) {
+            console.log("user>eonCourse");
+
             evaluationOnCourse.state = "Completada";
+            evaluationOnCourse.endTime = currentTime;
             await user.save();
           }
 
@@ -142,6 +163,8 @@ export async function GET(req: Request) {
             questionCount,
             userId: user._id,
             pruebaId: evaluationOnCourse.evaluationId._id,
+            startTime: evaluationOnCourse.startTime,
+            endTime: evaluationOnCourse.endTime,
           };
 
           while (progress.length < questionCount) {

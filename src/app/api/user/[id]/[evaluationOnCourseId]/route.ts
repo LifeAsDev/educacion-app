@@ -7,14 +7,12 @@ export async function PATCH(req: Request, { params }: any) {
   const evaluationOnCourseId = params.evaluationOnCourseId;
 
   await connectMongoDB();
-  console.log({ userId, evaluationOnCourseId });
   const patchedUser = await User.findById(userId);
 
   if (patchedUser) {
     // Eliminar el objeto del array evaluationsOnCourse
     patchedUser.evaluationsOnCourse = patchedUser.evaluationsOnCourse.filter(
       (evaluation: any) => {
-        console.log(evaluation.evaluationId);
         return evaluation.evaluationId.toString() !== evaluationOnCourseId;
       }
     );

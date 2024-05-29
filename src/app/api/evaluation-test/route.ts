@@ -119,6 +119,16 @@ export async function GET(req: Request) {
   const difficulty = searchParams.get("difficulty");
   const asignatura = searchParams.get("asignatura") as string;
   const evaluationIds = searchParams.getAll("evaluationsId");
+  const rol = searchParams.get("rol");
+
+  if (rol && rol === "Estudiante" && evaluationIds.length === 0)
+    return NextResponse.json(
+      {
+        evaluationTests: [],
+        totalCount: 0,
+      },
+      { status: 200 }
+    );
 
   try {
     await connectMongoDB();

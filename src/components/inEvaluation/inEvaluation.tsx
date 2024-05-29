@@ -188,9 +188,13 @@ export default function InEvaluation({ id }: { id?: string }) {
   const cache = useRef(false);
 
   useEffect(() => {
+    if (time === 0) submitEvaluationTest(true);
+  }, [time]);
+
+  useEffect(() => {
     if (startTime) {
       const intervalId = setInterval(() => {
-        setTime(calculateRemainingTime(startTime));
+        setTime(calculateRemainingTime(startTime, 1));
       }, 1000);
 
       return () => clearInterval(intervalId);
@@ -278,8 +282,9 @@ export default function InEvaluation({ id }: { id?: string }) {
     }
   };
 
-  const submitEvaluationTest = () => {
+  const submitEvaluationTest = (finish: boolean = false) => {
     const newQuestionArr = [...questionArr];
+    const error = false;
     for (const answer of answers) {
       if (answer.answer === "") {
         const questionIndex = questionArr.findIndex(
@@ -296,8 +301,32 @@ export default function InEvaluation({ id }: { id?: string }) {
           }
         }
         setQuestionArr(newQuestionArr);
-        return;
+        if (!finish) return;
       }
+    }
+    const fetchSubmit = async () => {
+      try {
+        const data = new FormData();
+
+        const res = await fetch(`/api/user/${session._id}/${id}/submit`, {
+          method: "PATCH",
+        });
+
+        const resdata = await res.json();
+        if (!res.ok) {
+          router.push(`/evaluation`);
+
+          throw new Error("Failed to fetch evaluation test");
+        }
+        return;
+      } catch (error) {
+        console.error("Error fetching evaluation test:", error);
+        return null;
+      }
+    };
+    if ((!error && session && session.rol === "Estudiante") || finish) {
+      fetchSubmit();
+      setSubmitting(true);
     }
   };
 
@@ -316,7 +345,11 @@ export default function InEvaluation({ id }: { id?: string }) {
       {submitting || editFetch ? (
         <div className={styles.submitting}>
           <div className={styles.loader}></div>
-          Obteniendo Datos...
+          {submitting
+            ? "Terminando..."
+            : editFetch
+            ? "Obteniendo Datos..."
+            : ""}
         </div>
       ) : (
         ""
@@ -460,14 +493,16 @@ export default function InEvaluation({ id }: { id?: string }) {
             )
           )}
       </div>
-      <div
-        onClick={submitEvaluationTest}
-        className={`${styles.createQuestionBtn} ${styles.btn} ${
-          submitting ? "cursor-default" : "submitEvaluationTest"
-        }`}
-      >
-        Terminar Evaluación
-      </div>
+      {session && session.rol === "Estudiante" && (
+        <div
+          onClick={() => submitEvaluationTest()}
+          className={`${styles.createQuestionBtn} ${styles.btn} ${
+            submitting ? "cursor-default" : "submitEvaluationTest"
+          }`}
+        >
+          Terminar Evaluación
+        </div>
+      )}
     </main>
   );
 }

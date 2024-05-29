@@ -130,6 +130,7 @@ export default function Evaluation() {
         searchParams.append("difficulty", filterDifficulty);
         searchParams.append("asignatura", filterAsignatura);
         if (session.rol === "Estudiante") {
+          searchParams.append("rol", session.rol);
           searchParams.append("pageSize", "1000");
           session.evaluationsOnCourse.forEach(
             (evaluation: { state: string; evaluationId: string }) => {
@@ -170,12 +171,16 @@ export default function Evaluation() {
         session.evaluationsOnCourse.length > 0
       ) {
         fetchSubmit();
+      } else {
+        setFetchingEvaluations(false);
+        setPageSelected(1);
       }
     } else {
       setFetchingEvaluations(false);
       setPageSelected(1);
     }
   };
+
   const deleteEvaluation = async () => {
     const newEvaluationArr = [...evaluationArr];
     const deleteEvaluation = newEvaluationArr.splice(
@@ -203,13 +208,22 @@ export default function Evaluation() {
   };
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
     if (
       session &&
       session.rol !== "Estudiante" &&
       tabSelected === "Monitor" &&
       cursoInput !== "N/A"
-    )
+    ) {
       fetchMonitor();
+      intervalId = setInterval(fetchMonitor, 5000);
+    }
+
+    // Limpia el intervalo cuando el componente se desmonte
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [session, tabSelected, cursoInput]);
 
   useEffect(() => {
@@ -220,15 +234,8 @@ export default function Evaluation() {
     const fetchSubmit = async () => {
       try {
         const searchParams = new URLSearchParams();
-        if (session.rol === "Profesor") {
-          session.curso.forEach((curso: string, i: number) => {
-            searchParams.append("curso", curso);
-          });
-        }
 
-        if (session.rol === "Admin" || session.rol === "Directivo") {
-          searchParams.append("curso", cursoInput);
-        }
+        searchParams.append("curso", cursoInput);
 
         const res = await fetch(
           `/api/user/evaluations-on-course?${searchParams.toString()}`,

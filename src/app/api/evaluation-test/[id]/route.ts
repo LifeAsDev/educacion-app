@@ -33,6 +33,7 @@ export async function DELETE(req: Request, { params }: any) {
 export async function GET(req: Request, { params }: any) {
   const id = params.id;
   const { searchParams } = new URL(req.url);
+  await connectMongoDB();
 
   const userId = searchParams.get("userId");
   const rol = searchParams.get("rol");
@@ -49,36 +50,52 @@ export async function GET(req: Request, { params }: any) {
         }
       );
 
-      if (
-        evaluationIndex &&
-        evaluationIndex !== -1 &&
-        userEstudiante.evaluationsOnCourse![evaluationIndex].state ===
-          "Asignada"
-      ) {
-        userEstudiante.evaluationsOnCourse![evaluationIndex].state =
-          "En progreso";
-        userEstudiante.evaluationsOnCourse![evaluationIndex].startTime =
-          new Date();
+      if (evaluationIndex !== undefined && evaluationIndex !== -1) {
+        const evaluation = userEstudiante.evaluationsOnCourse![evaluationIndex];
+        const currentTime = new Date();
+        const startTime = new Date(evaluation.startTime);
+        const elapsedMinutes =
+          (currentTime.getTime() - startTime.getTime()) / 60000;
 
-        await userEstudiante.save();
-      }
-      if (
-        evaluationIndex &&
-        evaluationIndex !== -1 &&
-        userEstudiante.evaluationsOnCourse![evaluationIndex].state ===
-          "Completada"
-      ) {
-        return NextResponse.json(
-          { message: "EvaluationTest completed" },
-          { status: 404 }
-        );
+        let updateFields: any = {};
+
+        if (evaluation.state === "En Progreso" && elapsedMinutes > 90) {
+          console.log("ev-t>id");
+          evaluation.state = "Completada";
+          evaluation.endTime = currentTime;
+          updateFields = {
+            "evaluationsOnCourse.$.state": evaluation.state,
+            "evaluationsOnCourse.$.endTime": evaluation.endTime,
+          };
+        }
+
+        if (evaluation.state === "Asignada") {
+          evaluation.state = "En progreso";
+          evaluation.startTime = currentTime;
+          updateFields = {
+            "evaluationsOnCourse.$.state": evaluation.state,
+            "evaluationsOnCourse.$.startTime": evaluation.startTime,
+          };
+        }
+
+        if (evaluation.state === "Completada") {
+          return NextResponse.json(
+            { message: "EvaluationTest completed" },
+            { status: 404 }
+          );
+        }
+
+        if (Object.keys(updateFields).length > 0) {
+          await User.updateOne(
+            { _id: userId, "evaluationsOnCourse.evaluationId": id },
+            { $set: updateFields }
+          );
+        }
       }
     }
   }
 
   try {
-    await connectMongoDB();
-
     const evaluationTest = await EvaluationTest.findById(id).populate({
       path: "asignatura",
       model: asignatura,

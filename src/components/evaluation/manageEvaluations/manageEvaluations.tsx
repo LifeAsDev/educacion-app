@@ -3,7 +3,11 @@ import SearchInput from "@/components/management/searchInput/searchInput";
 import Link from "next/link";
 import { useOnboardingContext } from "@/lib/context";
 import Asignatura from "@/models/asignatura";
-import { calculateRemainingTime } from "@/lib/calculationFunctions";
+import {
+  calculateRemainingTime,
+  formatSecondsToMinutes,
+  getFinishTime,
+} from "@/lib/calculationFunctions";
 import { Dispatch, SetStateAction } from "react";
 import { CursoWrap } from "@/components/management/management";
 import { MonitorArr } from "@/components/evaluation/evaluation";
@@ -382,7 +386,10 @@ export default function ManageEvaluations({
                   cursoInput !== "N/A" &&
                   monitorEvaluationArr &&
                   monitorEvaluationArr.map((item, i) => (
-                    <tr key={item.userId} className={styles.testItem}>
+                    <tr
+                      key={`${item.pruebaId}${item.userId}`}
+                      className={styles.testItem}
+                    >
                       <td className={styles.td}>
                         <div>
                           <p>{item.nombre}</p>
@@ -426,9 +433,17 @@ export default function ManageEvaluations({
                       <td className={styles.td}>
                         <div className={styles.timeBox}>
                           <p>
-                            {item.startTime
-                              ? calculateRemainingTime(item.startTime)
-                              : "90:00"}
+                            {item.state === "Asignada" ||
+                            item.state === "En progreso"
+                              ? item.startTime
+                                ? formatSecondsToMinutes(
+                                    calculateRemainingTime(item.startTime)
+                                  )
+                                : "90:00"
+                              : item.state === "Completada" &&
+                                formatSecondsToMinutes(
+                                  getFinishTime(item.startTime!, item.endTime!)
+                                )}
                           </p>
                           <div
                             onClick={() =>
