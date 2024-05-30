@@ -24,7 +24,7 @@ interface User {
   _id: string;
   review?: boolean;
   evaluationsOnCourse?: EvaluationOnCourse[];
-  yo?: string;
+  asignatura?: Types.ObjectId;
 }
 export default User;
 export type { Answer, EvaluationOnCourse };

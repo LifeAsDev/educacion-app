@@ -52,6 +52,9 @@ const userSchema = new Schema<User>(
       type: [evaluationOnCourseSchema],
       default: [],
     },
+    asignatura: {
+      type: { type: Schema.Types.ObjectId, ref: "Asignatura" },
+    },
   },
   { timestamps: true }
 );
