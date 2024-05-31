@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useRef } from "react";
 import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
 import { useOnboardingContext } from "@/lib/context";
+import { AsignaturaWrap } from "../management/management";
 
 interface CursoWrap extends Curso {
   edit: Boolean;
@@ -25,11 +26,16 @@ export default function Profile({}: {}) {
   const [passChange, setPassChange] = useState(false);
   const [actualPass, setActualPass] = useState("");
   const [patching, setPatching] = useState(false);
-
+  const [asignatura, setAsignatura] = useState("N/A");
+  const [asignaturasArr, setAsignaturasArr] = useState<AsignaturaWrap[]>([]);
+  const [cursoAndAsignaturaFetched, setCursoAndAsignaturaFetched] = useState({
+    curso: false,
+    asignatura: false,
+  });
   const cache = useRef(false);
 
   useEffect(() => {
-      const fetchSubmit = async () => {
+    const fetchCursos = async () => {
       try {
         const res = await fetch(`/api/curso`, {
           method: "GET",
@@ -41,6 +47,7 @@ export default function Profile({}: {}) {
             return { ...curso, edit: false };
           });
           setCursosArr(newCursos);
+          setCursoAndAsignaturaFetched((prev) => ({ ...prev, curso: true }));
           cache.current = true;
           return;
         } else {
@@ -50,18 +57,45 @@ export default function Profile({}: {}) {
         return;
       }
     };
-    if (session&&!cache.current) {
+    const fetchAsignaturas = async () => {
+      try {
+        const res = await fetch(`/api/asignatura`, {
+          method: "GET",
+        });
+
+        const resData = await res.json();
+        if (res.ok) {
+          const newAsignaturas = resData.asignaturas.map(
+            (asignatura: AsignaturaWrap) => {
+              return { ...asignatura, edit: false };
+            }
+          );
+          setAsignaturasArr(newAsignaturas);
+          setCursoAndAsignaturaFetched((prev) => ({
+            ...prev,
+            asignatura: true,
+          }));
+
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+
+    if (session && !cache.current) {
       setRol(session.rol);
       setApellido(session.apellido);
       setNombre(session.nombre);
       setRut(session.dni);
       setCurso(session.curso);
-      setUserId(session._id); 
-         fetchSubmit();    
-
+      setUserId(session._id);
+      setAsignatura(session.asignatura);
+      if (!cursoAndAsignaturaFetched.asignatura) fetchAsignaturas();
+      if (!cursoAndAsignaturaFetched.curso) fetchCursos();
     }
-  
-
   }, [session]);
   const patchUser = () => {
     setPatching(true);
@@ -80,6 +114,9 @@ export default function Profile({}: {}) {
     }
     if (rol === "Estudiante" && curso.length === 0) {
       newErrors.push("curso");
+    }
+    if (asignatura === "N/A") {
+      newErrors.push("asignatura");
     }
     if (passChange) {
       if (newPass === "") {
@@ -109,6 +146,7 @@ export default function Profile({}: {}) {
           if (rol === "Profesor" || rol === "Estudiante") {
             const cursoArr = (curso as Curso[]).map((c) => c._id);
             data.set("curso", JSON.stringify(cursoArr));
+            data.set("asignatura", asignatura as string);
           }
 
           const res = await fetch(`/api/user/${userId}/profile`, {
@@ -152,7 +190,9 @@ export default function Profile({}: {}) {
   return (
     <main className={styles.main}>
       <div className={styles.editBox}>
-        {session ? (
+        {session &&
+        cursoAndAsignaturaFetched.asignatura &&
+        cursoAndAsignaturaFetched.curso ? (
           <>
             <div className={styles.editItem}>
               <div className={styles.inputBox}>
@@ -217,30 +257,58 @@ export default function Profile({}: {}) {
                 />
               </div>
               {rol === "Profesor" ? (
-                <div className={styles.inputBox}>
-                  <label>Agregar Curso</label>
-                  <div className={styles.cursosProfesor}>
-                    <select
-                      onChange={(e) => setUserCursoInput(e.target.value)}
-                      name="userCurso"
-                      id="userCurso"
-                      value={"N/A"}
+                <>
+                  <div className={styles.inputBox}>
+                    <label>Agregar Curso</label>
+                    <div className={styles.cursosProfesor}>
+                      <select
+                        onChange={(e) => setUserCursoInput(e.target.value)}
+                        name="userCurso"
+                        id="userCurso"
+                        value={"N/A"}
+                      >
+                        <option value="N/A">Agregar Curso</option>
+                        {cursosArr
+                          .filter((curso1) =>
+                            (curso as CursoWrap[]).every((curso2) => {
+                              return curso1._id !== curso2._id;
+                            })
+                          )
+                          .map((curso) => (
+                            <option key={curso._id} value={curso._id}>
+                              {curso.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>{" "}
+                  <div className={styles.inputBox}>
+                    <label>Asignatura</label>
+                    <div
+                      className={`${styles.cursosProfesor} ${
+                        errors.includes("asignatura") ? styles.wrong : ""
+                      }`}
                     >
-                      <option value="N/A">Agregar Curso</option>
-                      {cursosArr
-                        .filter((curso1) =>
-                          (curso as CursoWrap[]).every((curso2) => {
-                            return curso1._id !== curso2._id;
-                          })
-                        )
-                        .map((curso) => (
-                          <option key={curso._id} value={curso._id}>
-                            {curso.name}
+                      <select
+                        onFocus={() => setErrors([])}
+                        className={`${
+                          errors.includes("asignatura") ? styles.wrong : ""
+                        }`}
+                        onChange={(e) => setAsignatura(e.target.value)}
+                        name="userAsignatura"
+                        id="userAsignatura"
+                        value={asignatura as string}
+                      >
+                        <option value="N/A">N/A</option>
+                        {asignaturasArr.map((asignatura) => (
+                          <option key={asignatura._id} value={asignatura._id}>
+                            {asignatura.name}
                           </option>
                         ))}
-                    </select>
+                      </select>
+                    </div>
                   </div>
-                </div>
+                </>
               ) : (
                 ""
               )}

@@ -315,6 +315,8 @@ export default function Management() {
 
   useEffect(() => {
     if (tabSelected === "usuarios") {
+      setFetchingUsers(true);
+
       const divElement = document.getElementById("usersList");
       divElement!.scrollTop = 0;
       setDeleteUsersConfirm(false);
@@ -369,7 +371,7 @@ export default function Management() {
   ]);
 
   useEffect(() => {
-    if (tabSelected === "asignaturas") {
+    if (tabSelected === "asignaturas" || userSelected) {
       const divElement = document.getElementById("wrapBoxAsignatura");
       if (divElement?.scrollTop) {
         divElement!.scrollTop = 0;
@@ -459,6 +461,7 @@ export default function Management() {
           rol: string;
           dni: string;
           curso: string;
+          asignatura?: string;
         }
 
         interface UserSheet {
@@ -467,6 +470,7 @@ export default function Management() {
           Rol: string;
           RUT: string;
           Curso: string;
+          Asignatura: string;
         }
 
         const usersSheet: UserSheet[] = XLSX.utils.sheet_to_json(sheet);
@@ -479,6 +483,7 @@ export default function Management() {
               rol: user.Rol,
               dni: user.RUT,
               curso: user.Curso,
+              asignatura: user.Asignatura,
             };
           }
         );
@@ -618,6 +623,7 @@ export default function Management() {
           setUserSelected={setUserSelected}
           userSelected={userSelected}
           cursosArr={cursosArr}
+          asignaturasArr={asignaturasArr}
           setPageSelected={setPageSelected}
           setFetchingUsers={setFetchingUsers}
         />

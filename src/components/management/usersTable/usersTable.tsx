@@ -220,6 +220,7 @@ export default function UsersTable({
               <th className={styles.tableHeadName}>Rol</th>
               <th className={styles.tableHeadName}>RUT</th>
               <th className={styles.tableHeadName}>Curso</th>
+              <th className={styles.tableHeadName}>Asignatura</th>
               <th
                 onClick={() => {
                   let newPasswordShowArr = [...passwordShowArr];
@@ -317,110 +318,17 @@ export default function UsersTable({
           >
             {fetchingUsers && usersArr ? (
               <>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr className={styles.userItem}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                {Array.from({ length: 15 }, (_, index) => (
+                  <tr key={index} className={styles.userItem}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                ))}
               </>
             ) : (
               usersArr.map((user: User, index) => {
@@ -470,6 +378,11 @@ export default function UsersTable({
                               })
                               .join(" | ")
                           : "N/A"}
+                      </p>
+                    </td>
+                    <td className={styles.tableItem}>
+                      <p className={styles.name}>
+                        {user.asignatura?.name || "N/A"}
                       </p>
                     </td>
                     <td className={styles.tableItem}>

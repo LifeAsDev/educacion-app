@@ -5,6 +5,7 @@ import UserType from "@/models/user";
 import Curso from "@/schemas/curso";
 import mongoose, { Types } from "mongoose";
 import CursoType from "@/models/curso";
+import Asignatura from "@/schemas/asignatura";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -70,6 +71,7 @@ export async function GET(req: Request) {
   });
 
   const allUsers = await User.aggregate(aggregatePipeline);
+
   const initialUsers = [...allUsers[0].data];
   if (allUsers.length === 0 || !allUsers[0].metadata[0]) {
     // Si no hay eventos o no se encontró metadata, significa que no hay eventos que coincidan con la búsqueda
@@ -96,10 +98,16 @@ export async function GET(req: Request) {
 
     const updatedUsers = await User.aggregate(aggregatePipeline);
 
-    const populatedUsers = await User.populate(updatedUsers[0].data, {
-      path: "curso",
-      model: Curso,
-    });
+    const populatedUsers = await User.populate(updatedUsers[0].data, [
+      {
+        path: "curso",
+        model: Curso,
+      },
+      {
+        path: "asignatura",
+        model: Asignatura,
+      },
+    ]);
 
     return NextResponse.json(
       {
@@ -113,16 +121,25 @@ export async function GET(req: Request) {
     );
   }
 
-  const populatedUsers = await User.populate(allUsers[0].data, {
-    path: "curso",
-    model: Curso,
-  });
+  const populatedUsers = await User.populate(allUsers[0].data, [
+    {
+      path: "curso",
+      model: Curso,
+    },
+    {
+      path: "asignatura",
+      model: Asignatura,
+    },
+  ]);
 
-  const usersCursoDelete = populatedUsers.map((user: UserType) => {
-    const newUser: UserType = { ...user }; // Create a shallow copy of the user object
+  const usersCursoDelete = populatedUsers.map((user: any) => {
+    const newUser = { ...user }; // Create a shallow copy of the user object
     newUser.curso = (user.curso! as CursoType[]).map((curso: CursoType) => {
       return new Types.ObjectId(curso._id); // Convert curso._id to ObjectId
     });
+
+    newUser.asignatura = newUser.asignatura?._id;
+
     return newUser;
   });
 
@@ -201,6 +218,7 @@ export async function POST(req: Request) {
         })(),
         dni: (user.dni || "N/A").toString(),
         curso: (user.curso || "N/A").toString().trim(),
+        asignatura: (user.asignatura || "N/A").toString().trim(),
         password,
         review: false, // Inicializar la propiedad review como false
       };
@@ -208,7 +226,10 @@ export async function POST(req: Request) {
       // Si alguna entrada es "N/A", establecer review como true
       if (
         Object.entries(newUser).some(
-          (value) => value[0] !== "curso" && value[1] === "N/A"
+          (value) =>
+            value[0] !== "curso" &&
+            value[0] !== "asignatura" &&
+            value[1] === "N/A"
         )
       ) {
         newUser.review = true;
@@ -216,6 +237,13 @@ export async function POST(req: Request) {
 
       // Buscar cursos en la base de datos
       const cursosName = newUser.curso as unknown as string;
+
+      const findAsignatura = await Asignatura.findOne({
+        name: newUser.asignatura,
+      });
+
+      if (findAsignatura) newUser.asignatura = findAsignatura._id;
+
       if (newUser.dni !== "N/A") {
         const isDuplicated = await User.find({ dni: newUser.dni });
         if (isDuplicated && isDuplicated.length > 0) {

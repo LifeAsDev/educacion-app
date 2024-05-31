@@ -3,6 +3,7 @@ import User from "@/models/user";
 import { Dispatch, SetStateAction } from "react";
 import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
+import { AsignaturaWrap } from "../management";
 
 interface CursoWrap extends Curso {
   edit: Boolean;
@@ -14,12 +15,14 @@ export default function EditUserModal({
   cursosArr,
   setPageSelected,
   setFetchingUsers,
+  asignaturasArr,
 }: {
   userSelected: User;
   setUserSelected: Dispatch<SetStateAction<User | null>>;
   cursosArr: CursoWrap[];
   setPageSelected: Dispatch<SetStateAction<number>>;
   setFetchingUsers: Dispatch<SetStateAction<boolean>>;
+  asignaturasArr: AsignaturaWrap[];
 }) {
   const [rol, setRol] = useState(userSelected.rol);
   const [apellido, setApellido] = useState(userSelected.apellido);
@@ -30,6 +33,10 @@ export default function EditUserModal({
   const [userCursoInput, setUserCursoInput] = useState("N/A");
   const [errors, setErrors] = useState<string[]>([]);
   const [password, setPassword] = useState(userSelected.password);
+  const [asignatura, setAsignatura] = useState(
+    userSelected.asignatura?._id || "N/A"
+  );
+
   const patchUser = () => {
     const newErrors: string[] = [];
     if (nombre === "" || nombre === "N/A") {
@@ -43,6 +50,9 @@ export default function EditUserModal({
     }
     if (rol === "N/A") {
       newErrors.push("rol");
+    }
+    if (asignatura === "N/A") {
+      newErrors.push("asignatura");
     }
     if (rol === "Estudiante" && curso.length === 0) {
       newErrors.push("curso");
@@ -70,6 +80,7 @@ export default function EditUserModal({
           if (rol === "Profesor") {
             const cursoArr = (curso as Curso[]).map((c) => c._id);
             data.set("curso", JSON.stringify(cursoArr));
+            data.set("asignatura", asignatura as string);
           }
           if (rol === "Estudiante") {
             const cursoArr = [curso[0]];
@@ -193,30 +204,58 @@ export default function EditUserModal({
           </div>
 
           {rol === "Profesor" ? (
-            <div className={styles.inputBox}>
-              <label>Agregar Curso</label>
-              <div className={styles.cursosProfesor}>
-                <select
-                  onChange={(e) => setUserCursoInput(e.target.value)}
-                  name="userCurso"
-                  id="userCurso"
-                  value={"N/A"}
+            <>
+              <div className={styles.inputBox}>
+                <label>Agregar Curso</label>
+                <div className={styles.cursosProfesor}>
+                  <select
+                    onChange={(e) => setUserCursoInput(e.target.value)}
+                    name="userCurso"
+                    id="userCurso"
+                    value={"N/A"}
+                  >
+                    <option value="N/A">Agregar Curso</option>
+                    {cursosArr
+                      .filter((curso1) =>
+                        (curso as CursoWrap[]).every((curso2) => {
+                          return curso1._id !== curso2._id;
+                        })
+                      )
+                      .map((curso) => (
+                        <option key={curso._id} value={curso._id}>
+                          {curso.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+              <div className={styles.inputBox}>
+                <label>Asignatura</label>
+                <div
+                  className={`${styles.cursosProfesor} ${
+                    errors.includes("asignatura") ? styles.wrong : ""
+                  }`}
                 >
-                  <option value="N/A">Agregar Curso</option>
-                  {cursosArr
-                    .filter((curso1) =>
-                      (curso as CursoWrap[]).every((curso2) => {
-                        return curso1._id !== curso2._id;
-                      })
-                    )
-                    .map((curso) => (
-                      <option key={curso._id} value={curso._id}>
-                        {curso.name}
+                  <select
+                    onFocus={() => setErrors([])}
+                    className={`${
+                      errors.includes("asignatura") ? styles.wrong : ""
+                    }`}
+                    onChange={(e) => setAsignatura(e.target.value)}
+                    name="userAsignatura"
+                    id="userAsignatura"
+                    value={asignatura as string}
+                  >
+                    <option value="N/A">N/A</option>
+                    {asignaturasArr.map((asignatura) => (
+                      <option key={asignatura._id} value={asignatura._id}>
+                        {asignatura.name}
                       </option>
                     ))}
-                </select>
+                  </select>
+                </div>
               </div>
-            </div>
+            </>
           ) : (
             ""
           )}

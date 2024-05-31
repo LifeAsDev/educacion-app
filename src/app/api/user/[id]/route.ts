@@ -2,6 +2,7 @@ import User from "@/schemas/user";
 import Curso from "@/schemas/curso";
 import { NextResponse } from "next/server";
 import { connectMongoDB } from "@/lib/mongodb";
+import { Types } from "mongoose";
 
 export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
@@ -44,18 +45,24 @@ export async function PATCH(req: Request, { params }: any) {
   const rol = formData.get("rol");
   const rut = formData.get("rut");
   const password = formData.get("password");
+  const asignatura: string | undefined = formData.get("asignatura") as string;
 
   await connectMongoDB();
-
-  const patchedUser = await User.findByIdAndUpdate(userId, {
-    nombre,
-    apellido,
-    rol,
-    dni: rut,
-    curso,
-    review: false,
-    password,
-  });
+  const patchedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      nombre,
+      apellido,
+      rol,
+      dni: rut,
+      curso,
+      review: false,
+      password,
+      asignatura: asignatura ? asignatura : undefined,
+    },
+    { new: true }
+  );
+  const yo = await User.findById(userId);
 
   if (patchedUser) {
     return NextResponse.json(

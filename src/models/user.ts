@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import Curso from "@/models/curso";
+import Asignatura from "./asignatura";
 interface Answer {
   questionId: Types.ObjectId;
   answer: string;
@@ -24,7 +25,7 @@ interface User {
   _id: string;
   review?: boolean;
   evaluationsOnCourse?: EvaluationOnCourse[];
-  asignatura?: Types.ObjectId;
+  asignatura?: Asignatura;
 }
 export default User;
 export type { Answer, EvaluationOnCourse };

@@ -13,6 +13,7 @@ export async function PATCH(req: Request, { params }: any) {
   const rut = formData.get("rut");
   const actualPass = formData.get("actualPass");
   let newPass = formData.get("newPass");
+  const asignatura: string | undefined = formData.get("asignatura") as string;
 
   await connectMongoDB();
 
@@ -30,6 +31,7 @@ export async function PATCH(req: Request, { params }: any) {
     curso,
     review: false,
     password: newPass,
+    asignatura: asignatura ? asignatura : undefined,
   });
 
   if (patchedUser) {
