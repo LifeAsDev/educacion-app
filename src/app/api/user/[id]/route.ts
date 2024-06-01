@@ -48,6 +48,8 @@ export async function PATCH(req: Request, { params }: any) {
   const asignatura: string | undefined = formData.get("asignatura") as string;
 
   await connectMongoDB();
+  console.log(asignatura);
+
   const patchedUser = await User.findByIdAndUpdate(
     userId,
     {
@@ -58,12 +60,12 @@ export async function PATCH(req: Request, { params }: any) {
       curso,
       review: false,
       password,
-      asignatura: asignatura ? asignatura : undefined,
+      asignatura: asignatura ? asignatura : null,
     },
     { new: true }
   );
   const yo = await User.findById(userId);
-
+  console.log(patchedUser);
   if (patchedUser) {
     return NextResponse.json(
       { message: "User updated", user: patchedUser },
