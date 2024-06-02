@@ -18,6 +18,7 @@ export async function POST(req: Request) {
     const difficulty: string = data.get("difficulty") as unknown as string;
     let asignatura: string | undefined = data.get("asignatura")! as string;
     const creatorId: string = data.get("creatorId")! as string;
+    const tiempo = parseInt(data.get("tiempo")! as string);
 
     const questionArr: string[] = data.getAll(
       "questionArr"
@@ -61,6 +62,7 @@ export async function POST(req: Request) {
       questionArr: questionArrWithoutBuffer,
       asignatura: asignatura ? new Types.ObjectId(asignatura) : undefined,
       creatorId: new Types.ObjectId(creatorId),
+      tiempo,
     });
 
     /*console.log("Old ", questionArrWithoutBuffer); */

@@ -126,6 +126,7 @@ export async function PATCH(req: Request, { params }: any) {
     const type: string = data.get("type") as unknown as string;
     const difficulty: string = data.get("difficulty") as unknown as string;
     let asignatura: string | undefined = data.get("asignatura")! as string;
+    const tiempo = parseInt(data.get("tiempo")! as string);
 
     const questionArr: string[] = data.getAll(
       "questionArr"
@@ -168,6 +169,7 @@ export async function PATCH(req: Request, { params }: any) {
       difficulty,
       questionArr: questionArrWithoutBuffer,
       asignatura: asignatura ? new Types.ObjectId(asignatura) : null,
+      tiempo,
     });
     const deleteImageNull = newEvaluationTest.questionArr.filter(
       (questionFilter: Question) =>

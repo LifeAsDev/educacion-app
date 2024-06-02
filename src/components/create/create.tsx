@@ -30,6 +30,7 @@ export default function Create({ id }: { id?: string }) {
   const [errors, setErrors] = useState<string[]>([]);
   const [asignatura, setAsignatura] = useState<string>("N/A");
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
+  const [tiempo, setTiempo] = useState<number>(90);
 
   const editQuestion = (
     property: keyof Question,
@@ -132,6 +133,7 @@ export default function Create({ id }: { id?: string }) {
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
       setAsignatura(parseCachedState.asignatura);
+      setTiempo(parseCachedState.tiempo);
     }
     if (id) {
       cache.current = true;
@@ -153,6 +155,7 @@ export default function Create({ id }: { id?: string }) {
           setDifficulty(data.evaluationTest.difficulty);
           setEditFetch(false);
           setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
+          setTiempo(data.evaluationTest.tiempo ?? 90);
 
           return data.evaluationTest;
         } catch (error) {
@@ -166,15 +169,23 @@ export default function Create({ id }: { id?: string }) {
   }, [id, router]);
 
   useEffect(() => {
+    console.log(tiempo);
     if (!submitting && !id) {
       localStorage.setItem(
         "createState",
-        JSON.stringify({ questionArr, name, type, difficulty, asignatura })
+        JSON.stringify({
+          questionArr,
+          name,
+          type,
+          difficulty,
+          asignatura,
+          tiempo,
+        })
       );
     } else if (submitting) {
       localStorage.removeItem("createState");
     }
-  }, [asignatura, difficulty, id, name, questionArr, submitting, type]);
+  }, [asignatura, difficulty, id, name, questionArr, submitting, type, tiempo]);
 
   const submitEvaluationTest = () => {
     const newQuestionErrorArr: string[] = [];
@@ -208,6 +219,7 @@ export default function Create({ id }: { id?: string }) {
     if (name === "") {
       newErrors.push("name");
     }
+
     setErrors(newErrors);
 
     if (
@@ -240,6 +252,7 @@ export default function Create({ id }: { id?: string }) {
           data.set("difficulty", difficulty as string);
           data.set("asignatura", asignatura as string);
           data.set("creatorId", session._id as string);
+          data.set("time", tiempo.toString());
 
           questionArr.forEach((question) => {
             const questionString = JSON.stringify(question);
@@ -435,6 +448,25 @@ export default function Create({ id }: { id?: string }) {
             placeholder="Nombre "
           />
           {errors.includes("name") ? (
+            <p className={styles.error}>Campo obligatorio</p>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className={styles.inputBox}>
+          <label>Tiempo</label>
+          <input
+            onFocus={() => {
+              setErrors([]);
+              setQuestionErrorArr([]);
+            }}
+            value={tiempo}
+            onChange={(e) => setTiempo(parseInt(e.target.value) || 1)}
+            type="number"
+            placeholder="Tiempo "
+            min={1}
+          />
+          {errors.includes("time") ? (
             <p className={styles.error}>Campo obligatorio</p>
           ) : (
             ""
