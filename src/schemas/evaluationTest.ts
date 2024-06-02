@@ -52,6 +52,7 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
       ref: "User",
       required: true,
     },
+    tiempo: { type: Number, default: 90 },
   },
   { timestamps: true }
 );

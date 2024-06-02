@@ -10,5 +10,6 @@ interface EvaluationTest {
   _id: string;
   asignatura?: string | Types.ObjectId | Asignatura;
   creatorId: string | Types.ObjectId;
+  tiempo: number; // minutes
 }
 export default EvaluationTest;
