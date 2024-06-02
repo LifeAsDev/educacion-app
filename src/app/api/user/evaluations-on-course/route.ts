@@ -8,7 +8,7 @@ import { formatSecondsToMinutes } from "@/lib/calculationFunctions";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
-  const cursoId = formData.get("cursoId") as string;
+  const curso = JSON.parse(formData.get("curso") as string);
   const evaluationId = formData.get("evaluationId") as string;
 
   try {
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const users = await User.find({
       rol: "Estudiante",
-      "curso.0": cursoId,
+      "curso.0": { $in: curso },
       review: false,
     }).select("nombre apellido evaluationsOnCourse");
 

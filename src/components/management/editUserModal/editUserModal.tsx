@@ -147,6 +147,7 @@ export default function EditUserModal({
   const addCursoToUser = (curso: CursoWrap) => {
     setCurso((prev) => [...(prev as CursoWrap[]), curso]);
   };
+
   useEffect(() => {
     if (userCursoInput !== "N/A") {
       addCursoToUser(

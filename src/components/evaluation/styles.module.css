@@ -386,7 +386,6 @@
   width: min-content;
   flex-direction: column;
   justify-content: flex-start;
-  padding-bottom: 0.4em;
 }
 
 .cursoAssignBox select {
@@ -489,4 +488,57 @@
 
 .timeBox .btn {
   margin-left: auto;
+}
+
+.cursoItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  user-select: none;
+  font-weight: 500;
+  min-width: 120px;
+}
+.cursoItem div {
+  color: white;
+  font-weight: 500;
+  background-color: var(--third-color-light-black);
+  padding: 0 1em;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 29px;
+  cursor: pointer;
+  position: relative;
+}
+
+.cursoItem div:hover {
+  background-color: var(--secondary-color-dark-black);
+}
+
+.cursoItem span {
+  color: red;
+  display: none;
+  position: absolute;
+  user-select: none;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.cursoItem div:hover span {
+  display: flex;
+  background-color: var(--secondary-color-dark-black);
+}
+
+.cursoBox {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.cursoAssignBox .wrong {
+  outline: 2px solid var(--primary-red);
 }
