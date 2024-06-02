@@ -13,6 +13,7 @@ import ManageEvaluations from "@/components/evaluation/manageEvaluations/manageE
 import EvaluationTable from "@/components/evaluation/evaluationTable/evaluationTable";
 
 interface MonitorArr {
+  tiempo: number;
   nombre: string;
   prueba: string;
   state: string;

@@ -169,7 +169,6 @@ export default function Create({ id }: { id?: string }) {
   }, [id, router]);
 
   useEffect(() => {
-    console.log(tiempo);
     if (!submitting && !id) {
       localStorage.setItem(
         "createState",

@@ -256,19 +256,7 @@ export default function EvaluationTable({
                       className={styles.evaluationName}
                       href={`/evaluation/${item._id}`}
                     >
-                      <p className={styles.name}>
-                        {`${item.name}`}
-                        <span className={styles.creatorName}>
-                          {item.creatorId
-                            ? ` por ${
-                                (item.creatorId as unknown as any).nombre || ""
-                              } ${
-                                (item.creatorId as unknown as any).apellido ||
-                                ""
-                              }`
-                            : ""}
-                        </span>
-                      </p>
+                      <p className={styles.name}>{`${item.name}`}</p>
                     </Link>
                   </div>
                 </td>

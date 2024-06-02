@@ -99,6 +99,7 @@ export default function InEvaluation({ id }: { id?: string }) {
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
   const [answers, setAnswers] = useState<Answers[]>([]);
   const [time, setTime] = useState(-1);
+  const [evaluationTime, setEvaluationTime] = useState(90);
   const [startTime, setStartTime] = useState<undefined | string>();
   useEffect(() => {
     const fetchAsignaturas = async () => {
@@ -194,7 +195,7 @@ export default function InEvaluation({ id }: { id?: string }) {
   useEffect(() => {
     if (startTime) {
       const intervalId = setInterval(() => {
-        setTime(calculateRemainingTime(startTime, 1));
+        setTime(calculateRemainingTime(startTime, evaluationTime));
       }, 1000);
 
       return () => clearInterval(intervalId);
@@ -229,6 +230,7 @@ export default function InEvaluation({ id }: { id?: string }) {
             setType(data.evaluationTest.type);
             setDifficulty(data.evaluationTest.difficulty);
             setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
+            setEvaluationTime(data.evaluationTest.time ?? 90);
           } else {
             router.push(`/evaluation`);
           }

@@ -165,6 +165,7 @@ export async function GET(req: Request) {
             pruebaId: evaluationOnCourse.evaluationId._id,
             startTime: evaluationOnCourse.startTime,
             endTime: evaluationOnCourse.endTime,
+            tiempo: evaluationOnCourse.evaluationId.tiempo,
           };
 
           while (progress.length < questionCount) {
@@ -179,6 +180,8 @@ export async function GET(req: Request) {
         }
       }
     }
+    console.log(usersMonitor[3]);
+
     return NextResponse.json({
       users: usersMonitor,
       message: "Evaluation added successfully",

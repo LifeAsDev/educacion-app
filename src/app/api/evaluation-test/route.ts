@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const difficulty: string = data.get("difficulty") as unknown as string;
     let asignatura: string | undefined = data.get("asignatura")! as string;
     const creatorId: string = data.get("creatorId")! as string;
-    const tiempo = parseInt(data.get("tiempo")! as string);
+    const tiempo = parseInt(data.get("time")! as string);
 
     const questionArr: string[] = data.getAll(
       "questionArr"

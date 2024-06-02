@@ -59,7 +59,10 @@ export async function GET(req: Request, { params }: any) {
 
         let updateFields: any = {};
 
-        if (evaluation.state === "En Progreso" && elapsedMinutes > 90) {
+        if (
+          evaluation.state === "En Progreso" &&
+          elapsedMinutes > (evaluation.tiempo ?? 90)
+        ) {
           console.log("ev-t>id");
           evaluation.state = "Completada";
           evaluation.endTime = currentTime;

@@ -13,7 +13,6 @@ import { CursoWrap } from "@/components/management/management";
 import { MonitorArr } from "@/components/evaluation/evaluation";
 import EvaluationTest from "@/models/evaluationTest";
 import EvaluationTable from "../evaluationTable/evaluationTable";
-import curso from "@/schemas/curso";
 
 export default function ManageEvaluations({
   setTabSelected,
@@ -437,12 +436,21 @@ export default function ManageEvaluations({
                             item.state === "En progreso"
                               ? item.startTime
                                 ? formatSecondsToMinutes(
-                                    calculateRemainingTime(item.startTime)
+                                    calculateRemainingTime(
+                                      item.startTime,
+                                      item.tiempo * 60 || 90 * 60
+                                    )
                                   )
-                                : "90:00"
+                                : formatSecondsToMinutes(
+                                    item.tiempo * 60 || 90 * 60
+                                  )
                               : item.state === "Completada" &&
                                 formatSecondsToMinutes(
-                                  getFinishTime(item.startTime!, item.endTime!)
+                                  getFinishTime(
+                                    item.startTime!,
+                                    item.endTime!,
+                                    item.tiempo * 60 || 90 * 60
+                                  )
                                 )}
                           </p>
                           <div
