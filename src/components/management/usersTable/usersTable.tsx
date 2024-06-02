@@ -47,7 +47,7 @@ export default function UsersTable({
   setUserDeleteIndex: (arg0: number) => void;
   setPageSelected: (arg0: number) => void;
   pageArr: number[];
-  setUserSelected: Dispatch<SetStateAction<User | null>>;
+  setUserSelected: Dispatch<SetStateAction<User | null | string>>;
   filterCursoInput: string;
   setFilterCursoInput: Dispatch<SetStateAction<string>>;
   cursosArr: CursoWrap[];
@@ -205,6 +205,22 @@ export default function UsersTable({
                   fill="#ffffff"
                 ></path>
               </g>
+            </svg>
+          </label>
+          <label
+            onClick={() => {
+              setUserSelected("Create");
+            }}
+            className={`${styles.add} ${styles.btn}`}
+          >
+            <span>Agregar Usuario</span>
+            <svg width="48px" height="48px" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M8 12H16M12 8L12 16"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
             </svg>
           </label>
         </div>
@@ -514,7 +530,6 @@ export default function UsersTable({
           ""
         )}
       </div>
-
       <div className={styles.pageBox}>
         {pageArr.map((page) => (
           <div

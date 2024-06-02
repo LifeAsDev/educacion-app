@@ -241,6 +241,7 @@ export async function POST(req: Request) {
       const findAsignatura = await Asignatura.findOne({
         name: newUser.asignatura,
       });
+      console.log({ findAsignatura: findAsignatura._id });
 
       if (findAsignatura) newUser.asignatura = findAsignatura._id;
 
@@ -272,13 +273,17 @@ export async function POST(req: Request) {
 
       // Asignar los cursos encontrados al usuario
       newUser.curso = cursoObjectsId;
+
+      console.log({ newUser });
       return newUser;
     });
 
     const createdUsers = await Promise.all(createdUsersPromises);
 
     // Crear usuarios en la base de datos
+    console.log({ createdUsers });
     const users = await User.create(createdUsers);
+    console.log({ users });
 
     return NextResponse.json({
       users,

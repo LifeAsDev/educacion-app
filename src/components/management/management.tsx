@@ -11,18 +11,24 @@ import UsersTable from "@/components/management/usersTable/usersTable";
 import CursoTable from "@/components/management/cursoTable/cursoTable";
 import AsignaturaTable from "@/components/management/asignaturaTable/asignaturaTable";
 import EditUserModal from "@/components/management/editUserModal/editUserModal";
-import { pages } from "next/dist/build/templates/app-page";
 
 interface CursoWrap extends Curso {
   edit: Boolean;
 }
-export type { CursoWrap };
 
 interface AsignaturaWrap extends Asignatura {
   edit: Boolean;
 }
+interface UserArr {
+  nombre: string;
+  apellido: string;
+  rol: string;
+  dni: string;
+  curso: string;
+  asignatura?: string;
+}
 
-export type { AsignaturaWrap };
+export type { AsignaturaWrap, CursoWrap, UserArr };
 
 export default function Management() {
   const [fetchingUsers, setFetchingUsers] = useState(false);
@@ -53,7 +59,7 @@ export default function Management() {
   const [deleteUsers, setDeleteUsers] = useState<string[] | null>(null);
   const [filterReviewInput, setFilterReviewInput] = useState<boolean>(false);
   const [deleteUsersConfirm, setDeleteUsersConfirm] = useState(false);
-  const [userSelected, setUserSelected] = useState<User | null>(null);
+  const [userSelected, setUserSelected] = useState<User | null | string>(null);
   const [filterCursoInput, setFilterCursoInput] = useState("Todos");
 
   const addCurso = () => {
@@ -443,6 +449,31 @@ export default function Management() {
     );
   }, [usersArr]);
 
+  const postUsers = async (users: UserArr[]) => {
+    try {
+      const data = new FormData();
+      users.forEach((user, index) => {
+        data.append("users", JSON.stringify(user));
+      });
+
+      const res = await fetch(`/api/user`, {
+        method: "POST",
+        body: data,
+      });
+
+      const resData = await res.json();
+      if (res.ok) {
+        setPageSelected(0);
+      } else {
+        // Handle error
+        setFetchingUsers(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setFetchingUsers(false);
+      // Handle error
+    }
+  };
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const divElement = document.getElementById("usersList");
     divElement!.scrollTop = 0;
@@ -455,14 +486,6 @@ export default function Management() {
 
         const sheetName = workbook.SheetNames[0]; // Suponiendo que los usuarios están en la primera hoja
         const sheet = workbook.Sheets[sheetName];
-        interface UserArr {
-          nombre: string;
-          apellido: string;
-          rol: string;
-          dni: string;
-          curso: string;
-          asignatura?: string;
-        }
 
         interface UserSheet {
           Nombre: string;
@@ -491,32 +514,7 @@ export default function Management() {
         // Resetea el input de tipo archivo después de leer el archivo
         setFetchingUsers(true);
 
-        const fetchSubmit = async () => {
-          try {
-            const data = new FormData();
-            users.forEach((user, index) => {
-              data.append("users", JSON.stringify(user));
-            });
-
-            const res = await fetch(`/api/user`, {
-              method: "POST",
-              body: data,
-            });
-
-            const resData = await res.json();
-            if (res.ok) {
-              setPageSelected(0);
-            } else {
-              // Handle error
-              setFetchingUsers(false);
-            }
-          } catch (error) {
-            console.log(error);
-            setFetchingUsers(false);
-            // Handle error
-          }
-        };
-        fetchSubmit();
+        postUsers(users);
         let fileInput = document.getElementById("excelFileInput");
 
         if (fileInput instanceof HTMLInputElement) {
@@ -626,6 +624,7 @@ export default function Management() {
           asignaturasArr={asignaturasArr}
           setPageSelected={setPageSelected}
           setFetchingUsers={setFetchingUsers}
+          postUsers={postUsers}
         />
       ) : (
         ""

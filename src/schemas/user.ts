@@ -53,7 +53,8 @@ const userSchema = new Schema<User>(
       default: [],
     },
     asignatura: {
-      type: { type: Schema.Types.ObjectId, ref: "Asignatura" },
+      type: Schema.Types.ObjectId,
+      ref: "Asignatura",
     },
   },
   { timestamps: true }

@@ -3,7 +3,8 @@ import User from "@/models/user";
 import { Dispatch, SetStateAction } from "react";
 import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
-import { AsignaturaWrap } from "../management";
+import { AsignaturaWrap, UserArr } from "../management";
+import { ObjectId } from "mongoose";
 
 interface CursoWrap extends Curso {
   edit: Boolean;
@@ -16,26 +17,40 @@ export default function EditUserModal({
   setPageSelected,
   setFetchingUsers,
   asignaturasArr,
+  postUsers,
 }: {
-  userSelected: User;
-  setUserSelected: Dispatch<SetStateAction<User | null>>;
+  userSelected: User | string;
+  setUserSelected: Dispatch<SetStateAction<User | null | string>>;
   cursosArr: CursoWrap[];
   setPageSelected: Dispatch<SetStateAction<number>>;
   setFetchingUsers: Dispatch<SetStateAction<boolean>>;
   asignaturasArr: AsignaturaWrap[];
+  postUsers: (users: UserArr[]) => Promise<void>;
 }) {
-  const [rol, setRol] = useState(userSelected.rol);
-  const [apellido, setApellido] = useState(userSelected.apellido);
-  const [nombre, setNombre] = useState(userSelected.nombre);
-  const [rut, setRut] = useState(userSelected.dni);
-  const [curso, setCurso] = useState(userSelected.curso);
-  const [userId, setUserId] = useState(userSelected._id);
+  const [rol, setRol] = useState("N/A");
+  const [apellido, setApellido] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [rut, setRut] = useState("");
+  const [curso, setCurso] = useState<Curso[]>([]);
+  const [userId, setUserId] = useState("");
   const [userCursoInput, setUserCursoInput] = useState("N/A");
   const [errors, setErrors] = useState<string[]>([]);
-  const [password, setPassword] = useState(userSelected.password);
-  const [asignatura, setAsignatura] = useState(
-    userSelected.asignatura?._id || "N/A"
-  );
+  const [password, setPassword] = useState("");
+  const [asignatura, setAsignatura] = useState("N/A");
+
+  useEffect(() => {
+    if (typeof userSelected !== "string") {
+      setRol(userSelected.rol);
+      setApellido(userSelected.apellido);
+      setNombre(userSelected.nombre);
+      setRut(userSelected.dni);
+      setCurso(userSelected.curso as Curso[]);
+      setUserId(userSelected._id);
+      setPassword(userSelected.password);
+      setAsignatura(userSelected.asignatura?._id || "N/A");
+    } else if (userSelected === "Create") {
+    }
+  }, [userSelected]);
 
   const patchUser = () => {
     const newErrors: string[] = [];
@@ -51,15 +66,16 @@ export default function EditUserModal({
     if (rol === "N/A") {
       newErrors.push("rol");
     }
-    if (asignatura === "N/A") {
+    if (rol === "Profesor" && asignatura === "N/A") {
       newErrors.push("asignatura");
     }
     if (rol === "Estudiante" && curso.length === 0) {
       newErrors.push("curso");
     }
-    if (password === "") {
+    if (userSelected !== "Create" && password === "") {
       newErrors.push("password");
     }
+
     if (newErrors.length === 0) {
       const divElement = document.getElementById("usersList");
       divElement!.scrollTop = 0;
@@ -107,7 +123,22 @@ export default function EditUserModal({
           return;
         }
       };
-      fetchSubmit();
+      if (userSelected === "Create") {
+        postUsers([
+          {
+            nombre: nombre,
+            apellido: apellido,
+            rol: rol,
+            dni: rut,
+            curso: curso.map((cursoItem) => cursoItem.name).join(","),
+            asignatura: asignaturasArr.find((asignaturaItem) => {
+              return asignaturaItem._id?.toString() === asignatura;
+            })?.name,
+          },
+        ]);
+      } else {
+        fetchSubmit();
+      }
     } else {
       setErrors(newErrors);
     }
@@ -124,27 +155,33 @@ export default function EditUserModal({
     }
     setUserCursoInput("N/A");
   }, [cursosArr, userCursoInput]);
-
   return (
     <div className={styles.overlay}>
       <div className={styles.editBox}>
         <div className={styles.editItem}>
-          <div className={`${styles.inputBox} ${styles.id}`}>
-            <label>ID</label>
-            <p>{userId}</p>{" "}
-          </div>
-          <div className={styles.inputBox}>
-            <label>Clave</label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              spellCheck="false"
-              placeholder="Clave"
-              className={`${errors.includes("password") ? styles.wrong : ""}`}
-              type="text"
-              onFocus={() => setErrors([])}
-            />
-          </div>
+          {userSelected !== "Create" && (
+            <>
+              <div className={`${styles.inputBox} ${styles.id}`}>
+                <label>ID</label>
+                <p>{userId}</p>
+              </div>
+
+              <div className={styles.inputBox}>
+                <label>Clave</label>
+                <input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  spellCheck="false"
+                  placeholder="Clave"
+                  className={`${
+                    errors.includes("password") ? styles.wrong : ""
+                  }`}
+                  type="text"
+                  onFocus={() => setErrors([])}
+                />
+              </div>
+            </>
+          )}
         </div>
         <div className={styles.editItem}>
           <div className={styles.inputBox}>
@@ -202,7 +239,6 @@ export default function EditUserModal({
               onFocus={() => setErrors([])}
             />
           </div>
-
           {rol === "Profesor" ? (
             <>
               <div className={styles.inputBox}>
@@ -325,8 +361,13 @@ export default function EditUserModal({
           >
             Cancelar
           </div>
-          <div onClick={patchUser} className={`${styles.btn} ${styles.green}`}>
-            Guardar
+          <div
+            onClick={() => {
+              patchUser();
+            }}
+            className={`${styles.btn} ${styles.green}`}
+          >
+            {userSelected !== "Create" ? "Guardar" : "Crear Usuario"}
           </div>
         </div>
       </div>

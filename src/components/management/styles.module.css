@@ -449,6 +449,20 @@
   background-color: var(--third-light-blue);
 }
 
+.add {
+  background-color: var(--primary-green);
+  padding-right: 0.5em;
+  gap: 0;
+}
+
+.add svg {
+  width: 40px !important;
+}
+
+.add:hover {
+  background-color: var(--secondary-green);
+}
+
 .deleteSomeUsers {
   background-color: var(--primary-red);
 }
