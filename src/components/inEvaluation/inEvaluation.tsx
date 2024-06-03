@@ -194,13 +194,14 @@ export default function InEvaluation({ id }: { id?: string }) {
 
   useEffect(() => {
     if (startTime) {
+      console.log(evaluationTime);
       const intervalId = setInterval(() => {
         setTime(calculateRemainingTime(startTime, evaluationTime));
       }, 1000);
 
       return () => clearInterval(intervalId);
     }
-  }, [startTime]);
+  }, [startTime, evaluationTime]);
 
   useEffect(() => {
     if (id && !cache.current && asignatura === "" && session) {
@@ -230,7 +231,7 @@ export default function InEvaluation({ id }: { id?: string }) {
             setType(data.evaluationTest.type);
             setDifficulty(data.evaluationTest.difficulty);
             setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
-            setEvaluationTime(data.evaluationTest.time ?? 90);
+            setEvaluationTime(data.evaluationTest.tiempo ?? 90);
           } else {
             router.push(`/evaluation`);
           }

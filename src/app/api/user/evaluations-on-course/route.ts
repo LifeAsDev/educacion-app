@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 import UserType from "@/models/user";
 import { MonitorArr } from "@/components/evaluation/evaluation";
 import evaluationTest from "@/schemas/evaluationTest";
-import { formatSecondsToMinutes } from "@/lib/calculationFunctions";
+import {
+  formatSecondsToMinutes,
+  getFinishTime,
+} from "@/lib/calculationFunctions";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -130,8 +133,10 @@ export async function GET(req: Request) {
           }
 
           const progress: number[] = [];
-          const questionCount =
-            evaluationOnCourse.evaluationId.questionArr.length;
+          const questionCount = Math.max(
+            evaluationOnCourse.evaluationId.questionArr.length,
+            1
+          );
 
           evaluationOnCourse.answers.forEach(
             (answerItem: { questionId: any; answer: any }) => {
@@ -180,7 +185,8 @@ export async function GET(req: Request) {
         }
       }
     }
-    console.log(usersMonitor[3]);
+
+    const item = usersMonitor[1];
 
     return NextResponse.json({
       users: usersMonitor,

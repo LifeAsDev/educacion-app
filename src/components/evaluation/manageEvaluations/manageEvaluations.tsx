@@ -438,7 +438,7 @@ export default function ManageEvaluations({
                                 ? formatSecondsToMinutes(
                                     calculateRemainingTime(
                                       item.startTime,
-                                      item.tiempo * 60 || 90 * 60
+                                      item.tiempo || 90
                                     )
                                   )
                                 : formatSecondsToMinutes(
@@ -449,7 +449,7 @@ export default function ManageEvaluations({
                                   getFinishTime(
                                     item.startTime!,
                                     item.endTime!,
-                                    item.tiempo * 60 || 90 * 60
+                                    item.tiempo || 90
                                   )
                                 )}
                           </p>

@@ -43,9 +43,9 @@ function getFinishTime(
   }
 
   // Asegurar que la diferencia no exceda el tiempo restante
-  const limitedDifferenceMs = Math.min(
-    remainingTimeMs - differenceMs,
-    remainingTimeMs
+  const limitedDifferenceMs = Math.max(
+    Math.min(remainingTimeMs - differenceMs, remainingTimeMs),
+    0
   );
 
   return Math.floor(limitedDifferenceMs / 1000); // Convertir milisegundos a segundos y devolver
