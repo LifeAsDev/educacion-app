@@ -236,8 +236,9 @@ export default function Evaluation() {
     const fetchSubmit = async () => {
       try {
         const searchParams = new URLSearchParams();
-
         searchParams.append("curso", cursoInput);
+        if (session && session.rol === "Profesor")
+          searchParams.append("profesorId", session._id);
 
         const res = await fetch(
           `/api/user/evaluations-on-course?${searchParams.toString()}`,

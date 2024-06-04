@@ -404,12 +404,9 @@ export default function ManageEvaluations({
                   monitorEvaluationArr &&
                   monitorEvaluationArr
                     .filter((item) => {
-                      console.log(item.asignatura, session.asignatura);
                       return (
                         item.asignatura === filterAsignatura ||
-                        (session &&
-                          session.rol === "Profesor" &&
-                          item.asignatura === session.asignatura) ||
+                        (session && session.rol === "Profesor") ||
                         (session &&
                           session.rol !== "Profesor" &&
                           filterAsignatura === "Todas")

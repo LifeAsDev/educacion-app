@@ -14,6 +14,7 @@ const evaluationOnCourseSchema = new Schema<EvaluationOnCourse>({
   endTime: Date,
   state: { type: String, default: "Asignada" },
   progress: { type: [Number], default: [] },
+  profesorId: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 const userSchema = new Schema<User>(

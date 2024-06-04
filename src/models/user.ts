@@ -13,6 +13,7 @@ interface EvaluationOnCourse {
   endTime?: Date;
   state: string;
   progress: number[];
+  profesorId?: Types.ObjectId;
 }
 
 interface User {

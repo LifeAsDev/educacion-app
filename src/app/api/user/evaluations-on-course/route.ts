@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const curso = JSON.parse(formData.get("curso") as string);
   const evaluationId = formData.get("evaluationId") as string;
-
+  const profesorId = formData.get("profesorId") as string;
   try {
     await connectMongoDB();
 
@@ -33,7 +33,14 @@ export async function POST(req: Request) {
 
       const newEvaluations = evaluationExists
         ? evaluations
-        : [...evaluations, { evaluationId: evaluationId, answer: [] }];
+        : [
+            ...evaluations,
+            {
+              evaluationId: evaluationId,
+              answer: [],
+              profesorId: profesorId,
+            },
+          ];
 
       const newUser = {
         _id: user._id,
@@ -67,6 +74,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const curso: string[] = searchParams.getAll("curso");
   const rol: string = searchParams.get("rol")!;
+  const profesorId: string = searchParams.get("profesorId")!;
   try {
     await connectMongoDB();
     const users = await User.find({
@@ -102,7 +110,12 @@ export async function GET(req: Request) {
         model: evaluationTest,
       });
       for (const evaluationOnCourse of user.evaluationsOnCourse) {
-        if (evaluationOnCourse.evaluationId) {
+        if (
+          (evaluationOnCourse.evaluationId &&
+            evaluationOnCourse.profesorId !== undefined &&
+            evaluationOnCourse.profesorId.toString() === profesorId) ||
+          !profesorId
+        ) {
           yo++;
 
           const startTime = new Date(evaluationOnCourse.startTime);
@@ -125,8 +138,6 @@ export async function GET(req: Request) {
             elapsedMinutes > 90 &&
             evaluationOnCourse.state === "En progreso"
           ) {
-            console.log("user>eonCourse");
-
             evaluationOnCourse.state = "Completada";
             evaluationOnCourse.endTime = currentTime;
             await user.save();
@@ -181,12 +192,10 @@ export async function GET(req: Request) {
               progress.push(3);
             }
           }
-
           usersMonitor.push(userMonitor);
         }
       }
     }
-
     const item = usersMonitor[1];
 
     return NextResponse.json({
