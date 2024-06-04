@@ -171,6 +171,7 @@ export async function GET(req: Request) {
             startTime: evaluationOnCourse.startTime,
             endTime: evaluationOnCourse.endTime,
             tiempo: evaluationOnCourse.evaluationId.tiempo,
+            asignatura: evaluationOnCourse.evaluationId.asignatura,
           };
 
           while (progress.length < questionCount) {

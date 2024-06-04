@@ -282,6 +282,7 @@ export default function Create({ id }: { id?: string }) {
           data.set("difficulty", difficulty as string);
           data.set("asignatura", asignatura as string);
           data.set("creatorId", session._id as string);
+          data.set("time", tiempo.toString());
 
           questionArr.forEach((question) => {
             const questionString = JSON.stringify(question);

@@ -23,6 +23,7 @@ interface MonitorArr {
   userId: string;
   pruebaId: string;
   questionCount: number;
+  asignatura: string;
 }
 export type { MonitorArr };
 export default function Evaluation() {

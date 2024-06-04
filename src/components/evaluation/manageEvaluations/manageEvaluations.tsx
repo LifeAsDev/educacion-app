@@ -227,6 +227,24 @@ export default function ManageEvaluations({
         <>
           <div className={styles.top}>
             <div className={`${styles.cursoAssignBox}`}>
+              {session && session.rol !== "Profesor" && (
+                <>
+                  <p>Asignatura:</p>
+                  <select
+                    onChange={(e) => setFilterAsignatura(e.target.value)}
+                    name="asignatura"
+                    id="asignatura"
+                    value={filterAsignatura}
+                  >
+                    <option value="Todas">Todos</option>
+                    {asignaturasArr.map((asignatura) => (
+                      <option key={asignatura._id} value={asignatura._id}>
+                        {asignatura.name}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              )}
               <p>Curso:</p>
               <select
                 onChange={(e) => setCursoInput(e.target.value)}
@@ -384,90 +402,103 @@ export default function ManageEvaluations({
                 ) : (
                   cursoInput !== "N/A" &&
                   monitorEvaluationArr &&
-                  monitorEvaluationArr.map((item, i) => (
-                    <tr
-                      key={`${item.pruebaId}${item.userId}`}
-                      className={styles.testItem}
-                    >
-                      <td className={styles.td}>
-                        <div>
-                          <p>{item.nombre}</p>
-                        </div>
-                      </td>
-                      <td className={styles.td}>
-                        <div>
-                          <p>{item.prueba}</p>
-                        </div>
-                      </td>
-                      <td className={styles.td}>
-                        <div>
-                          {item.state === "En progreso" ||
-                          item.state === "Completada" ? (
-                            <div className={styles.progressBox}>
-                              <p>{item.state}</p>
-                              <div className={styles.progressGrid}>
-                                {item.progress.map((progressItem, i) => (
-                                  <div
-                                    key={i}
-                                    className={`${styles.progressItem} ${
-                                      progressItem === 3
-                                        ? styles.empty
-                                        : progressItem === 2
-                                        ? styles.open
-                                        : progressItem === 1
-                                        ? styles.correct
-                                        : progressItem === 0
-                                        ? styles.wrong
-                                        : ""
-                                    }`}
-                                  ></div>
-                                ))}
+                  monitorEvaluationArr
+                    .filter((item) => {
+                      console.log(item.asignatura, session.asignatura);
+                      return (
+                        item.asignatura === filterAsignatura ||
+                        (session &&
+                          session.rol === "Profesor" &&
+                          item.asignatura === session.asignatura) ||
+                        (session &&
+                          session.rol !== "Profesor" &&
+                          filterAsignatura === "Todas")
+                      );
+                    })
+                    .map((item, i) => (
+                      <tr
+                        key={`${item.pruebaId}${item.userId}`}
+                        className={styles.testItem}
+                      >
+                        <td className={styles.td}>
+                          <div>
+                            <p>{item.nombre}</p>
+                          </div>
+                        </td>
+                        <td className={styles.td}>
+                          <div>
+                            <p>{item.prueba}</p>
+                          </div>
+                        </td>
+                        <td className={styles.td}>
+                          <div>
+                            {item.state === "En progreso" ||
+                            item.state === "Completada" ? (
+                              <div className={styles.progressBox}>
+                                <p>{item.state}</p>
+                                <div className={styles.progressGrid}>
+                                  {item.progress.map((progressItem, i) => (
+                                    <div
+                                      key={i}
+                                      className={`${styles.progressItem} ${
+                                        progressItem === 3
+                                          ? styles.empty
+                                          : progressItem === 2
+                                          ? styles.open
+                                          : progressItem === 1
+                                          ? styles.correct
+                                          : progressItem === 0
+                                          ? styles.wrong
+                                          : ""
+                                      }`}
+                                    ></div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          ) : (
-                            <p>{item.state}</p>
-                          )}
-                        </div>
-                      </td>
-                      <td className={styles.td}>
-                        <div className={styles.timeBox}>
-                          <p>
-                            {item.state === "Asignada" ||
-                            item.state === "En progreso"
-                              ? item.startTime
-                                ? formatSecondsToMinutes(
-                                    calculateRemainingTime(
-                                      item.startTime,
+                            ) : (
+                              <p>{item.state}</p>
+                            )}
+                          </div>
+                        </td>
+                        <td className={styles.td}>
+                          <div className={styles.timeBox}>
+                            <p>
+                              {item.state === "Asignada" ||
+                              item.state === "En progreso"
+                                ? item.startTime
+                                  ? formatSecondsToMinutes(
+                                      calculateRemainingTime(
+                                        item.startTime,
+                                        item.tiempo || 90
+                                      )
+                                    )
+                                  : formatSecondsToMinutes(
+                                      item.tiempo * 60 || 90 * 60
+                                    )
+                                : item.state === "Completada" &&
+                                  formatSecondsToMinutes(
+                                    getFinishTime(
+                                      item.startTime!,
+                                      item.endTime!,
                                       item.tiempo || 90
                                     )
-                                  )
-                                : formatSecondsToMinutes(
-                                    item.tiempo * 60 || 90 * 60
-                                  )
-                              : item.state === "Completada" &&
-                                formatSecondsToMinutes(
-                                  getFinishTime(
-                                    item.startTime!,
-                                    item.endTime!,
-                                    item.tiempo || 90
-                                  )
-                                )}
-                          </p>
-                          <div
-                            onClick={() =>
-                              deleteEvaluationOnCourseFromUser(
-                                item.userId,
-                                item.pruebaId
-                              )
-                            }
-                            className={`${styles.btn} ${styles.cancel}`}
-                          >
-                            Borrar
+                                  )}
+                            </p>
+                            <div
+                              onClick={() =>
+                                deleteEvaluationOnCourseFromUser(
+                                  item.userId,
+                                  item.pruebaId
+                                )
+                              }
+                              className={`${styles.btn} ${styles.cancel}`}
+                            >
+                              Borrar
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                      </tr>
+                    ))
                 )}
               </tbody>
             </table>
