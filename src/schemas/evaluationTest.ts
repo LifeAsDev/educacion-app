@@ -21,6 +21,7 @@ const questionSchema = new Schema<Question>({
     required: true,
   },
   image: { type: String, default: null },
+  puntos: { type: Number, default: 0 },
 });
 
 const evaluationTestSchema = new Schema<EvaluationTest>(

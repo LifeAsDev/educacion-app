@@ -8,5 +8,6 @@ interface Question {
   id: string;
   image: Buffer | string | null | { data: [number]; type: string };
   _id?: string;
+  puntos: number;
 }
 export default Question;
