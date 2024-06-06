@@ -7,7 +7,6 @@ const answerSchema = new Schema<Answer>({
 });
 
 const evaluationOnCourseSchema = new Schema<EvaluationOnCourse>({
-  evaluationId: { type: Schema.Types.ObjectId, ref: "EvaluationTest" },
   answers: [answerSchema],
   startTime: Date,
   endTime: Date,

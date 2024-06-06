@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 
 const evaluationAssignSchema = new Schema<EvaluationAssign>(
   {
+    evaluationId: { type: Schema.Types.ObjectId, ref: "EvaluationTest" },
     profesorId: {
       type: Schema.Types.ObjectId,
       ref: "User",

@@ -6,7 +6,6 @@ interface Answer {
 }
 
 interface EvaluationOnCourse {
-  evaluationId: Types.ObjectId;
   answers: Answer[];
   startTime?: Date;
   endTime?: Date;
