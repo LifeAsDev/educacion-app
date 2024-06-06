@@ -33,16 +33,16 @@ export default function Create({ id }: { id?: string }) {
   const [tiempo, setTiempo] = useState<number>(90);
 
   const editQuestion = (
-    property: keyof Question,
+    property: keyof QuestionWithError,
     value: string,
     index: number
   ) => {
+    const newQuestion: any[] = [...questionArr];
+    if (property !== "image") newQuestion[index][property] = value;
+
+    setQuestionArr(newQuestion);
     setQuestionErrorArr([]);
     setErrors([]);
-
-    const newQuestion = [...questionArr];
-    if (property !== "image") newQuestion[index][property] = value;
-    setQuestionArr(newQuestion);
   };
 
   const createQuestion = () => {
@@ -53,6 +53,7 @@ export default function Create({ id }: { id?: string }) {
         pregunta: "",
         id: uuidv4(),
         image: null,
+        puntos: 0,
       };
     } else if (typeOfQuestionSelected === "multiple") {
       newQuestion = {
@@ -64,6 +65,7 @@ export default function Create({ id }: { id?: string }) {
         señuelo3: "",
         id: uuidv4(),
         image: null,
+        puntos: 0,
       };
     }
 
