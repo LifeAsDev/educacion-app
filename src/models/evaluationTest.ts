@@ -8,7 +8,7 @@ interface EvaluationTest {
   difficulty: string;
   questionArr: Question[];
   _id: string;
-  asignatura?: string | Types.ObjectId | Asignatura;
+  asignatura?: Asignatura;
   creatorId: string | Types.ObjectId;
   tiempo: number; // minutes
 }

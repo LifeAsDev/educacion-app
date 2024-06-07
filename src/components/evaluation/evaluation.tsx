@@ -11,6 +11,7 @@ import { CursoWrap } from "@/components/management/management";
 import curso from "@/schemas/curso";
 import ManageEvaluations from "@/components/evaluation/manageEvaluations/manageEvaluations";
 import EvaluationTable from "@/components/evaluation/evaluationTable/evaluationTable";
+import AssignedEvaluations from "@/components/evaluation/assignedEvaluations/assignedEvaluations";
 
 interface MonitorArr {
   tiempo: number;
@@ -41,9 +42,11 @@ export default function Evaluation() {
   const [filterType, setFilterType] = useState("Todos");
   const [filterAsignatura, setFilterAsignatura] = useState("Todas");
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
-  const [assign, setAssign] = useState<null | { id: string; name: string }>(
-    null
-  );
+  const [assign, setAssign] = useState<null | {
+    id: string;
+    name: string;
+    asignatura: string;
+  }>(null);
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
   const [tabSelected, setTabSelected] = useState("Evaluation");
   const [monitorEvaluationArr, setMonitorEvaluationArr] = useState<
@@ -270,6 +273,7 @@ export default function Evaluation() {
           cancel={() => setAssign(null)}
           evaluationName={assign.name}
           evaluationId={assign.id}
+          evaluationAsignatura={assign.asignatura}
         />
       ) : (
         ""

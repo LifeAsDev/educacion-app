@@ -8,57 +8,31 @@ import {
   formatSecondsToMinutes,
   getFinishTime,
 } from "@/lib/calculationFunctions";
+import EvaluationAssign from "@/schemas/evaluationAssign";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
   const curso = JSON.parse(formData.get("curso") as string);
   const evaluationId = formData.get("evaluationId") as string;
   const profesorId = formData.get("profesorId") as string;
+  const asignatura = formData.get("asignatura") as string;
+
   try {
     await connectMongoDB();
+    const newEvaluationAssignQuery: any = {
+      evaluationId,
+      profesorId,
+      curso,
+      state: "Asignada",
+    };
+    if (asignatura !== "N/A") newEvaluationAssignQuery.asignatura = asignatura;
 
-    const users = await User.find({
-      rol: "Estudiante",
-      "curso.0": { $in: curso },
-      review: false,
-    }).select("nombre apellido evaluationsOnCourse");
-
-    const updatedUsers: any = users.map((user) => {
-      const evaluations = user.evaluationsOnCourse || [];
-
-      const evaluationExists = evaluations.some(
-        (evaluation: { evaluationId: string }) =>
-          evaluation.evaluationId.toString() === evaluationId
-      );
-
-      const newEvaluations = evaluationExists
-        ? evaluations
-        : [
-            ...evaluations,
-            {
-              evaluationId: evaluationId,
-              answer: [],
-              profesorId: profesorId,
-            },
-          ];
-
-      const newUser = {
-        _id: user._id,
-        evaluationsOnCourse: newEvaluations,
-      };
-
-      return newUser;
-    });
-
-    for (const updatedUser of updatedUsers) {
-      const userInstance = await User.updateOne(
-        { _id: updatedUser._id },
-        { evaluationsOnCourse: updatedUser.evaluationsOnCourse }
-      );
-    }
+    const newEvaluationAssign = await EvaluationAssign.create(
+      newEvaluationAssignQuery
+    );
 
     return NextResponse.json({
-      users: updatedUsers,
+      evaluationAssigned: newEvaluationAssign,
       message: "Evaluation added successfully",
     });
   } catch (error) {

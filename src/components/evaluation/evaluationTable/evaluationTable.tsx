@@ -18,6 +18,7 @@ export default function EvaluationTable({
     SetStateAction<{
       id: string;
       name: string;
+      asignatura: string;
     } | null>
   >;
 }) {
@@ -42,114 +43,14 @@ export default function EvaluationTable({
         <tbody id="evaluationList" className={styles.tbody}>
           {fetchingEvaluations ? (
             <>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
-              <tr className={styles.testItem}>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-                <td className={styles.td}></td>
-              </tr>
+              {Array.from({ length: 10 }, (_, index) => (
+                <tr key={index} className={styles.testItem}>
+                  <td className={styles.td}></td>
+                  <td className={styles.td}></td>
+                  <td className={styles.td}></td>
+                  <td className={styles.td}></td>
+                </tr>
+              ))}
             </>
           ) : (
             evaluationArr &&
@@ -221,7 +122,11 @@ export default function EvaluationTable({
                         <svg
                           onClick={() => {
                             if (setAssign)
-                              setAssign({ id: item._id, name: item.name });
+                              setAssign({
+                                id: item._id,
+                                name: item.name,
+                                asignatura: item.asignatura!._id! || "N/A",
+                              });
                           }}
                           className="ml-[1px]"
                           viewBox="0 0 24 24"
@@ -256,7 +161,21 @@ export default function EvaluationTable({
                       className={styles.evaluationName}
                       href={`/evaluation/${item._id}`}
                     >
-                      <p className={styles.name}>{`${item.name}`}</p>
+                      <p className={styles.name}>
+                        {`${item.name}`}
+                        <span className={styles.creatorName}>
+                          {session &&
+                          session.rol !== "Estudiante" &&
+                          item.creatorId
+                            ? ` por ${
+                                (item.creatorId as unknown as any).nombre || ""
+                              } ${
+                                (item.creatorId as unknown as any).apellido ||
+                                ""
+                              }`
+                            : ""}
+                        </span>
+                      </p>
                     </Link>
                   </div>
                 </td>

@@ -7,6 +7,7 @@ import Curso from "@/models/curso";
 export default function EvaluationOnCourseModal({
   evaluationName,
   evaluationId,
+  evaluationAsignatura,
   cancel,
   cursos,
 }: {
@@ -14,6 +15,7 @@ export default function EvaluationOnCourseModal({
   evaluationId: string;
   cancel: () => void;
   cursos: CursoWrap[];
+  evaluationAsignatura: string;
 }) {
   const [cursoInput, setCursoInput] = useState("N/A");
   const { session } = useOnboardingContext();
@@ -30,6 +32,7 @@ export default function EvaluationOnCourseModal({
         );
         data.set("evaluationId", evaluationId as string);
         data.set("profesorId", session._id as string);
+        data.set("asignatura", evaluationAsignatura as string);
 
         const res = await fetch(`/api/user/evaluations-on-course`, {
           method: "POST",
