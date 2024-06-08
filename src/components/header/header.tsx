@@ -19,20 +19,22 @@ export default function Header() {
               <Link href={"/home"}>Tablero</Link>
             </li>
           </ul>
-        </nav>
-        {session ? (
-          <div className={styles.userBox}>
-            <p className={styles.rol}>{session.rol}</p>
-            <p className={styles.name}>
-              {`${session.nombre} ${session.apellido}`}
-            </p>
-            <p onClick={() => signOut()} className={styles.red}>
-              Cerrar sesión
-            </p>
-          </div>
-        ) : (
-          ""
-        )}
+        </nav>{" "}
+        <div className={styles.userBox}>
+          {session ? (
+            <>
+              <p className={styles.rol}>{session.rol}</p>
+              <p className={styles.name}>
+                {`${session.nombre} ${session.apellido}`}
+              </p>
+              <p onClick={() => signOut()} className={styles.red}>
+                Cerrar sesión
+              </p>
+            </>
+          ) : (
+            <div className={styles.loader}></div>
+          )}
+        </div>
       </header>
     );
   return <></>;
