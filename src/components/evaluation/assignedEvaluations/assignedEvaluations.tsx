@@ -152,6 +152,12 @@ export default function AssignedEvaluations({
                   <td className={styles.td}>
                     <div>
                       <p>{item.state}</p>
+                      <div
+                        onClick={() => {}}
+                        className={`${styles.btn} ${styles.complete}`}
+                      >
+                        Terminar
+                      </div>
                     </div>
                   </td>
                 </tr>
