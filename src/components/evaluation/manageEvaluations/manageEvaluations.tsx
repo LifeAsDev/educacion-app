@@ -43,8 +43,8 @@ export default function ManageEvaluations({
   setFetchingMonitor,
   fetchMonitor,
 }: {
-  setTabSelected: Dispatch<SetStateAction<string>>;
-  tabSelected: string;
+  setTabSelected: (query: string, value: string) => void;
+  tabSelected: string | null;
   inputSearch: string;
   setInputSearch: Dispatch<SetStateAction<string>>;
   search: () => void;
@@ -82,15 +82,15 @@ export default function ManageEvaluations({
     <>
       <div className={styles.tabsBox}>
         <div
-          onClick={() => setTabSelected("Evaluation")}
+          onClick={() => setTabSelected("tabSelected", "Evaluation")}
           className={`${styles.tabBox} ${
-            tabSelected === "Evaluation" ? styles.tabSelected : ""
+            tabSelected !== "Monitor" ? styles.tabSelected : ""
           }`}
         >
           <p>Evaluaciones</p>
         </div>
         <div
-          onClick={() => setTabSelected("Monitor")}
+          onClick={() => setTabSelected("tabSelected", "Monitor")}
           className={`${styles.tabBox} ${
             tabSelected === "Monitor" ? styles.tabSelected : ""
           }`}
@@ -98,7 +98,7 @@ export default function ManageEvaluations({
           <p>Evaluaciones Aplicadas</p>
         </div>
       </div>
-      {tabSelected === "Evaluation" ? (
+      {tabSelected !== "Monitor" ? (
         <>
           <div className={styles.top}>
             <div className={styles.filterBox}>

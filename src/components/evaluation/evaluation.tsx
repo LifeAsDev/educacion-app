@@ -12,7 +12,8 @@ import curso from "@/schemas/curso";
 import ManageEvaluations from "@/components/evaluation/manageEvaluations/manageEvaluations";
 import EvaluationTable from "@/components/evaluation/evaluationTable/evaluationTable";
 import AssignedEvaluations from "@/components/evaluation/assignedEvaluations/assignedEvaluations";
-
+import { useSearchParams, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 interface MonitorArr {
   tiempo: number;
   nombre: string;
@@ -28,6 +29,11 @@ interface MonitorArr {
 }
 export type { MonitorArr };
 export default function Evaluation() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tabSelected = searchParams.get("tabSelected");
+
   const { session } = useOnboardingContext();
   const fetchedEvaluations = useRef(false);
   const [pageSelected, setPageSelected] = useState(1);
@@ -48,12 +54,22 @@ export default function Evaluation() {
     asignatura: string;
   }>(null);
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
-  const [tabSelected, setTabSelected] = useState("Evaluation");
   const [monitorEvaluationArr, setMonitorEvaluationArr] = useState<
     MonitorArr[]
   >([]);
   const [fetchingMonitor, setFetchingMonitor] = useState(false);
   const [cursoInput, setCursoInput] = useState("N/A");
+
+  const handleSearch = (query: string, value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value && query) {
+      params.set(query, value);
+    } else {
+      params.delete(query);
+    }
+
+    router.replace(`${pathname}?${params.toString()}`);
+  };
 
   useEffect(() => {
     const fetchSubmit = async () => {
@@ -310,7 +326,7 @@ export default function Evaluation() {
           />
         ) : (
           <ManageEvaluations
-            setTabSelected={setTabSelected}
+            setTabSelected={handleSearch}
             tabSelected={tabSelected}
             inputSearch={inputSearch}
             setInputSearch={setInputSearch}

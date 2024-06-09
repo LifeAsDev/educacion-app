@@ -176,7 +176,7 @@ export default function AssignedEvaluations({
           !fetchingAssigns &&
           evaluationsAssign.length === 0 && (
             <div className={styles.tableNone}>
-              Ninguna evaluacion encontrada
+              Ninguna evaluación encontrada
             </div>
           )}
 
