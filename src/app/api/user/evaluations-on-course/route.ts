@@ -2,7 +2,7 @@ import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/schemas/user";
 import { NextResponse } from "next/server";
 import UserType from "@/models/user";
-import { MonitorArr } from "@/components/evaluation/evaluation";
+import { MonitorArr } from "@/components/evaluation/evaluationsOnCourseTable/evaluationsOnCourseTable";
 import evaluationTest from "@/schemas/evaluationTest";
 import {
   formatSecondsToMinutes,

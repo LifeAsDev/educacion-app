@@ -1,6 +1,5 @@
 import User from "@/models/user";
 import mongoose, { Schema, Types, models } from "mongoose";
-import { Answer, EvaluationOnCourse } from "@/models/user";
 
 const userSchema = new Schema<User>(
   {

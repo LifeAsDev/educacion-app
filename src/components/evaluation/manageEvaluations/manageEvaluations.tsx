@@ -3,14 +3,8 @@ import SearchInput from "@/components/management/searchInput/searchInput";
 import Link from "next/link";
 import { useOnboardingContext } from "@/lib/context";
 import Asignatura from "@/models/asignatura";
-import {
-  calculateRemainingTime,
-  formatSecondsToMinutes,
-  getFinishTime,
-} from "@/lib/calculationFunctions";
 import { Dispatch, SetStateAction } from "react";
 import { CursoWrap } from "@/components/management/management";
-import { MonitorArr } from "@/components/evaluation/evaluation";
 import EvaluationTest from "@/models/evaluationTest";
 import EvaluationTable from "../evaluationTable/evaluationTable";
 import AssignedEvaluations from "../assignedEvaluations/assignedEvaluations";
@@ -35,13 +29,7 @@ export default function ManageEvaluations({
   itemCount,
   pageSelected,
   setPageSelected,
-  setCursoInput,
-  cursoInput,
   cursosArr,
-  fetchingMonitor,
-  monitorEvaluationArr,
-  setFetchingMonitor,
-  fetchMonitor,
 }: {
   setTabSelected: (query: string, value: string) => void;
   tabSelected: string | null;
@@ -68,13 +56,7 @@ export default function ManageEvaluations({
   itemCount: number;
   pageSelected: number;
   setPageSelected: Dispatch<SetStateAction<number>>;
-  setCursoInput: Dispatch<SetStateAction<string>>;
-  cursoInput: string;
   cursosArr: CursoWrap[];
-  fetchingMonitor: boolean;
-  monitorEvaluationArr: MonitorArr[];
-  setFetchingMonitor: Dispatch<SetStateAction<boolean>>;
-  fetchMonitor: () => void;
 }) {
   const { session } = useOnboardingContext();
 

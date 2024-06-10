@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import EvaluationAssign from "@/models/evaluationAssign";
 import Asignatura from "@/models/asignatura";
 import { CursoWrap } from "@/components/management/management";
+import Link from "next/link";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 export default function AssignedEvaluations({
   asignaturasArr,
@@ -13,13 +15,26 @@ export default function AssignedEvaluations({
   cursosArr: CursoWrap[];
 }) {
   const { session } = useOnboardingContext();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const filterAsignatura = searchParams.get("filterAsignatura") ?? "Todas";
   const [fetchingAssigns, setFetchingAssigns] = useState(false);
-  const [evaluationsAssign, setEvaluationAssign] = useState<EvaluationAssign[]>(
-    []
-  );
-  const [filterAsignatura, setFilterAsignatura] = useState("Todas");
-  const [cursoInput, setCursoInput] = useState("N/A");
+  const [evaluationsAssign, setEvaluationsAssign] = useState<
+    EvaluationAssign[]
+  >([]);
+  const cursoInput = searchParams.get("cursoInput") ?? "N/A";
 
+  const handleQueryParam = (query: string, value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value && query) {
+      params.set(query, value);
+    } else {
+      params.delete(query);
+    }
+
+    router.replace(`${pathname}?${params.toString()}`);
+  };
   useEffect(() => {
     const fetchEvaluationsAssign = async () => {
       try {
@@ -43,7 +58,7 @@ export default function AssignedEvaluations({
 
         setFetchingAssigns(false);
         if (res.ok && cursoInput !== "N/A") {
-          setEvaluationAssign(resData.evaluationAssigneds);
+          setEvaluationsAssign(resData.evaluationAssigneds);
           return;
         } else {
           return;
@@ -55,7 +70,7 @@ export default function AssignedEvaluations({
     if (session && fetchingAssigns) fetchEvaluationsAssign();
   }, [session, fetchingAssigns]);
   useEffect(() => {
-    setEvaluationAssign([]);
+    setEvaluationsAssign([]);
     setFetchingAssigns(false);
     if (cursoInput !== "N/A") setFetchingAssigns(true);
   }, [filterAsignatura, cursoInput]);
@@ -66,7 +81,9 @@ export default function AssignedEvaluations({
           <div className={`${styles.cursoAssignBox}`}>
             <p>Asignatura:</p>
             <select
-              onChange={(e) => setFilterAsignatura(e.target.value)}
+              onChange={(e) => {
+                handleQueryParam("filterAsignatura", e.target.value);
+              }}
               name="asignatura"
               id="asignatura"
               value={filterAsignatura}
@@ -80,7 +97,9 @@ export default function AssignedEvaluations({
             </select>
             <p>Curso:</p>
             <select
-              onChange={(e) => setCursoInput(e.target.value)}
+              onChange={(e) => {
+                handleQueryParam("cursoInput", e.target.value);
+              }}
               name="cursoInput"
               id="cursoInput"
               value={cursoInput}
@@ -152,6 +171,12 @@ export default function AssignedEvaluations({
                   <td className={styles.td}>
                     <div>
                       <p>{item.state}</p>
+                      <Link
+                        href={`/evaluation/monitor/${item._id}`}
+                        className={`${styles.btn} ${styles.monitorear}`}
+                      >
+                        Monitorear
+                      </Link>
                       <div
                         onClick={() => {}}
                         className={`${styles.btn} ${styles.complete}`}

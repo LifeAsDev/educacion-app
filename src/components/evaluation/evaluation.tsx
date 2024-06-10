@@ -1,33 +1,15 @@
 "use client";
 import styles from "./styles.module.css";
-import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import EvaluationTest from "@/models/evaluationTest";
 import Asignatura from "@/models/asignatura";
 import { useOnboardingContext } from "@/lib/context";
-import SearchInput from "@/components/management/searchInput/searchInput";
 import EvaluationOnCourseModal from "@/components/evaluation/evaluationOnCourseModal/evaluationOnCourseModal";
 import { CursoWrap } from "@/components/management/management";
-import curso from "@/schemas/curso";
 import ManageEvaluations from "@/components/evaluation/manageEvaluations/manageEvaluations";
 import EvaluationTable from "@/components/evaluation/evaluationTable/evaluationTable";
-import AssignedEvaluations from "@/components/evaluation/assignedEvaluations/assignedEvaluations";
-import { useSearchParams, usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-interface MonitorArr {
-  tiempo: number;
-  nombre: string;
-  prueba: string;
-  state: string;
-  progress: number[];
-  startTime?: string;
-  endTime?: string;
-  userId: string;
-  pruebaId: string;
-  questionCount: number;
-  asignatura: string;
-}
-export type { MonitorArr };
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+
 export default function Evaluation() {
   const router = useRouter();
   const pathname = usePathname();
@@ -54,13 +36,10 @@ export default function Evaluation() {
     asignatura: string;
   }>(null);
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
-  const [monitorEvaluationArr, setMonitorEvaluationArr] = useState<
-    MonitorArr[]
-  >([]);
-  const [fetchingMonitor, setFetchingMonitor] = useState(false);
+
   const [cursoInput, setCursoInput] = useState("N/A");
 
-  const handleSearch = (query: string, value: string) => {
+  const handleQueryParam = (query: string, value: string) => {
     const params = new URLSearchParams(searchParams);
     if (value && query) {
       params.set(query, value);
@@ -228,59 +207,6 @@ export default function Evaluation() {
     setEvaluationDeleteIndex(null);
   };
 
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
-    if (
-      session &&
-      session.rol !== "Estudiante" &&
-      tabSelected === "Monitor" &&
-      cursoInput !== "N/A"
-    ) {
-      fetchMonitor();
-      intervalId = setInterval(fetchMonitor, 5000);
-    }
-
-    // Limpia el intervalo cuando el componente se desmonte
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [session, tabSelected, cursoInput]);
-
-  useEffect(() => {
-    if (cursoInput !== "N/A") setFetchingMonitor(true);
-  }, [cursoInput]);
-
-  const fetchMonitor = () => {
-    const fetchSubmit = async () => {
-      try {
-        const searchParams = new URLSearchParams();
-        searchParams.append("curso", cursoInput);
-        if (session && session.rol === "Profesor")
-          searchParams.append("profesorId", session._id);
-
-        const res = await fetch(
-          `/api/user/evaluations-on-course?${searchParams.toString()}`,
-          {
-            method: "GET",
-          }
-        );
-
-        const resData = await res.json();
-        setFetchingMonitor(false);
-        if (res.ok) {
-          setMonitorEvaluationArr(resData.users);
-          return;
-        } else {
-          return;
-        }
-      } catch (error) {
-        return;
-      }
-    };
-    fetchSubmit();
-  };
-
   return (
     <main className={styles.main}>
       {assign ? (
@@ -326,7 +252,7 @@ export default function Evaluation() {
           />
         ) : (
           <ManageEvaluations
-            setTabSelected={handleSearch}
+            setTabSelected={handleQueryParam}
             tabSelected={tabSelected}
             inputSearch={inputSearch}
             setInputSearch={setInputSearch}
@@ -345,13 +271,7 @@ export default function Evaluation() {
             itemCount={itemCount}
             pageSelected={pageSelected}
             setPageSelected={setPageSelected}
-            setCursoInput={setCursoInput}
-            cursoInput={cursoInput}
             cursosArr={cursosArr}
-            fetchingMonitor={fetchingMonitor}
-            monitorEvaluationArr={monitorEvaluationArr}
-            setFetchingMonitor={setFetchingMonitor}
-            fetchMonitor={fetchMonitor}
           />
         )
       ) : (

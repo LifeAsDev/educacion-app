@@ -546,9 +546,18 @@
 
 .btn.complete {
   background-color: var(--primary-red);
-  margin-left: auto;
 }
 
 .btn.complete:hover {
   background-color: var(--third-red);
+}
+
+.btn.monitorear {
+  background-color: var(--primary-light-blue);
+  margin-left: auto;
+  margin-right: 0.5em;
+}
+
+.btn.monitorear:hover {
+  background-color: var(--third-light-blue);
 }

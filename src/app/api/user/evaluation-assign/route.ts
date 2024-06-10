@@ -36,7 +36,6 @@ export async function GET(req: Request, { params }: any) {
       },
     ]);
 
-    console.log(evaluationAssigneds);
     return NextResponse.json({
       evaluationAssigneds: evaluationAssigneds,
       message: "Evaluation added successfully",
