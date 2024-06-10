@@ -41,8 +41,7 @@ export default function EvaluationsOnCourseTable({
     const fetchSubmit = async () => {
       try {
         const searchParams = new URLSearchParams();
-        if (session && session.rol === "Profesor")
-          searchParams.append("profesorId", session._id);
+        searchParams.append("evaluationId", evaluationId);
 
         const res = await fetch(
           `/api/user/evaluations-on-course?${searchParams.toString()}`,
@@ -53,8 +52,9 @@ export default function EvaluationsOnCourseTable({
 
         const resData = await res.json();
         setFetchingMonitor(false);
+        console.log(resData.evaluationAssignFind);
         if (res.ok) {
-          setMonitorEvaluationArr(resData.users);
+          setEvaluationAssign(resData.evaluationAssignFind);
           return;
         } else {
           return;
@@ -104,7 +104,7 @@ export default function EvaluationsOnCourseTable({
 
   return (
     <main className={styles.main}>
-      {fetchingMonitor && evaluationAssign && (
+      {!fetchingMonitor && evaluationAssign && (
         <table>
           <thead>
             <tr>
@@ -115,7 +115,10 @@ export default function EvaluationsOnCourseTable({
             </tr>
           </thead>
           <tbody id="evaluationList" className={styles.tbody}>
-            <tr key={`${evaluationAssign._id}`} className={styles.testItem}>
+            <tr
+              key={`${evaluationAssign._id}`}
+              className={`${styles.evaluationAssignBox} ${styles.testItem}`}
+            >
               <td className={styles.td}>
                 <div>
                   <p>{evaluationAssign.curso.name}</p>
@@ -132,7 +135,7 @@ export default function EvaluationsOnCourseTable({
                 </div>
               </td>
               <td className={styles.td}>
-                <div>
+                <div className={`${styles.spaceBetween}`}>
                   <p>{evaluationAssign.state}</p>
                   <div
                     onClick={() => {}}
@@ -154,7 +157,6 @@ export default function EvaluationsOnCourseTable({
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Prueba</th>
               <th>Estado</th>
               <th>Tiempo</th>
             </tr>
@@ -183,11 +185,7 @@ export default function EvaluationsOnCourseTable({
                       <p>{item.nombre}</p>
                     </div>
                   </td>
-                  <td className={styles.td}>
-                    <div>
-                      <p>{item.prueba}</p>
-                    </div>
-                  </td>
+
                   <td className={styles.td}>
                     <div>
                       {item.state === "En progreso" ||
@@ -219,7 +217,7 @@ export default function EvaluationsOnCourseTable({
                     </div>
                   </td>
                   <td className={styles.td}>
-                    <div className={styles.timeBox}>
+                    <div className={`${styles.timeBox} `}>
                       <p>
                         {item.state === "Asignada" ||
                         item.state === "En progreso"

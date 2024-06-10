@@ -57,7 +57,7 @@ export default function AssignedEvaluations({
         const resData = await res.json();
 
         setFetchingAssigns(false);
-        if (res.ok && cursoInput !== "N/A") {
+        if (res.ok) {
           setEvaluationsAssign(resData.evaluationAssigneds);
           return;
         } else {
@@ -69,6 +69,7 @@ export default function AssignedEvaluations({
     };
     if (session && fetchingAssigns) fetchEvaluationsAssign();
   }, [session, fetchingAssigns]);
+
   useEffect(() => {
     setEvaluationsAssign([]);
     setFetchingAssigns(false);

@@ -561,3 +561,7 @@
 .btn.monitorear:hover {
   background-color: var(--third-light-blue);
 }
+
+.spaceBetween {
+  justify-content: space-between !important;
+}

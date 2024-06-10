@@ -1,14 +1,13 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/schemas/user";
 import { NextResponse } from "next/server";
-import UserType from "@/models/user";
 import { MonitorArr } from "@/components/evaluation/evaluationsOnCourseTable/evaluationsOnCourseTable";
 import evaluationTest from "@/schemas/evaluationTest";
-import {
-  formatSecondsToMinutes,
-  getFinishTime,
-} from "@/lib/calculationFunctions";
 import EvaluationAssign from "@/schemas/evaluationAssign";
+import evaluationOnCourse from "@/schemas/evaluationOnCourse";
+import Curso from "@/schemas/curso";
+import Asignatura from "@/schemas/asignatura";
+import EvaluationTest from "@/schemas/evaluationTest";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -46,11 +45,31 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const curso: string[] = searchParams.getAll("curso");
-  const rol: string = searchParams.get("rol")!;
-  const profesorId: string = searchParams.get("profesorId")!;
+  const evaluationId = searchParams.get("evaluationId");
+
   try {
     await connectMongoDB();
+    const evaluationAssignFind = await EvaluationAssign.findById(evaluationId);
+    await EvaluationAssign.populate(evaluationAssignFind, [
+      {
+        path: "curso",
+        model: Curso,
+      },
+      {
+        path: "asignatura",
+        model: Asignatura,
+      },
+      {
+        path: "evaluationId",
+        model: EvaluationTest,
+      },
+    ]);
+
+    return NextResponse.json({
+      evaluationAssignFind: evaluationAssignFind,
+      message: "Evaluation added successfully",
+    });
+
     const users = await User.find({
       $and: [{ "curso.0": { $in: curso } }, { rol: "Estudiante" }],
     });
