@@ -12,5 +12,6 @@ interface EvaluationOnCourse {
   state: string;
   progress: number[];
   evaluationAssignId?: Types.ObjectId;
+  estudianteId: Types.ObjectId;
 }
 export type { Answer, EvaluationOnCourse };

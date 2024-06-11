@@ -2,9 +2,8 @@ import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/schemas/user";
 import { NextResponse } from "next/server";
 import { MonitorArr } from "@/components/evaluation/evaluationsOnCourseTable/evaluationsOnCourseTable";
-import evaluationTest from "@/schemas/evaluationTest";
 import EvaluationAssign from "@/schemas/evaluationAssign";
-import evaluationOnCourse from "@/schemas/evaluationOnCourse";
+import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 import Curso from "@/schemas/curso";
 import Asignatura from "@/schemas/asignatura";
 import EvaluationTest from "@/schemas/evaluationTest";
@@ -45,11 +44,13 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const evaluationId = searchParams.get("evaluationId");
+  const evaluationAssignId = searchParams.get("evaluationAssignId");
 
   try {
     await connectMongoDB();
-    const evaluationAssignFind = await EvaluationAssign.findById(evaluationId);
+    const evaluationAssignFind = await EvaluationAssign.findById(
+      evaluationAssignId
+    );
     await EvaluationAssign.populate(evaluationAssignFind, [
       {
         path: "curso",
@@ -64,57 +65,60 @@ export async function GET(req: Request) {
         model: EvaluationTest,
       },
     ]);
-
-    return NextResponse.json({
-      evaluationAssignFind: evaluationAssignFind,
-      message: "Evaluation added successfully",
-    });
-
-    const users = await User.find({
-      $and: [{ "curso.0": { $in: curso } }, { rol: "Estudiante" }],
-    });
-
-    for (const user of users) {
-      // Paso 2: Obtener el array evaluationsOnCourse del usuario
-      const evaluationsOnCourse = user.evaluationsOnCourse;
-
-      // Paso 3: Filtrar los elementos que tienen un evaluationId válido (no null)
-      const validEvaluations = evaluationsOnCourse.filter(
-        (evaluation: { evaluationId: null }) => {
-          return !!evaluation.evaluationId;
-        }
-      );
-
-      // Paso 4: Si el array filtrado es diferente al original, actualizar el documento del usuario
-      if (evaluationsOnCourse.length !== validEvaluations.length) {
-        user.evaluationsOnCourse = validEvaluations;
-        await user.save();
-      }
+    let users = [];
+    if (evaluationAssignFind.curso) {
+      users = await User.find({
+        "curso.0": evaluationAssignFind.curso._id,
+        rol: "Estudiante",
+      }).select("nombre");
     }
+    let evaluationsOnCourseFind = await EvaluationOnCourse.find({
+      evaluationAssignId,
+    });
+
+    const newEvaluationsOnCourse = users
+      .filter((userItem) =>
+        evaluationsOnCourseFind.every(
+          (evaluationOnCourseItem) =>
+            evaluationOnCourseItem.estudianteId.toString() !==
+            userItem._id.toString()
+        )
+      )
+      .map((userItem) => {
+        return {
+          evaluationAssignId,
+          estudianteId: userItem._id,
+        };
+      });
+
+    await EvaluationOnCourse.create(newEvaluationsOnCourse);
+
+    evaluationsOnCourseFind = await EvaluationOnCourse.find({
+      evaluationAssignId,
+    });
+
+    await EvaluationOnCourse.populate(evaluationsOnCourseFind, {
+      path: "estudianteId",
+      model: User,
+    });
+
+    console.log({
+      newEvaluationsOnCourse,
+      evaluationsOnCourseFind,
+    });
 
     const usersMonitor: MonitorArr[] = [];
     const currentTime = new Date();
 
     let yo = 0;
 
-    for (const user of users) {
-      await user.populate({
-        path: "evaluationsOnCourse.evaluationId",
-        model: evaluationTest,
-      });
-      for (const evaluationOnCourse of user.evaluationsOnCourse) {
-        if (
-          (evaluationOnCourse.evaluationId &&
-            evaluationOnCourse.profesorId !== undefined &&
-            evaluationOnCourse.profesorId.toString() === profesorId) ||
-          !profesorId
-        ) {
-          yo++;
+    for (const evaluationOnCourse of evaluationsOnCourseFind) {
+      yo++;
 
-          const startTime = new Date(evaluationOnCourse.startTime);
-          const elapsedMinutes =
-            (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
-          /* 
+      const startTime = new Date(evaluationOnCourse.startTime);
+      const elapsedMinutes =
+        (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
+      /* 
           if (yo === 1) {
             console.log({
               startTime,
@@ -126,73 +130,71 @@ export async function GET(req: Request) {
             });
           } */
 
-          if (
-            elapsedMinutes &&
-            elapsedMinutes > 90 &&
-            evaluationOnCourse.state === "En progreso"
-          ) {
-            evaluationOnCourse.state = "Completada";
-            evaluationOnCourse.endTime = currentTime;
-            await user.save();
-          }
+      if (
+        elapsedMinutes &&
+        elapsedMinutes > 90 &&
+        evaluationOnCourse.state === "En progreso"
+      ) {
+        evaluationOnCourse.state = "Completada";
+        evaluationOnCourse.endTime = currentTime;
+        await evaluationOnCourse.save();
+      }
 
-          const progress: number[] = [];
-          const questionCount = Math.max(
-            evaluationOnCourse.evaluationId.questionArr.length,
-            1
-          );
+      const progress: number[] = [];
+      const questionCount = Math.max(
+        evaluationAssignFind.evaluationId.questionArr.length,
+        1
+      );
 
-          evaluationOnCourse.answers.forEach(
-            (answerItem: { questionId: any; answer: any }) => {
-              const questionArrItem =
-                evaluationOnCourse.evaluationId.questionArr.find(
-                  (questionItem: { _id: any }) => {
-                    return (
-                      questionItem._id.toString() ===
-                      answerItem.questionId.toString()
-                    );
-                  }
+      evaluationOnCourse.answers.forEach(
+        (answerItem: { questionId: any; answer: any }) => {
+          const questionArrItem =
+            evaluationAssignFind.evaluationId.questionArr.find(
+              (questionItem: { _id: any }) => {
+                return (
+                  questionItem._id.toString() ===
+                  answerItem.questionId.toString()
                 );
-              if (questionArrItem) {
-                if (questionArrItem.type === "multiple") {
-                  if (answerItem.answer === "a") progress.push(1);
-                  else progress.push(0);
-                } else {
-                  progress.push(2);
-                }
               }
-            }
-          );
-
-          const userMonitor: MonitorArr = {
-            nombre: `${user.nombre} ${user.apellido}`,
-            prueba: evaluationOnCourse.evaluationId.name,
-            state: evaluationOnCourse.state,
-            progress: progress,
-            questionCount,
-            userId: user._id,
-            pruebaId: evaluationOnCourse.evaluationId._id,
-            startTime: evaluationOnCourse.startTime,
-            endTime: evaluationOnCourse.endTime,
-            tiempo: evaluationOnCourse.evaluationId.tiempo,
-            asignatura: evaluationOnCourse.evaluationId.asignatura,
-          };
-
-          while (progress.length < questionCount) {
-            if (evaluationOnCourse.state === "Completada") {
-              progress.push(0);
+            );
+          if (questionArrItem) {
+            if (questionArrItem.type === "multiple") {
+              if (answerItem.answer === "a") progress.push(1);
+              else progress.push(0);
             } else {
-              progress.push(3);
+              progress.push(2);
             }
           }
-          usersMonitor.push(userMonitor);
+        }
+      );
+
+      const userMonitor: MonitorArr = {
+        nombre: `${evaluationOnCourse.estudianteId.nombre} ${evaluationOnCourse.estudianteId.apellido}`,
+        prueba: evaluationAssignFind.evaluationId.name,
+        state: evaluationOnCourse.state,
+        progress: progress,
+        questionCount,
+        userId: evaluationOnCourse.estudianteId._id,
+        pruebaId: evaluationAssignFind.evaluationId._id,
+        startTime: evaluationOnCourse.startTime,
+        endTime: evaluationOnCourse.endTime,
+        tiempo: evaluationAssignFind.evaluationId.tiempo,
+        asignatura: evaluationAssignFind.evaluationId.asignatura,
+      };
+
+      while (progress.length < questionCount) {
+        if (evaluationOnCourse.state === "Completada") {
+          progress.push(0);
+        } else {
+          progress.push(3);
         }
       }
+      usersMonitor.push(userMonitor);
     }
-    const item = usersMonitor[1];
-
+    console.log({ u: usersMonitor[0] });
     return NextResponse.json({
-      users: usersMonitor,
+      evaluationAssignFind: evaluationAssignFind,
+      usersMonitor,
       message: "Evaluation added successfully",
     });
   } catch (error) {

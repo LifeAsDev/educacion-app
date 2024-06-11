@@ -39,10 +39,11 @@ export default function AssignedEvaluations({
     const fetchEvaluationsAssign = async () => {
       try {
         const searchParams = new URLSearchParams();
+        searchParams.append("curso", cursoInput);
+
         if (session && session.rol === "Profesor")
           searchParams.append("profesorId", session._id);
         else {
-          searchParams.append("curso", cursoInput);
           if (filterAsignatura !== "Todas")
             searchParams.append("asignatura", filterAsignatura);
         }
@@ -77,55 +78,58 @@ export default function AssignedEvaluations({
   }, [filterAsignatura, cursoInput]);
   return (
     <>
-      {session && session.rol !== "Profesor" && (
-        <div className={styles.top}>
-          <div className={`${styles.cursoAssignBox}`}>
-            <p>Asignatura:</p>
-            <select
-              onChange={(e) => {
-                handleQueryParam("filterAsignatura", e.target.value);
-              }}
-              name="asignatura"
-              id="asignatura"
-              value={filterAsignatura}
-            >
-              <option value="Todas">Todos</option>
-              {asignaturasArr.map((asignatura) => (
-                <option key={asignatura._id} value={asignatura._id}>
-                  {asignatura.name}
-                </option>
-              ))}
-            </select>
-            <p>Curso:</p>
-            <select
-              onChange={(e) => {
-                handleQueryParam("cursoInput", e.target.value);
-              }}
-              name="cursoInput"
-              id="cursoInput"
-              value={cursoInput}
-            >
-              <option value="N/A">Escoja un curso</option>
-              {session &&
-                cursosArr
-                  .filter(
-                    (curso) =>
-                      session.rol === "Admin" ||
-                      session.rol === "Directivo" ||
-                      session.curso.some(
-                        (sessionCurso: { _id: string }) =>
-                          sessionCurso._id === curso._id
-                      )
-                  )
-                  .map((curso) => (
-                    <option key={curso._id} value={curso._id}>
-                      {curso.name}
-                    </option>
-                  ))}
-            </select>
-          </div>
+      <div className={styles.top}>
+        <div className={`${styles.cursoAssignBox}`}>
+          {session && session.rol !== "Profesor" && (
+            <>
+              <p>Asignatura:</p>
+              <select
+                onChange={(e) => {
+                  handleQueryParam("filterAsignatura", e.target.value);
+                }}
+                name="asignatura"
+                id="asignatura"
+                value={filterAsignatura}
+              >
+                <option value="Todas">Todos</option>
+                {asignaturasArr.map((asignatura) => (
+                  <option key={asignatura._id} value={asignatura._id}>
+                    {asignatura.name}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+          <p>Curso:</p>
+          <select
+            onChange={(e) => {
+              handleQueryParam("cursoInput", e.target.value);
+            }}
+            name="cursoInput"
+            id="cursoInput"
+            value={cursoInput}
+          >
+            <option value="N/A">Escoja un curso</option>
+            {session &&
+              cursosArr
+                .filter(
+                  (curso) =>
+                    session.rol === "Admin" ||
+                    session.rol === "Directivo" ||
+                    session.curso.some(
+                      (sessionCurso: { _id: string }) =>
+                        sessionCurso._id === curso._id
+                    )
+                )
+                .map((curso) => (
+                  <option key={curso._id} value={curso._id}>
+                    {curso.name}
+                  </option>
+                ))}
+          </select>
         </div>
-      )}
+      </div>
+
       <div
         id="evaluationList"
         className={`${fetchingAssigns ? styles.hidden : ""} ${styles.tableBox}`}

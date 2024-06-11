@@ -26,9 +26,9 @@ interface MonitorArr {
 export type { MonitorArr };
 
 export default function EvaluationsOnCourseTable({
-  evaluationId,
+  evaluationAssignId,
 }: {
-  evaluationId: string;
+  evaluationAssignId: string;
 }) {
   const { session } = useOnboardingContext();
   const [monitorEvaluationArr, setMonitorEvaluationArr] = useState<
@@ -41,7 +41,7 @@ export default function EvaluationsOnCourseTable({
     const fetchSubmit = async () => {
       try {
         const searchParams = new URLSearchParams();
-        searchParams.append("evaluationId", evaluationId);
+        searchParams.append("evaluationAssignId", evaluationAssignId);
 
         const res = await fetch(
           `/api/user/evaluations-on-course?${searchParams.toString()}`,
@@ -52,8 +52,8 @@ export default function EvaluationsOnCourseTable({
 
         const resData = await res.json();
         setFetchingMonitor(false);
-        console.log(resData.evaluationAssignFind);
         if (res.ok) {
+          setMonitorEvaluationArr(resData.usersMonitor);
           setEvaluationAssign(resData.evaluationAssignFind);
           return;
         } else {

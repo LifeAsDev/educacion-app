@@ -7,7 +7,7 @@ const answerSchema = new Schema<Answer>({
 });
 
 const evaluationOnCourseSchema = new Schema<EvaluationOnCourse>({
-  answers: [answerSchema],
+  answers: { type: [answerSchema], default: [] },
   startTime: Date,
   endTime: Date,
   state: { type: String, default: "Asignada" },
@@ -16,7 +16,11 @@ const evaluationOnCourseSchema = new Schema<EvaluationOnCourse>({
     type: Schema.Types.ObjectId,
     ref: "EvaluationAssignId",
   },
+  estudianteId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
-export default mongoose.models?.User ||
-  mongoose.model("EvaluationOnCourseSchema", evaluationOnCourseSchema);
+export default mongoose.models?.EvaluationOnCourse ||
+  mongoose.model("EvaluationOnCourse", evaluationOnCourseSchema);
