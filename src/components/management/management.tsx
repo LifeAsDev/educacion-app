@@ -64,6 +64,7 @@ export default function Management() {
 
   const addCurso = () => {
     if (
+      cursoInput.toUpperCase() !== "N/A" &&
       cursoInput !== "" &&
       !cursosArr.some((curso) => curso.name === cursoInput)
     ) {
@@ -170,6 +171,7 @@ export default function Management() {
 
   const addAsignatura = () => {
     if (
+      asignaturaInput.toUpperCase() !== "N/A" &&
       asignaturaInput !== "" &&
       !asignaturasArr.some((asignatura) => asignatura.name === asignaturaInput)
     ) {
@@ -377,7 +379,7 @@ export default function Management() {
   ]);
 
   useEffect(() => {
-    if (tabSelected === "asignaturas" || userSelected) {
+    if (tabSelected || userSelected) {
       const divElement = document.getElementById("wrapBoxAsignatura");
       if (divElement?.scrollTop) {
         divElement!.scrollTop = 0;
@@ -410,7 +412,7 @@ export default function Management() {
       };
       fetchSubmit();
     }
-    if (tabSelected === "cursos" || userSelected) {
+    if (tabSelected || userSelected) {
       const divElement = document.getElementById("wrapBox");
       if (divElement?.scrollTop) {
         divElement!.scrollTop = 0;

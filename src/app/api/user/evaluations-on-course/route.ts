@@ -102,11 +102,6 @@ export async function GET(req: Request) {
       model: User,
     });
 
-    console.log({
-      newEvaluationsOnCourse,
-      evaluationsOnCourseFind,
-    });
-
     const usersMonitor: MonitorArr[] = [];
     const currentTime = new Date();
 
@@ -191,7 +186,6 @@ export async function GET(req: Request) {
       }
       usersMonitor.push(userMonitor);
     }
-    console.log({ u: usersMonitor[0] });
     return NextResponse.json({
       evaluationAssignFind: evaluationAssignFind,
       usersMonitor,

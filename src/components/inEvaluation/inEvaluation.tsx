@@ -101,6 +101,8 @@ export default function InEvaluation({ id }: { id?: string }) {
   const [time, setTime] = useState(-1);
   const [evaluationTime, setEvaluationTime] = useState(90);
   const [startTime, setStartTime] = useState<undefined | string>();
+  const [evalOnCourse, setEvalOnCourse] = useState<any>();
+
   useEffect(() => {
     const fetchAsignaturas = async () => {
       try {
@@ -135,19 +137,12 @@ export default function InEvaluation({ id }: { id?: string }) {
       ) {
         router.push(`/evaluation`);
       } else if (answers.length === 0) {
-        const evaluationOnCourseIndex = session.evaluationsOnCourse.findIndex(
-          (evaluation: { evaluationId: string }) =>
-            evaluation.evaluationId === id
-        );
         if (
-          evaluationOnCourseIndex !== -1 &&
-          session.evaluationsOnCourse &&
-          session.evaluationsOnCourse[evaluationOnCourseIndex].startTime &&
+          evalOnCourse &&
+          evalOnCourse.startTime &&
           session.rol === "Estudiante"
         ) {
-          setStartTime(
-            session.evaluationsOnCourse[evaluationOnCourseIndex].startTime
-          );
+          setStartTime(evalOnCourse.startTime);
         } else if (session.rol === "Estudiante") {
           setStartTime(new Date().toISOString());
         }
@@ -216,7 +211,7 @@ export default function InEvaluation({ id }: { id?: string }) {
           searchParams.append("userId", session._id);
 
           const response = await fetch(
-            `/api/evaluation-test/${id}?${searchParams.toString()}`,
+            `/api/user/evaluation-assign/${id}?${searchParams.toString()}`,
             {
               method: "GET",
             }

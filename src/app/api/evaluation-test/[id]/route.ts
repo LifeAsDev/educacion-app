@@ -38,66 +38,6 @@ export async function GET(req: Request, { params }: any) {
   const userId = searchParams.get("userId");
   const rol = searchParams.get("rol");
 
-  if (rol && rol === "Estudiante") {
-    const userEstudiante = await User.findById(userId);
-
-    if (userEstudiante) {
-      const evaluationIndex = userEstudiante.evaluationsOnCourse?.findIndex(
-        (evaluation: { evaluationId: { toString: () => any } }) => {
-          return (
-            evaluation.evaluationId && evaluation.evaluationId.toString() === id
-          );
-        }
-      );
-
-      if (evaluationIndex !== undefined && evaluationIndex !== -1) {
-        const evaluation = userEstudiante.evaluationsOnCourse![evaluationIndex];
-        const currentTime = new Date();
-        const startTime = new Date(evaluation.startTime);
-        const elapsedMinutes =
-          (currentTime.getTime() - startTime.getTime()) / 60000;
-
-        let updateFields: any = {};
-
-        if (
-          evaluation.state === "En Progreso" &&
-          elapsedMinutes > (evaluation.tiempo ?? 90)
-        ) {
-          console.log("ev-t>id");
-          evaluation.state = "Completada";
-          evaluation.endTime = currentTime;
-          updateFields = {
-            "evaluationsOnCourse.$.state": evaluation.state,
-            "evaluationsOnCourse.$.endTime": evaluation.endTime,
-          };
-        }
-
-        if (evaluation.state === "Asignada") {
-          evaluation.state = "En progreso";
-          evaluation.startTime = currentTime;
-          updateFields = {
-            "evaluationsOnCourse.$.state": evaluation.state,
-            "evaluationsOnCourse.$.startTime": evaluation.startTime,
-          };
-        }
-
-        if (evaluation.state === "Completada") {
-          return NextResponse.json(
-            { message: "EvaluationTest completed" },
-            { status: 404 }
-          );
-        }
-
-        if (Object.keys(updateFields).length > 0) {
-          await User.updateOne(
-            { _id: userId, "evaluationsOnCourse.evaluationId": id },
-            { $set: updateFields }
-          );
-        }
-      }
-    }
-  }
-
   try {
     const evaluationTest = await EvaluationTest.findById(id).populate({
       path: "asignatura",
