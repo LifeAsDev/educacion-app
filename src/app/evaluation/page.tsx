@@ -1,5 +1,10 @@
 import Evaluation from "@/components/evaluation/evaluation";
+import { Suspense } from "react";
 
 export default function Page() {
-  return <Evaluation />;
+  return (
+    <Suspense>
+      <Evaluation />
+    </Suspense>
+  );
 }
