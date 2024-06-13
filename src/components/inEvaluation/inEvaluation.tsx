@@ -142,27 +142,13 @@ export default function InEvaluation({ id }: { id?: string }) {
           return { questionId: question._id!, answer: "" };
         });
         const newAnswers: Answers[] = blankAnswers.map((answer, i) => {
-          const evaluationIndex = session.evaluationsOnCourse
-            ? session.evaluationsOnCourse.findIndex(
-                (evaluation: { evaluationId: string }) =>
-                  evaluation.evaluationId === id
-              )
-            : -1;
-
-          const answerIndex =
-            evaluationIndex === -1
-              ? -1
-              : session.evaluationsOnCourse[evaluationIndex].answers.findIndex(
-                  (evaluationAnswer: { questionId: string }) =>
-                    answer.questionId === evaluationAnswer.questionId
-                );
+          const answerIndex = evalOnCourse.answers.findIndex(
+            (evaluationAnswer: { questionId: string }) =>
+              answer.questionId === evaluationAnswer.questionId
+          );
 
           const newAnswer =
-            answerIndex === -1
-              ? ""
-              : session.evaluationsOnCourse[evaluationIndex].answers[
-                  answerIndex
-                ].answer;
+            answerIndex === -1 ? "" : evalOnCourse.answers[answerIndex].answer;
 
           return { ...answer, answer: newAnswer };
         });
@@ -171,7 +157,7 @@ export default function InEvaluation({ id }: { id?: string }) {
         setEditFetch(false);
       }
     }
-  }, [session, asignatura]);
+  }, [session, asignatura, evalOnCourse]);
 
   const cache = useRef(false);
 
@@ -255,7 +241,7 @@ export default function InEvaluation({ id }: { id?: string }) {
     try {
       const data = new FormData();
       data.append("answer", answer);
-      data.append("evaluationId", id!);
+      data.append("evaluationAssignId", id!);
       data.append("questionId", questionId);
       data.append("userId", session._id);
 
@@ -409,6 +395,7 @@ export default function InEvaluation({ id }: { id?: string }) {
                   <p className={styles.error}>Campo obligatorio</p>
                 )}
                 <textarea
+                  spellCheck="false"
                   onBlur={(e) => fetchAnswer(e.target.value, question._id!)}
                   onChange={(e) => handleAnswer(e.target.value, question._id!)}
                   placeholder="Respuesta"

@@ -50,7 +50,6 @@ export async function GET(req: Request, { params }: any) {
                 (currentTime.getTime() - startTime.getTime()) / 60000;
 
               let updateFields: any = {};
-              console.log(evaluationOnCourseFind);
               if (
                 evaluationOnCourseFind.state === "En Progreso" &&
                 elapsedMinutes > (evaluationOnCourseFind.tiempo ?? 90)
@@ -79,7 +78,6 @@ export async function GET(req: Request, { params }: any) {
                 );
               }
 
-              console.log(updateFields);
               if (Object.keys(updateFields).length > 0) {
                 await EvaluationOnCourse.findByIdAndUpdate(
                   evaluationOnCourseFind._id,
