@@ -4,6 +4,7 @@ import Link from "next/link";
 import Asignatura from "@/models/asignatura";
 import EvaluationTest from "@/models/evaluationTest";
 import { Dispatch, SetStateAction } from "react";
+import { formatMinutesBeautiful } from "@/lib/calculationFunctions";
 
 export default function EvaluationTable({
   fetchingEvaluations,
@@ -38,6 +39,7 @@ export default function EvaluationTable({
             <th>Dificultad</th>
             <th>Tipo de prueba</th>
             <th>Asignatura</th>
+            <th>Tiempo</th>
           </tr>
         </thead>
         <tbody id="evaluationList" className={styles.tbody}>
@@ -45,6 +47,7 @@ export default function EvaluationTable({
             <>
               {Array.from({ length: 10 }, (_, index) => (
                 <tr key={index} className={styles.testItem}>
+                  <td className={styles.td}></td>
                   <td className={styles.td}></td>
                   <td className={styles.td}></td>
                   <td className={styles.td}></td>
@@ -201,6 +204,11 @@ export default function EvaluationTable({
                         ? (item.asignatura as Asignatura).name
                         : "N/A"}
                     </p>
+                  </div>
+                </td>
+                <td className={styles.td}>
+                  <div>
+                    <p>{formatMinutesBeautiful(item.tiempo || 90)}</p>
                   </div>
                 </td>
               </tr>

@@ -119,7 +119,7 @@ export default function Evaluation() {
     const page = pageSelected.toString();
     setFetchingEvaluations(true);
 
-    const fetchSubmit = async () => {
+    const fetchEvaluationsTest = async () => {
       try {
         const data = new FormData();
         const searchParams = new URLSearchParams();
@@ -129,16 +129,7 @@ export default function Evaluation() {
         searchParams.append("type", filterType);
         searchParams.append("difficulty", filterDifficulty);
         searchParams.append("asignatura", filterAsignatura);
-        if (session.rol === "Estudiante") {
-          searchParams.append("rol", session.rol);
-          searchParams.append("pageSize", "1000");
-          session.evaluationsOnCourse.forEach(
-            (evaluation: { state: string; evaluationId: string }) => {
-              if (evaluation.state !== "Completada")
-                searchParams.append("evaluationsId", evaluation.evaluationId);
-            }
-          );
-        }
+
         const res = await fetch(
           `/api/evaluation-test?${searchParams.toString()}`,
           {
@@ -163,17 +154,41 @@ export default function Evaluation() {
         return;
       }
     };
+    const fetchEvaluationsAssigned = async () => {
+      try {
+        const data = new FormData();
+        const searchParams = new URLSearchParams();
+
+        const res = await fetch(
+          `/api/user/evaluations-on-course/${
+            session._id
+          }?${searchParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+
+        const resData = await res.json();
+        if (res.ok) {
+          setFetchingEvaluations(false);
+          setEvaluationArr(resData.evaluationTests);
+          return;
+        } else {
+          setFetchingEvaluations(false);
+
+          return;
+        }
+      } catch (error) {
+        setFetchingEvaluations(false);
+
+        return;
+      }
+    };
     if (pageSelected > 0 && session) {
       if (session.rol !== "Estudiante") {
-        fetchSubmit();
-      } else if (
-        session.evaluationsOnCourse &&
-        session.evaluationsOnCourse.length > 0
-      ) {
-        fetchSubmit();
+        fetchEvaluationsTest();
       } else {
-        setFetchingEvaluations(false);
-        setPageSelected(1);
+        fetchEvaluationsAssigned();
       }
     } else {
       setFetchingEvaluations(false);
