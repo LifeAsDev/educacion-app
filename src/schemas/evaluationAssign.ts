@@ -17,7 +17,6 @@ const evaluationAssignSchema = new Schema<EvaluationAssign>(
     asignatura: {
       type: Schema.Types.ObjectId,
       ref: "asignatura",
-      required: true,
     },
     state: { type: String, default: "Asignada" },
   },

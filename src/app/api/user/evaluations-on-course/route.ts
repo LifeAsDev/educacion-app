@@ -10,23 +10,28 @@ import EvaluationTest from "@/schemas/evaluationTest";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
-  const curso = JSON.parse(formData.get("curso") as string);
+  const curso = formData.getAll("curso");
   const evaluationId = formData.get("evaluationId") as string;
   const profesorId = formData.get("profesorId") as string;
   const asignatura = formData.get("asignatura") as string;
 
   try {
     await connectMongoDB();
-    const newEvaluationAssignQuery: any = {
-      evaluationId,
-      profesorId,
-      curso,
-      state: "Asignada",
-    };
-    if (asignatura !== "N/A") newEvaluationAssignQuery.asignatura = asignatura;
+    const newEvaluationsAssignQuery = curso.map((item) => {
+      const newEvaluationAssignQuery: any = {
+        evaluationId,
+        profesorId,
+        curso: item,
+        state: "Asignada",
+      };
+      if (asignatura !== "N/A")
+        newEvaluationAssignQuery.asignatura = asignatura;
+
+      return newEvaluationAssignQuery;
+    });
 
     const newEvaluationAssign = await EvaluationAssign.create(
-      newEvaluationAssignQuery
+      newEvaluationsAssignQuery
     );
 
     return NextResponse.json({

@@ -128,7 +128,7 @@ export default function EvaluationTable({
                               setAssign({
                                 id: item._id,
                                 name: item.name,
-                                asignatura: item.asignatura!._id! || "N/A",
+                                asignatura: item.asignatura?._id ?? "N/A",
                               });
                           }}
                           className="ml-[1px]"

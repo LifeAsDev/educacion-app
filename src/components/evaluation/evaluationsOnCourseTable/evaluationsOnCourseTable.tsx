@@ -131,7 +131,7 @@ export default function EvaluationsOnCourseTable({
               </td>
               <td className={styles.td}>
                 <div>
-                  <p>{evaluationAssign.asignatura?.name}</p>
+                  <p>{evaluationAssign.asignatura?.name || "N/A"}</p>
                 </div>
               </td>
               <td className={styles.td}>
@@ -185,7 +185,6 @@ export default function EvaluationsOnCourseTable({
                       <p>{item.nombre}</p>
                     </div>
                   </td>
-
                   <td className={styles.td}>
                     <div>
                       {item.state === "En progreso" ||
@@ -217,7 +216,7 @@ export default function EvaluationsOnCourseTable({
                     </div>
                   </td>
                   <td className={styles.td}>
-                    <div className={`${styles.timeBox} `}>
+                    <div className={`${styles.timeBox}`}>
                       <p>
                         {item.state === "Asignada" ||
                         item.state === "En progreso"
@@ -249,7 +248,7 @@ export default function EvaluationsOnCourseTable({
                         }
                         className={`${styles.btn} ${styles.cancel}`}
                       >
-                        Borrar
+                        Terminar
                       </div>
                     </div>
                   </td>

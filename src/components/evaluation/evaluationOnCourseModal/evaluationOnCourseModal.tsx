@@ -26,10 +26,7 @@ export default function EvaluationOnCourseModal({
     const fetchSubmit = async () => {
       try {
         const data = new FormData();
-        data.set(
-          "curso",
-          JSON.stringify(curso.map((cursoItem) => cursoItem._id))
-        );
+        curso.map((cursoItem) => data.set("curso", cursoItem._id as string));
         data.set("evaluationId", evaluationId as string);
         data.set("profesorId", session._id as string);
         data.set("asignatura", evaluationAsignatura as string);

@@ -129,7 +129,6 @@ export default function AssignedEvaluations({
           </select>
         </div>
       </div>
-
       <div
         id="evaluationList"
         className={`${fetchingAssigns ? styles.hidden : ""} ${styles.tableBox}`}
@@ -170,7 +169,7 @@ export default function AssignedEvaluations({
                   </td>
                   <td className={styles.td}>
                     <div>
-                      <p>{item.asignatura?.name}</p>
+                      <p>{item.asignatura?.name ?? "N/A"}</p>
                     </div>
                   </td>
                   <td className={styles.td}>
@@ -195,11 +194,9 @@ export default function AssignedEvaluations({
             )}
           </tbody>
         </table>
-
         {session && session.rol !== "Profesor" && cursoInput === "N/A" && (
           <div className={styles.tableNone}>Escoja un curso</div>
         )}
-
         {session &&
           (session.rol === "Profesor" ||
             (session.rol !== "Profesor" && cursoInput !== "N/A")) &&
@@ -209,7 +206,6 @@ export default function AssignedEvaluations({
               Ninguna evaluación encontrada
             </div>
           )}
-
         {fetchingAssigns ? (
           <div className={styles.overlay}>
             <div className={styles.loader}></div>

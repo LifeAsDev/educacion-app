@@ -158,6 +158,7 @@ export default function Evaluation() {
       try {
         const data = new FormData();
         const searchParams = new URLSearchParams();
+        searchParams.append("curso", session.curso[0]._id);
 
         const res = await fetch(
           `/api/user/evaluations-on-course/${

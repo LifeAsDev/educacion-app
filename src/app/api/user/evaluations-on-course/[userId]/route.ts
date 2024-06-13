@@ -11,19 +11,42 @@ import User from "@/schemas/user";
 import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 import Curso from "@/schemas/curso";
 import EvaluationAssign from "@/schemas/evaluationAssign";
-import evaluationTest from "@/schemas/evaluationTest";
 
 export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
+  const curso = searchParams.get("curso");
 
   const estudianteId = params.userId;
 
   try {
     await connectMongoDB();
-    const evaluationsOnCourseFind = await EvaluationOnCourse.find({
+    const evaluationsAssignFind = await EvaluationAssign.find({ curso });
+    let evaluationsOnCourseFind = await EvaluationOnCourse.find({
+      estudianteId,
+    });
+
+    const newEvaluationsOnCourse = evaluationsAssignFind
+      .filter((itemAssign) =>
+        evaluationsOnCourseFind.every(
+          (evaluationOnCourseItem) =>
+            evaluationOnCourseItem.evaluationAssignId.toString() !==
+            itemAssign._id.toString()
+        )
+      )
+      .map((itemAssign) => {
+        return {
+          evaluationAssignId: itemAssign._id,
+          estudianteId,
+        };
+      });
+
+    await EvaluationOnCourse.create(newEvaluationsOnCourse);
+
+    evaluationsOnCourseFind = await EvaluationOnCourse.find({
       estudianteId,
       state: { $ne: "Completada" },
     });
+
     await EvaluationOnCourse.populate(evaluationsOnCourseFind, [
       {
         path: "evaluationAssignId",
@@ -38,6 +61,7 @@ export async function GET(req: Request, { params }: any) {
         },
       },
     ]);
+
     const evaluationsOnCourseMap = evaluationsOnCourseFind.map((item) => {
       return {
         _id: item._id,
@@ -47,7 +71,6 @@ export async function GET(req: Request, { params }: any) {
         tiempo: item.evaluationAssignId.evaluationId.tiempo,
       };
     });
-    console.log(evaluationsOnCourseMap);
 
     return NextResponse.json(
       {

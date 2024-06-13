@@ -8,7 +8,7 @@ interface EvaluationAssign {
   evaluationId: EvaluationTest;
   profesorId: User;
   curso: Curso;
-  asignatura: Asignatura;
+  asignatura?: Asignatura;
   state: string;
   _id: string;
 }
