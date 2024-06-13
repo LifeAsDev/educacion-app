@@ -18,14 +18,26 @@ export default function AssignedEvaluations({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const filterAsignatura = searchParams.get("filterAsignatura") ?? "Todas";
   const [fetchingAssigns, setFetchingAssigns] = useState(false);
   const [evaluationsAssign, setEvaluationsAssign] = useState<
     EvaluationAssign[]
   >([]);
-  const cursoInput = searchParams.get("cursoInput") ?? "N/A";
+
+  const [cursoInput, setCursoInput] = useState("N/A");
+  const [filterAsignatura, setFilterAsignatura] = useState("Todas");
+
+  useEffect(() => {
+    setCursoInput(searchParams.get("cursoInput") ?? "N/A");
+    setFilterAsignatura(searchParams.get("filterAsignatura") ?? "Todas");
+  }, [searchParams]);
 
   const handleQueryParam = (query: string, value: string) => {
+    if (query === "cursoInput") {
+      setCursoInput(value);
+    }
+    if (query === "filterAsignatura") {
+      setFilterAsignatura(value);
+    }
     const params = new URLSearchParams(searchParams);
     if (value && query) {
       params.set(query, value);

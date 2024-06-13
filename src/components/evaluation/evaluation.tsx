@@ -14,7 +14,6 @@ export default function Evaluation() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const tabSelected = searchParams.get("tabSelected");
 
   const { session } = useOnboardingContext();
   const fetchedEvaluations = useRef(false);
@@ -37,9 +36,14 @@ export default function Evaluation() {
   }>(null);
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
 
-  const [cursoInput, setCursoInput] = useState("N/A");
+  const [tabSelected, setTabSelected] = useState("Evaluation");
+
+  useEffect(() => {
+    setTabSelected(searchParams.get("tabSelected") ?? "Evaluation");
+  }, [searchParams]);
 
   const handleQueryParam = (query: string, value: string) => {
+    setTabSelected(value);
     const params = new URLSearchParams(searchParams);
     if (value && query) {
       params.set(query, value);
