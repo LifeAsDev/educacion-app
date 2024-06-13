@@ -118,17 +118,6 @@ export async function GET(req: Request) {
       const startTime = new Date(evaluationOnCourse.startTime);
       const elapsedMinutes =
         (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
-      /* 
-          if (yo === 1) {
-            console.log({
-              startTime,
-              currentTime,
-              beautifulTime: formatSecondsToMinutes(elapsedMinutes * 60),
-              elapsedMinutes,
-              name: `${user.nombre} ${user.apellido}`,
-              state: evaluationOnCourse.state,
-            });
-          } */
 
       if (
         elapsedMinutes &&

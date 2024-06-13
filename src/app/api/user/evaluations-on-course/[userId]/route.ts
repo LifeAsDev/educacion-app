@@ -46,6 +46,28 @@ export async function GET(req: Request, { params }: any) {
       estudianteId,
       state: { $ne: "Completada" },
     });
+    const currentTime = new Date();
+
+    for (const evaluationOnCourse of evaluationsOnCourseFind) {
+      const startTime = new Date(evaluationOnCourse.startTime);
+      const elapsedMinutes =
+        (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
+
+      if (
+        elapsedMinutes &&
+        elapsedMinutes > 90 &&
+        evaluationOnCourse.state === "En progreso"
+      ) {
+        evaluationOnCourse.state = "Completada";
+        evaluationOnCourse.endTime = currentTime;
+        await evaluationOnCourse.save();
+      }
+    }
+
+    evaluationsOnCourseFind = await EvaluationOnCourse.find({
+      estudianteId,
+      state: { $ne: "Completada" },
+    });
 
     await EvaluationOnCourse.populate(evaluationsOnCourseFind, [
       {
@@ -64,7 +86,7 @@ export async function GET(req: Request, { params }: any) {
 
     const evaluationsOnCourseMap = evaluationsOnCourseFind.map((item) => {
       return {
-        _id: item._id,
+        _id: item.evaluationAssignId._id,
         name: item.evaluationAssignId.evaluationId.name,
         type: item.evaluationAssignId.evaluationId.type,
         difficulty: item.evaluationAssignId.evaluationId.difficulty,

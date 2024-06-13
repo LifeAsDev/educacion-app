@@ -20,76 +20,87 @@ export async function GET(req: Request, { params }: any) {
     const resQuery: any = {};
     if (rol === "Estudiante") {
       const evaluationAssignFind = await EvaluationAssign.findById(id);
-      await evaluationAssignFind.populate([
-        {
-          path: "curso",
-          model: Curso,
-        },
-        {
-          path: "asignatura",
-          model: Asignatura,
-        },
-        {
-          path: "evaluationId",
-          model: EvaluationTest,
-        },
-      ]);
-      const evaluationOnCourseFind = await EvaluationOnCourse.findOne({
-        estudianteId: userId,
-        evaluationAssignId: id,
-      });
-      if (rol && rol === "Estudiante") {
-        const userEstudiante = await User.findById(userId);
+      if (evaluationAssignFind) {
+        await evaluationAssignFind.populate([
+          {
+            path: "curso",
+            model: Curso,
+          },
+          {
+            path: "asignatura",
+            model: Asignatura,
+          },
+          {
+            path: "evaluationId",
+            model: EvaluationTest,
+          },
+        ]);
+        const evaluationOnCourseFind = await EvaluationOnCourse.findOne({
+          estudianteId: userId,
+          evaluationAssignId: id,
+        });
+        if (rol && rol === "Estudiante") {
+          const userEstudiante = await User.findById(userId);
 
-        if (userEstudiante) {
-          if (evaluationOnCourseFind) {
-            const currentTime = new Date();
-            const startTime = new Date(evaluationOnCourseFind.startTime);
-            const elapsedMinutes =
-              (currentTime.getTime() - startTime.getTime()) / 60000;
+          if (userEstudiante) {
+            if (evaluationOnCourseFind) {
+              const currentTime = new Date();
+              const startTime = new Date(evaluationOnCourseFind.startTime);
+              const elapsedMinutes =
+                (currentTime.getTime() - startTime.getTime()) / 60000;
 
-            let updateFields: any = {};
+              let updateFields: any = {};
+              console.log(evaluationOnCourseFind);
+              if (
+                evaluationOnCourseFind.state === "En Progreso" &&
+                elapsedMinutes > (evaluationOnCourseFind.tiempo ?? 90)
+              ) {
+                evaluationOnCourseFind.state = "Completada";
+                evaluationOnCourseFind.endTime = currentTime;
+                updateFields = {
+                  state: evaluationOnCourseFind.state,
+                  endTime: evaluationOnCourseFind.endTime,
+                };
+              }
 
-            if (
-              evaluationOnCourseFind.state === "En Progreso" &&
-              elapsedMinutes > (evaluationOnCourseFind.tiempo ?? 90)
-            ) {
-              evaluationOnCourseFind.state = "Completada";
-              evaluationOnCourseFind.endTime = currentTime;
-              updateFields = {
-                state: evaluationOnCourseFind.state,
-                endTime: evaluationOnCourseFind.endTime,
-              };
-            }
+              if (evaluationOnCourseFind.state === "Asignada") {
+                evaluationOnCourseFind.state = "En progreso";
+                evaluationOnCourseFind.startTime = currentTime;
+                updateFields = {
+                  state: evaluationOnCourseFind.state,
+                  startTime: evaluationOnCourseFind.startTime,
+                };
+              }
 
-            if (evaluationOnCourseFind.state === "Asignada") {
-              evaluationOnCourseFind.state = "En progreso";
-              evaluationOnCourseFind.startTime = currentTime;
-              updateFields = {
-                state: evaluationOnCourseFind.state,
-                startTime: evaluationOnCourseFind.startTime,
-              };
-            }
+              if (evaluationOnCourseFind.state === "Completada") {
+                return NextResponse.json(
+                  { message: "EvaluationTest completed" },
+                  { status: 404 }
+                );
+              }
 
-            if (evaluationOnCourseFind.state === "Completada") {
-              return NextResponse.json(
-                { message: "EvaluationTest completed" },
-                { status: 404 }
-              );
-            }
-
-            if (Object.keys(updateFields).length > 0) {
-              await evaluationOnCourseFind.update(
-                { updateFields },
-                { new: true }
-              );
+              console.log(updateFields);
+              if (Object.keys(updateFields).length > 0) {
+                await EvaluationOnCourse.findByIdAndUpdate(
+                  evaluationOnCourseFind._id,
+                  updateFields,
+                  { new: true }
+                );
+              }
             }
           }
         }
+        resQuery.evaluationAssignFind = evaluationAssignFind;
+        resQuery.evaluationTest = evaluationAssignFind.evaluationId;
+        resQuery.evalOnCourse = evaluationOnCourseFind;
+      } else {
+        console.log("evalAssign not found");
+
+        return NextResponse.json(
+          { message: "Error adding Evaluation" },
+          { status: 500 }
+        );
       }
-      resQuery.evaluationAssignFind = evaluationAssignFind;
-      resQuery.evaluationTest = evaluationAssignFind.evaluationId;
-      resQuery.evalOnCourse = evaluationOnCourseFind;
     } else {
       const evaluationTestFind = await EvaluationTest.findById(id);
       resQuery.evaluationTest = evaluationTestFind;

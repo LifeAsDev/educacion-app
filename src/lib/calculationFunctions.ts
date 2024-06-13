@@ -19,17 +19,18 @@ function calculateRemainingTime(
 }
 
 function formatSecondsToMinutes(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
+  const minutes = seconds / 60;
   return formatMinutesBeautiful(minutes);
 }
 
 function formatMinutesBeautiful(minutes: number): string {
-  const seconds = minutes * 60;
+  const seconds = Math.floor(minutes * 60);
   const remainingSeconds = Math.floor(seconds % 60);
-  const formattedMinutes = minutes.toString().padStart(2, "0");
+  const formattedMinutes = Math.floor(minutes).toString().padStart(2, "0");
   const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
   return `${formattedMinutes}:${formattedSeconds}`;
 }
+
 function getFinishTime(
   startTime: string,
   endTime: string,

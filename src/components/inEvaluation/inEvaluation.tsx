@@ -128,15 +128,7 @@ export default function InEvaluation({ id }: { id?: string }) {
 
   useEffect(() => {
     if (session && asignatura !== "") {
-      if (
-        session.rol === "Estudiante" &&
-        !session.evaluationsOnCourse.some(
-          (evaluation: { evaluationId: string; state: string }) =>
-            evaluation.evaluationId === id && evaluation.state !== "Completada"
-        )
-      ) {
-        router.push(`/evaluation`);
-      } else if (answers.length === 0) {
+      if (answers.length === 0) {
         if (
           evalOnCourse &&
           evalOnCourse.startTime &&
@@ -189,7 +181,6 @@ export default function InEvaluation({ id }: { id?: string }) {
 
   useEffect(() => {
     if (startTime) {
-      console.log(evaluationTime);
       const intervalId = setInterval(() => {
         setTime(calculateRemainingTime(startTime, evaluationTime));
       }, 1000);
@@ -227,11 +218,16 @@ export default function InEvaluation({ id }: { id?: string }) {
             setDifficulty(data.evaluationTest.difficulty);
             setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
             setEvaluationTime(data.evaluationTest.tiempo ?? 90);
+            if (session.rol === "Estudiante") {
+              setEvalOnCourse(data.evalOnCourse);
+            }
           } else {
+            console.log("yo1");
             router.push(`/evaluation`);
           }
           return data.evaluationTest;
         } catch (error) {
+          console.log("yo2");
           router.push(`/evaluation`);
           console.error("Error fetching evaluation test:", error);
           return null;
@@ -312,6 +308,8 @@ export default function InEvaluation({ id }: { id?: string }) {
 
         const resdata = await res.json();
         if (!res.ok) {
+          console.log("yo3");
+
           router.push(`/evaluation`);
 
           throw new Error("Failed to fetch evaluation test");
