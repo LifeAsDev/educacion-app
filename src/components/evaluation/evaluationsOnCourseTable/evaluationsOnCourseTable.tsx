@@ -34,10 +34,12 @@ export default function EvaluationsOnCourseTable({
   const [monitorEvaluationArr, setMonitorEvaluationArr] = useState<
     MonitorArr[]
   >([]);
-  const [fetchingMonitor, setFetchingMonitor] = useState(false);
+  const [fetchingMonitor, setFetchingMonitor] = useState(true);
   const [evaluationAssign, setEvaluationAssign] = useState<EvaluationAssign>();
 
   const fetchMonitor = () => {
+    setFetchingMonitor(true);
+
     const fetchSubmit = async () => {
       try {
         const searchParams = new URLSearchParams();
@@ -166,7 +168,6 @@ export default function EvaluationsOnCourseTable({
               <>
                 {Array.from({ length: 10 }, (_, index) => (
                   <tr key={index} className={styles.testItem}>
-                    <td className={styles.td}></td>
                     <td className={styles.td}></td>
                     <td className={styles.td}></td>
                     <td className={styles.td}></td>
