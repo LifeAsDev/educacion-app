@@ -192,7 +192,6 @@ export async function GET(req: Request) {
       }
       usersMonitor.push(userMonitor);
     }
-    console.log(usersMonitor[0]);
     return NextResponse.json({
       evaluationAssignFind: evaluationAssignFind,
       usersMonitor,

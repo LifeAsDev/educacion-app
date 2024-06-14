@@ -91,14 +91,18 @@ export default function AssignedEvaluations({
     if (cursoInput !== "N/A") setFetchingAssigns(true);
   }, [filterAsignatura, cursoInput]);
 
-  const fetchAssignedEval = (evalAssignId: string) => {
+  useEffect(() => {
+    if (evaluationsAssign[0]) console.log(evaluationsAssign[0].state);
+  }, [evaluationsAssign]);
+
+  const finishAssignedEval = (evalAssignId: string) => {
     const evalIndex = evaluationsAssign.findIndex(
       (item) => item._id === evalAssignId
     );
-    setEvaluationsAssign((prev) => {
-      prev[evalIndex].state = "Completada";
-      return prev;
-    });
+    const newEvaluationsAssign = [...evaluationsAssign];
+    newEvaluationsAssign[evalIndex].state = "Completada";
+
+    setEvaluationsAssign(newEvaluationsAssign);
     const fetchFinish = async () => {
       try {
         const searchParams = new URLSearchParams();
@@ -228,14 +232,16 @@ export default function AssignedEvaluations({
                       >
                         Monitorear
                       </Link>
-                      <div
-                        onClick={() => {
-                          fetchAssignedEval(item._id);
-                        }}
-                        className={`${styles.btn} ${styles.complete}`}
-                      >
-                        Terminar
-                      </div>
+                      {item.state !== "Completada" && (
+                        <div
+                          onClick={() => {
+                            finishAssignedEval(item._id);
+                          }}
+                          className={`${styles.btn} ${styles.complete}`}
+                        >
+                          Terminar
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>
