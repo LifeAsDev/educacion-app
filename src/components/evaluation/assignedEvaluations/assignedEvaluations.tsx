@@ -91,10 +91,6 @@ export default function AssignedEvaluations({
     if (cursoInput !== "N/A") setFetchingAssigns(true);
   }, [filterAsignatura, cursoInput]);
 
-  useEffect(() => {
-    if (evaluationsAssign[0]) console.log(evaluationsAssign[0].state);
-  }, [evaluationsAssign]);
-
   const finishAssignedEval = (evalAssignId: string) => {
     const evalIndex = evaluationsAssign.findIndex(
       (item) => item._id === evalAssignId

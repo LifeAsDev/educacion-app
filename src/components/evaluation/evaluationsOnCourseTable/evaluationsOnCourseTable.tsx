@@ -104,6 +104,42 @@ export default function EvaluationsOnCourseTable({
     }
   };
 
+  const finishAssignedEval = () => {
+    setEvaluationAssign((prevEvaluationAssign) => {
+      if (!prevEvaluationAssign) {
+        return prevEvaluationAssign;
+      }
+
+      return {
+        ...prevEvaluationAssign,
+        state: "Completada",
+      };
+    });
+
+    const fetchFinish = async () => {
+      try {
+        const searchParams = new URLSearchParams();
+
+        const res = await fetch(
+          `/api/user/evaluation-assign/${evaluationAssignId}?${searchParams.toString()}`,
+          {
+            method: "PATCH",
+          }
+        );
+
+        const resData = await res.json();
+
+        if (res.ok) {
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    fetchFinish();
+  };
   return (
     <main className={styles.main}>
       {!fetchingMonitor && evaluationAssign && (
@@ -139,12 +175,16 @@ export default function EvaluationsOnCourseTable({
               <td className={styles.td}>
                 <div className={`${styles.spaceBetween}`}>
                   <p>{evaluationAssign.state}</p>
-                  <div
-                    onClick={() => {}}
-                    className={`${styles.btn} ${styles.complete}`}
-                  >
-                    Terminar
-                  </div>
+                  {evaluationAssign.state !== "Completada" && (
+                    <div
+                      onClick={() => {
+                        finishAssignedEval();
+                      }}
+                      className={`${styles.btn} ${styles.complete}`}
+                    >
+                      Terminar
+                    </div>
+                  )}
                 </div>
               </td>
             </tr>
