@@ -6,6 +6,7 @@ import Asignatura from "@/models/asignatura";
 import { CursoWrap } from "@/components/management/management";
 import Link from "next/link";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import evaluationAssign from "@/schemas/evaluationAssign";
 
 export default function AssignedEvaluations({
   asignaturasArr,
@@ -90,37 +91,37 @@ export default function AssignedEvaluations({
     if (cursoInput !== "N/A") setFetchingAssigns(true);
   }, [filterAsignatura, cursoInput]);
 
-  const fetchAssignedEval = async () => {
-    try {
-      const searchParams = new URLSearchParams();
-      searchParams.append("curso", cursoInput);
+  const fetchAssignedEval = (evalAssignId: string) => {
+    const evalIndex = evaluationsAssign.findIndex(
+      (item) => item._id === evalAssignId
+    );
+    setEvaluationsAssign((prev) => {
+      prev[evalIndex].state = "Completada";
+      return prev;
+    });
+    const fetchFinish = async () => {
+      try {
+        const searchParams = new URLSearchParams();
 
-      if (session && session.rol === "Profesor")
-        searchParams.append("profesorId", session._id);
-      else {
-        if (filterAsignatura !== "Todas")
-          searchParams.append("asignatura", filterAsignatura);
-      }
+        const res = await fetch(
+          `/api/user/evaluation-assign/${evalAssignId}?${searchParams.toString()}`,
+          {
+            method: "PATCH",
+          }
+        );
 
-      const res = await fetch(
-        `/api/user/evaluation-assign?${searchParams.toString()}`,
-        {
-          method: "GET",
+        const resData = await res.json();
+
+        if (res.ok) {
+          return;
+        } else {
+          return;
         }
-      );
-
-      const resData = await res.json();
-
-      setFetchingAssigns(false);
-      if (res.ok) {
-        setEvaluationsAssign(resData.evaluationAssigneds);
-        return;
-      } else {
+      } catch (error) {
         return;
       }
-    } catch (error) {
-      return;
-    }
+    };
+    fetchFinish();
   };
   return (
     <>
@@ -228,7 +229,9 @@ export default function AssignedEvaluations({
                         Monitorear
                       </Link>
                       <div
-                        onClick={fetchAssignedEval}
+                        onClick={() => {
+                          fetchAssignedEval(item._id);
+                        }}
                         className={`${styles.btn} ${styles.complete}`}
                       >
                         Terminar

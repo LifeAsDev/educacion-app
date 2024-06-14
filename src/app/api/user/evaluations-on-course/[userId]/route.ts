@@ -52,6 +52,19 @@ export async function GET(req: Request, { params }: any) {
       const startTime = new Date(evaluationOnCourse.startTime);
       const elapsedMinutes =
         (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
+      const evalAssignFind = await EvaluationAssign.findById(
+        evaluationOnCourse.evaluationAssignId
+      );
+      if (
+        evalAssignFind.state === "Completada" &&
+        evaluationOnCourse.state !== "Completada"
+      ) {
+        evaluationOnCourse.state = "Completada";
+        evaluationOnCourse.endTime = currentTime;
+        evaluationOnCourse.startTime = currentTime;
+
+        await evaluationOnCourse.save();
+      }
 
       if (
         elapsedMinutes &&

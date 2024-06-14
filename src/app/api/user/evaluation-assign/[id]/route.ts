@@ -49,6 +49,17 @@ export async function GET(req: Request, { params }: any) {
               const elapsedMinutes =
                 (currentTime.getTime() - startTime.getTime()) / 60000;
 
+              if (
+                evaluationAssignFind.state === "Completada" &&
+                evaluationOnCourseFind.state !== "Completada"
+              ) {
+                evaluationOnCourseFind.state = "Completada";
+                evaluationOnCourseFind.endTime = currentTime;
+                evaluationOnCourseFind.startTime = currentTime;
+
+                await evaluationOnCourseFind.save();
+              }
+
               let updateFields: any = {};
               if (
                 evaluationOnCourseFind.state === "En Progreso" &&
@@ -88,6 +99,12 @@ export async function GET(req: Request, { params }: any) {
             }
           }
         }
+        if (evaluationOnCourseFind.state === "Completada") {
+          return NextResponse.json(
+            { message: "Error adding Evaluation" },
+            { status: 500 }
+          );
+        }
         resQuery.evaluationAssignFind = evaluationAssignFind;
         resQuery.evaluationTest = evaluationAssignFind.evaluationId;
         resQuery.evalOnCourse = evaluationOnCourseFind;
@@ -105,6 +122,29 @@ export async function GET(req: Request, { params }: any) {
     }
     return NextResponse.json({
       ...resQuery,
+      message: "Evaluation added successfully",
+    });
+  } catch (error) {
+    console.error("Error adding Evaluation:", error);
+    return NextResponse.json(
+      { message: "Error adding Evaluation" },
+      { status: 500 }
+    );
+  }
+}
+export async function PATCH(req: Request, { params }: any) {
+  const { searchParams } = new URL(req.url);
+
+  const evaluationAssignId = params.id;
+
+  try {
+    await connectMongoDB();
+
+    const evaluationAssignFind = await EvaluationAssign.findByIdAndUpdate(
+      evaluationAssignId,
+      { state: "Completada" }
+    );
+    return NextResponse.json({
       message: "Evaluation added successfully",
     });
   } catch (error) {
