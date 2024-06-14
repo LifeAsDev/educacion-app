@@ -293,13 +293,11 @@ export default function InEvaluation({ id }: { id?: string }) {
         });
 
         const resdata = await res.json();
+
         if (!res.ok) {
-          console.log("yo3");
-
-          router.push(`/evaluation`);
-
           throw new Error("Failed to fetch evaluation test");
-        }
+        } else router.push(`/evaluation`);
+
         return;
       } catch (error) {
         console.error("Error fetching evaluation test:", error);

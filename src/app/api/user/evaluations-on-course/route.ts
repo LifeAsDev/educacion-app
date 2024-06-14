@@ -120,6 +120,17 @@ export async function GET(req: Request) {
         (currentTime.getTime() - startTime.getTime()) / 1000 / 60;
 
       if (
+        evaluationAssignFind.state === "Completada" &&
+        evaluationOnCourse.state !== "Completada"
+      ) {
+        evaluationOnCourse.state = "Completada";
+        evaluationOnCourse.endTime = currentTime;
+        evaluationOnCourse.startTime = currentTime;
+
+        await evaluationOnCourse.save();
+      }
+
+      if (
         elapsedMinutes &&
         elapsedMinutes > 90 &&
         evaluationOnCourse.state === "En progreso"
@@ -146,11 +157,12 @@ export async function GET(req: Request) {
                 );
               }
             );
+          const regex = /(<([^>]+)>)/gi;
           if (questionArrItem) {
             if (questionArrItem.type === "multiple") {
               if (answerItem.answer === "a") progress.push(1);
               else progress.push(0);
-            } else {
+            } else if (!!answerItem.answer.replace(regex, "").length) {
               progress.push(2);
             }
           }
@@ -180,6 +192,7 @@ export async function GET(req: Request) {
       }
       usersMonitor.push(userMonitor);
     }
+    console.log(usersMonitor[0]);
     return NextResponse.json({
       evaluationAssignFind: evaluationAssignFind,
       usersMonitor,

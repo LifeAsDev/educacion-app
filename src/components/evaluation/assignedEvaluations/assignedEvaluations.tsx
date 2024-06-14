@@ -47,6 +47,7 @@ export default function AssignedEvaluations({
 
     router.replace(`${pathname}?${params.toString()}`);
   };
+
   useEffect(() => {
     const fetchEvaluationsAssign = async () => {
       try {
@@ -88,6 +89,39 @@ export default function AssignedEvaluations({
     setFetchingAssigns(false);
     if (cursoInput !== "N/A") setFetchingAssigns(true);
   }, [filterAsignatura, cursoInput]);
+
+  const fetchAssignedEval = async () => {
+    try {
+      const searchParams = new URLSearchParams();
+      searchParams.append("curso", cursoInput);
+
+      if (session && session.rol === "Profesor")
+        searchParams.append("profesorId", session._id);
+      else {
+        if (filterAsignatura !== "Todas")
+          searchParams.append("asignatura", filterAsignatura);
+      }
+
+      const res = await fetch(
+        `/api/user/evaluation-assign?${searchParams.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const resData = await res.json();
+
+      setFetchingAssigns(false);
+      if (res.ok) {
+        setEvaluationsAssign(resData.evaluationAssigneds);
+        return;
+      } else {
+        return;
+      }
+    } catch (error) {
+      return;
+    }
+  };
   return (
     <>
       <div className={styles.top}>
@@ -194,7 +228,7 @@ export default function AssignedEvaluations({
                         Monitorear
                       </Link>
                       <div
-                        onClick={() => {}}
+                        onClick={fetchAssignedEval}
                         className={`${styles.btn} ${styles.complete}`}
                       >
                         Terminar
