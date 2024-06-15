@@ -26,10 +26,9 @@ export async function POST(req: Request) {
         { status: 404 }
       );
     }
-    const evaluatioAssignFind = await EvaluationAssign.findOne({
-      evaluationAssignId,
-      estudianteId,
-    });
+    const evaluatioAssignFind = await EvaluationAssign.findById(
+      evaluationAssignId
+    );
 
     if (
       evaluationOnCourseFind.state === "Completada" ||
