@@ -202,7 +202,8 @@ export default function InEvaluation({ id }: { id?: string }) {
             setQuestionArr(shuffleQuestionArr);
             setType(data.evaluationTest.type);
             setDifficulty(data.evaluationTest.difficulty);
-            setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
+            console.log();
+            setAsignatura(data.evaluationAssignFind.asignatura?.name ?? "N/A");
             setEvaluationTime(data.evaluationTest.tiempo ?? 90);
             if (session.rol === "Estudiante") {
               setEvalOnCourse(data.evalOnCourse);
@@ -355,18 +356,7 @@ export default function InEvaluation({ id }: { id?: string }) {
         </div>
         <div className={styles.inputBox}>
           <label>Asignatura: </label>
-          <span>
-            {(asignaturasArr.length > 0 &&
-              (() => {
-                const asignaturaIndex = asignaturasArr.findIndex(
-                  (item) => item._id === asignatura
-                );
-                return asignaturaIndex !== -1 && asignaturasArr[asignaturaIndex]
-                  ? asignaturasArr[asignaturaIndex].name
-                  : "N/A";
-              })()) ||
-              "N/A"}
-          </span>
+          <span>{asignatura}</span>
         </div>
       </div>
       <div className={styles.questionBox}>
