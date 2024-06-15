@@ -1,6 +1,8 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 import { NextResponse } from "next/server";
+import EvaluationAssign from "@/schemas/evaluationAssign";
+import evaluationAssign from "@/schemas/evaluationAssign";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -23,6 +25,17 @@ export async function POST(req: Request) {
         { message: "No evaluations found for this user" },
         { status: 404 }
       );
+    }
+    const evaluatioAssignFind = await EvaluationAssign.findOne({
+      evaluationAssignId,
+      estudianteId,
+    });
+
+    if (
+      evaluationOnCourseFind.state === "Completada" ||
+      evaluatioAssignFind.state === "Completada"
+    ) {
+      return NextResponse.json({ message: "Evaluation done" }, { status: 200 });
     }
 
     // Asegúrate de que answers no es undefined

@@ -254,6 +254,8 @@ export default function InEvaluation({ id }: { id?: string }) {
       if (!response.ok) {
         console.log(resdata.message);
         throw new Error("Failed to fetch evaluation test");
+      } else if (resdata.message === "Evaluation done") {
+        router.push(`/evaluation`);
       }
       return;
     } catch (error) {
