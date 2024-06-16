@@ -34,7 +34,7 @@ export default function Create({ id }: { id?: string }) {
 
   const editQuestion = (
     property: keyof QuestionWithError,
-    value: string,
+    value: string | number,
     index: number
   ) => {
     const newQuestion: any[] = [...questionArr];
@@ -53,7 +53,7 @@ export default function Create({ id }: { id?: string }) {
         pregunta: "",
         id: uuidv4(),
         image: null,
-        puntos: 0,
+        puntos: 1,
       };
     } else if (typeOfQuestionSelected === "multiple") {
       newQuestion = {
@@ -65,7 +65,7 @@ export default function Create({ id }: { id?: string }) {
         señuelo3: "",
         id: uuidv4(),
         image: null,
-        puntos: 0,
+        puntos: 1,
       };
     }
 
@@ -609,6 +609,23 @@ export default function Create({ id }: { id?: string }) {
                   />
                 </svg>
               </div>
+              <div className={`${styles.inputBox} ${styles.points}`}>
+                <label>Puntos</label>
+                <input
+                  onFocus={() => {
+                    setErrors([]);
+                    setQuestionErrorArr([]);
+                  }}
+                  onChange={(e) => {
+                    if (parseInt(e.target.value)) {
+                      editQuestion("puntos", parseInt(e.target.value), i);
+                    }
+                  }}
+                  type="text"
+                  placeholder="Puntos"
+                  defaultValue={question.puntos}
+                />
+              </div>
               <div
                 id={`error${question._id || question.id}`}
                 className={styles.questionInput}
@@ -710,6 +727,23 @@ export default function Create({ id }: { id?: string }) {
                     fill="white"
                   />
                 </svg>
+              </div>
+              <div className={`${styles.inputBox} ${styles.points}`}>
+                <label>Puntos</label>
+                <input
+                  onFocus={() => {
+                    setErrors([]);
+                    setQuestionErrorArr([]);
+                  }}
+                  onChange={(e) => {
+                    if (parseInt(e.target.value)) {
+                      editQuestion("puntos", parseInt(e.target.value), i);
+                    }
+                  }}
+                  type="text"
+                  placeholder="Puntos"
+                  defaultValue={question.puntos}
+                />
               </div>
               <div
                 id={`error${question._id || question.id}`}

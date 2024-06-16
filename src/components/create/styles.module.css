@@ -249,3 +249,8 @@
   flex-direction: column;
   flex-grow: 1;
 }
+
+.inputBox.points {
+  margin-right: auto;
+  margin-bottom: 0.5em;
+}

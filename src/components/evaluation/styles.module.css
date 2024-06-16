@@ -546,6 +546,7 @@
 
 .btn.complete {
   background-color: var(--primary-red);
+  margin-left: 0.5em;
 }
 
 .btn.complete:hover {
@@ -555,7 +556,6 @@
 .btn.monitorear {
   background-color: var(--primary-light-blue);
   margin-left: auto;
-  margin-right: 0.5em;
 }
 
 .btn.monitorear:hover {
