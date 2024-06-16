@@ -53,7 +53,7 @@ export default function AssignedEvaluations({
     const fetchEvaluationsAssign = async () => {
       try {
         const searchParams = new URLSearchParams();
-        searchParams.append("curso", cursoInput);
+        if (cursoInput !== "Todos") searchParams.append("curso", cursoInput);
 
         if (session && session.rol === "Profesor")
           searchParams.append("profesorId", session._id);
@@ -86,9 +86,16 @@ export default function AssignedEvaluations({
   }, [session, fetchingAssigns]);
 
   useEffect(() => {
+    if (session && session.rol === "Profesor") {
+      setCursoInput("Todos");
+    }
+  }, [session]);
+  useEffect(() => {
     setEvaluationsAssign([]);
     setFetchingAssigns(false);
-    if (cursoInput !== "N/A") setFetchingAssigns(true);
+    if (cursoInput !== "N/A") {
+      setFetchingAssigns(true);
+    }
   }, [filterAsignatura, cursoInput]);
 
   const finishAssignedEval = (evalAssignId: string) => {
@@ -156,7 +163,12 @@ export default function AssignedEvaluations({
             id="cursoInput"
             value={cursoInput}
           >
-            <option value="N/A">Escoja un curso</option>
+            {session.rol === "Profesor" ? (
+              <option value="Todos">Todos</option>
+            ) : (
+              <option value="N/A">Escoja un curso</option>
+            )}
+
             {session &&
               cursosArr
                 .filter(
