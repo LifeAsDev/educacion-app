@@ -23,13 +23,14 @@ export default function AssignedEvaluations({
   const [evaluationsAssign, setEvaluationsAssign] = useState<
     EvaluationAssign[]
   >([]);
-
   const [cursoInput, setCursoInput] = useState("N/A");
   const [filterAsignatura, setFilterAsignatura] = useState("Todas");
+  const [filterState, setFilterState] = useState("Asignadas");
 
   useEffect(() => {
     setCursoInput(searchParams.get("cursoInput") ?? "N/A");
     setFilterAsignatura(searchParams.get("filterAsignatura") ?? "Todas");
+    setFilterState(searchParams.get("filterState") ?? "Asignadas");
   }, [searchParams]);
 
   const handleQueryParam = (query: string, value: string) => {
@@ -38,6 +39,9 @@ export default function AssignedEvaluations({
     }
     if (query === "filterAsignatura") {
       setFilterAsignatura(value);
+    }
+    if (query === "filterState") {
+      setFilterState(value);
     }
     const params = new URLSearchParams(searchParams);
     if (value && query) {
@@ -134,6 +138,19 @@ export default function AssignedEvaluations({
     <>
       <div className={styles.top}>
         <div className={`${styles.cursoAssignBox}`}>
+          <p>Estado:</p>
+          <select
+            onChange={(e) => {
+              handleQueryParam("filterState", e.target.value);
+            }}
+            name="cursoInput"
+            id="cursoInput"
+            value={filterState}
+          >
+            <option value="Asignadas">Asignadas</option>
+            <option value="Completadas">Completadas</option>
+            <option value="Todas">Todas</option>
+          </select>
           {session && session.rol !== "Profesor" && (
             <>
               <p>Asignatura:</p>
@@ -214,46 +231,64 @@ export default function AssignedEvaluations({
                 ))}
               </>
             ) : (
-              evaluationsAssign.map((item, i) => (
-                <tr key={`${item._id}`} className={styles.testItem}>
-                  <td className={styles.td}>
-                    <div>
-                      <p>{item.curso.name}</p>
-                    </div>
-                  </td>
-                  <td className={styles.td}>
-                    <div>
-                      <p>{item.evaluationId.name}</p>
-                    </div>
-                  </td>
-                  <td className={styles.td}>
-                    <div>
-                      <p>{item.asignatura?.name ?? "N/A"}</p>
-                    </div>
-                  </td>
-                  <td className={styles.td}>
-                    <div>
-                      <p>{item.state}</p>
-                      <Link
-                        href={`/evaluation/monitor/${item._id}`}
-                        className={`${styles.btn} ${styles.monitorear}`}
-                      >
-                        Monitorear
-                      </Link>
-                      {item.state !== "Completada" && (
-                        <div
-                          onClick={() => {
-                            finishAssignedEval(item._id);
-                          }}
-                          className={`${styles.btn} ${styles.complete}`}
+              evaluationsAssign
+                .filter((item) => {
+                  if (
+                    filterState === "Asignadas" &&
+                    item.state === "Asignada"
+                  ) {
+                    return true;
+                  }
+                  if (
+                    filterState === "Completadas" &&
+                    item.state === "Completada"
+                  ) {
+                    return true;
+                  }
+                  if (filterState === "Todas") {
+                    return true;
+                  }
+                })
+                .map((item, i) => (
+                  <tr key={`${item._id}`} className={styles.testItem}>
+                    <td className={styles.td}>
+                      <div>
+                        <p>{item.curso.name}</p>
+                      </div>
+                    </td>
+                    <td className={styles.td}>
+                      <div>
+                        <p>{item.evaluationId.name}</p>
+                      </div>
+                    </td>
+                    <td className={styles.td}>
+                      <div>
+                        <p>{item.asignatura?.name ?? "N/A"}</p>
+                      </div>
+                    </td>
+                    <td className={styles.td}>
+                      <div>
+                        <p>{item.state}</p>
+                        <Link
+                          href={`/evaluation/monitor/${item._id}`}
+                          className={`${styles.btn} ${styles.monitorear}`}
                         >
-                          Terminar
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
+                          Monitorear
+                        </Link>
+                        {item.state !== "Completada" && (
+                          <div
+                            onClick={() => {
+                              finishAssignedEval(item._id);
+                            }}
+                            className={`${styles.btn} ${styles.complete}`}
+                          >
+                            Terminar
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
             )}
           </tbody>
         </table>
