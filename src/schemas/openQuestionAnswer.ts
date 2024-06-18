@@ -6,6 +6,7 @@ const openQuestionAnswerSchema = new Schema<OpenQuestionAnswer>(
     evaluationId: String,
     questionId: String,
     answer: String,
+    evaluationAssignId: String,
   },
   { timestamps: true }
 );
