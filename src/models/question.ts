@@ -9,5 +9,6 @@ interface Question {
   image: Buffer | string | null | { data: [number]; type: string };
   _id?: string;
   puntos: number;
+  openAnswers: string[];
 }
 export default Question;

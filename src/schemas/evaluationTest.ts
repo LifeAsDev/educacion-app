@@ -22,6 +22,7 @@ const questionSchema = new Schema<Question>({
   },
   image: { type: String, default: null },
   puntos: { type: Number, default: 0 },
+  openAnswers: { type: [String], default: [] },
 });
 
 const evaluationTestSchema = new Schema<EvaluationTest>(
