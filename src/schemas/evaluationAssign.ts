@@ -1,5 +1,19 @@
 import EvaluationAssign from "@/models/evaluationAssign";
 import mongoose, { Schema } from "mongoose";
+import OpenQuestionAnswer from "@/models/openQuestionAnswer";
+
+const openQuestionAnswerSchema = new Schema<OpenQuestionAnswer>(
+  {
+    questionId: String,
+    answer: String,
+    estudianteId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
 const evaluationAssignSchema = new Schema<EvaluationAssign>(
   {
@@ -18,6 +32,7 @@ const evaluationAssignSchema = new Schema<EvaluationAssign>(
       type: Schema.Types.ObjectId,
       ref: "asignatura",
     },
+    openQuestionAnswer: [openQuestionAnswerSchema],
     state: { type: String, default: "Asignada" },
   },
   { timestamps: true }

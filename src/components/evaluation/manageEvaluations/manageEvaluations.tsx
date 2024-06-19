@@ -79,14 +79,6 @@ export default function ManageEvaluations({
         >
           <p>Evaluaciones Aplicadas</p>
         </div>
-        <div
-          onClick={() => setTabSelected("tabSelected", "Questions")}
-          className={`${styles.tabBox} ${
-            tabSelected === "Questions" ? styles.tabSelected : ""
-          }`}
-        >
-          <p>Preguntas Abiertas</p>
-        </div>
       </div>
       {tabSelected === "Evaluation" ? (
         <>

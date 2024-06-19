@@ -1,8 +1,9 @@
+import User from "@/models/user";
+
 interface OpenQuestionAnswer {
-  evaluationId: string;
   questionId: string;
   answer: string;
-  evaluationAssignId: String;
+  estudianteId: User;
   _id: string;
 }
 export default OpenQuestionAnswer;
