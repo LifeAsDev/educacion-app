@@ -149,14 +149,53 @@ export async function PATCH(req: Request, { params }: any) {
       evaluationAssignFind.evaluationId
     ).select("questionArr");
 
+    const questions = evaluationTestFind.questionArr;
+
     const evaluationsOnCourseFind = await EvaluationOnCourse.find({
       evaluationAssignId,
     });
 
+    /*     await EvaluationOnCourse.populate(evaluationsOnCourseFind, {
+      path: "estudianteId",
+      model: User,
+    }); */
+
+    let canSave = false;
     for (const evaluationOnCourse of evaluationsOnCourseFind) {
+      const openQuestionAnswer: {
+        estudianteId: string;
+        checkAnswers: {
+          questionId: string;
+          answer: string;
+        }[];
+      } = {
+        estudianteId: evaluationOnCourse.estudianteId,
+        checkAnswers: [],
+      };
       for (const answer of evaluationOnCourse.answers) {
+        const question = questions.find(
+          (item: { _id: string }) =>
+            item._id.toString === answer.questionId.toString()
+        );
+
+        if (
+          question &&
+          question.openAnswers &&
+          !question.openAnswers.includes(answer.answer)
+        ) {
+          openQuestionAnswer.checkAnswers.push({
+            questionId: answer.questionId,
+            answer: answer.answer,
+          });
+        }
+      }
+      if (openQuestionAnswer.checkAnswers.length) {
+        evaluationAssignFind.openQuestionAnswer.push(openQuestionAnswer);
+        canSave = true;
       }
     }
+    if (canSave) evaluationAssignFind.save();
+
     return NextResponse.json({
       message: "Evaluation added successfully",
     });

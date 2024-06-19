@@ -1,11 +1,15 @@
 import EvaluationAssign from "@/models/evaluationAssign";
 import mongoose, { Schema } from "mongoose";
-import OpenQuestionAnswer from "@/models/openQuestionAnswer";
+import OpenQuestionAnswer, { CheckAnswer } from "@/models/openQuestionAnswer";
+
+const CheckAnswerSchema = new Schema<CheckAnswer>({
+  questionId: { type: String, required: true },
+  answer: { type: String, required: true },
+});
 
 const openQuestionAnswerSchema = new Schema<OpenQuestionAnswer>(
   {
-    questionId: String,
-    answer: String,
+    checkAnswers: [CheckAnswerSchema],
     estudianteId: {
       type: Schema.Types.ObjectId,
       ref: "User",
