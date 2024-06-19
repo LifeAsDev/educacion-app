@@ -78,16 +78,16 @@ export default function EvaluationsOnCourseTable({
     };
   }, []);
 
-  const deleteEvaluationOnCourseFromUser = async (
-    userId: string,
-    evaluationId: string
-  ) => {
+  const deleteEvaluationOnCourseFromUser = async (estudianteId: string) => {
     setFetchingMonitor(true);
 
     try {
-      const res = await fetch(`/api/user/${userId}/${evaluationId}`, {
-        method: "PATCH",
-      });
+      const res = await fetch(
+        `/api/user/${estudianteId}/${evaluationAssignId}/submit`,
+        {
+          method: "PATCH",
+        }
+      );
 
       const resData = await res.json();
 
@@ -113,6 +113,7 @@ export default function EvaluationsOnCourseTable({
         state: "Completada",
       };
     });
+    setFetchingMonitor(true);
 
     const fetchFinish = async () => {
       try {
@@ -126,7 +127,7 @@ export default function EvaluationsOnCourseTable({
         );
 
         const resData = await res.json();
-
+        fetchMonitor();
         if (res.ok) {
           return;
         } else {
@@ -278,12 +279,16 @@ export default function EvaluationsOnCourseTable({
                               )
                             )}
                       </p>
-                      <div
-                        onClick={() => {}}
-                        className={`${styles.btn} ${styles.cancel}`}
-                      >
-                        Suspender
-                      </div>
+                      {item.state !== "Completada" && (
+                        <div
+                          onClick={() => {
+                            deleteEvaluationOnCourseFromUser(item.userId);
+                          }}
+                          className={`${styles.btn} ${styles.cancel}`}
+                        >
+                          Completar
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>

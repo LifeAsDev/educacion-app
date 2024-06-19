@@ -18,7 +18,9 @@ export async function PATCH(req: Request, { params }: any) {
 
     evaluationOnCourse.state = "Completada";
     evaluationOnCourse.endTime = currentTime;
-
+    if (!evaluationOnCourse.startTime) {
+      evaluationOnCourse.startTime = currentTime;
+    }
     await evaluationOnCourse.save();
 
     return NextResponse.json(
