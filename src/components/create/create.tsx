@@ -54,6 +54,7 @@ export default function Create({ id }: { id?: string }) {
         id: uuidv4(),
         image: null,
         puntos: 1,
+        openAnswers: [],
       };
     } else if (typeOfQuestionSelected === "multiple") {
       newQuestion = {
@@ -66,6 +67,7 @@ export default function Create({ id }: { id?: string }) {
         id: uuidv4(),
         image: null,
         puntos: 1,
+        openAnswers: [],
       };
     }
 

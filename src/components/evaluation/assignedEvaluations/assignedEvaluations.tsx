@@ -282,7 +282,7 @@ export default function AssignedEvaluations({
                             }}
                             className={`${styles.btn} ${styles.complete}`}
                           >
-                            Terminar
+                            Completar
                           </div>
                         )}
                       </div>

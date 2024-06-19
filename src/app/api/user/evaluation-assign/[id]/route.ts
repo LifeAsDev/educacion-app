@@ -6,6 +6,7 @@ import EvaluationAssign from "@/schemas/evaluationAssign";
 import EvaluationTest from "@/schemas/evaluationTest";
 import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 import User from "@/schemas/user";
+import OpenQuestionAnswer from "@/schemas/openQuestionAnswer";
 
 export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
@@ -144,6 +145,27 @@ export async function PATCH(req: Request, { params }: any) {
       evaluationAssignId,
       { state: "Completada" }
     );
+
+    const evaluationTestFind = await EvaluationTest.findById(
+      evaluationAssignFind.evaluationId
+    ).select("questionArr");
+
+    const evaluationsOnCourseFind = await EvaluationOnCourse.find({
+      evaluationAssignId,
+    });
+
+    for (const evaluationOnCourse of evaluationsOnCourseFind) {
+      for (const answer of evaluationOnCourse.answers) {
+        OpenQuestionAnswer.create({
+          evaluationId: evaluationAssignFind.evaluationId,
+          questionId: answer.questionId,
+          answer: answer.answer,
+          evaluationAssignId,
+        });
+
+        evaluationOnCourse.answers.map();
+      }
+    }
     return NextResponse.json({
       message: "Evaluation added successfully",
     });

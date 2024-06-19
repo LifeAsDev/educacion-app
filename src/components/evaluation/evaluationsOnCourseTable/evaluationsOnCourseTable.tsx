@@ -38,8 +38,6 @@ export default function EvaluationsOnCourseTable({
   const [evaluationAssign, setEvaluationAssign] = useState<EvaluationAssign>();
 
   const fetchMonitor = () => {
-    setFetchingMonitor(true);
-
     const fetchSubmit = async () => {
       try {
         const searchParams = new URLSearchParams();
@@ -182,7 +180,7 @@ export default function EvaluationsOnCourseTable({
                       }}
                       className={`${styles.btn} ${styles.complete}`}
                     >
-                      Terminar
+                      Completar
                     </div>
                   )}
                 </div>
@@ -281,15 +279,10 @@ export default function EvaluationsOnCourseTable({
                             )}
                       </p>
                       <div
-                        onClick={() =>
-                          deleteEvaluationOnCourseFromUser(
-                            item.userId,
-                            item.pruebaId
-                          )
-                        }
+                        onClick={() => {}}
                         className={`${styles.btn} ${styles.cancel}`}
                       >
-                        Terminar
+                        Suspender
                       </div>
                     </div>
                   </td>
