@@ -562,6 +562,15 @@
   background-color: var(--third-light-blue);
 }
 
+.btn.corregir {
+  margin-left: 0.5em;
+  background-color: var(--primary-yellow);
+}
+
+.btn.corregir:hover {
+  background-color: var(--secondary-yellow);
+}
+
 .spaceBetween {
   justify-content: space-between !important;
 }

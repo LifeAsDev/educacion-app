@@ -174,7 +174,7 @@ export default function EvaluationsOnCourseTable({
               <td className={styles.td}>
                 <div className={`${styles.spaceBetween}`}>
                   <p>{evaluationAssign.state}</p>
-                  {evaluationAssign.state !== "Completada" && (
+                  {evaluationAssign.state !== "Completada" ? (
                     <div
                       onClick={() => {
                         finishAssignedEval();
@@ -183,6 +183,13 @@ export default function EvaluationsOnCourseTable({
                     >
                       Completar
                     </div>
+                  ) : (
+                    <Link
+                      href={`/answers`}
+                      className={`${styles.btn} ${styles.corregir}`}
+                    >
+                      Corregir
+                    </Link>
                   )}
                 </div>
               </td>

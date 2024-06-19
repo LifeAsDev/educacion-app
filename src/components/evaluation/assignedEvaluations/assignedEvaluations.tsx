@@ -275,7 +275,7 @@ export default function AssignedEvaluations({
                         >
                           Monitorear
                         </Link>
-                        {item.state !== "Completada" && (
+                        {item.state !== "Completada" ? (
                           <div
                             onClick={() => {
                               finishAssignedEval(item._id);
@@ -284,6 +284,13 @@ export default function AssignedEvaluations({
                           >
                             Completar
                           </div>
+                        ) : (
+                          <Link
+                            href={`/evaluation/answers/`}
+                            className={`${styles.btn} ${styles.corregir}`}
+                          >
+                            Corregir
+                          </Link>
                         )}
                       </div>
                     </td>
