@@ -286,7 +286,7 @@ export default function AssignedEvaluations({
                           </div>
                         ) : (
                           <Link
-                            href={`/evaluation/answers/`}
+                            href={`/evaluation/answers/${item._id}`}
                             className={`${styles.btn} ${styles.corregir}`}
                           >
                             Corregir

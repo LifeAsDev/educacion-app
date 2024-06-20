@@ -185,7 +185,7 @@ export default function EvaluationsOnCourseTable({
                     </div>
                   ) : (
                     <Link
-                      href={`/answers`}
+                      href={`/evaluation/answers/${evaluationAssign._id}`}
                       className={`${styles.btn} ${styles.corregir}`}
                     >
                       Corregir

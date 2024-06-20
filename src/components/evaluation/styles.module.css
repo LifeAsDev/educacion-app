@@ -574,3 +574,69 @@
 .spaceBetween {
   justify-content: space-between !important;
 }
+
+.openQuestionItem {
+  min-height: 3.25em;
+}
+
+.btn.wrong {
+  margin-left: 0.5em;
+  background-color: var(--primary-red);
+}
+
+.btn.wrong:hover {
+  background-color: var(--third-red);
+}
+
+.btn.correct {
+  margin-left: auto;
+  background-color: var(--primary-green);
+}
+
+.btn.correct:hover {
+  background-color: var(--secondary-green);
+}
+
+.openAnswerBox {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  min-width: 30em;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em 0.5em;
+}
+
+.openAnswerBox p {
+  font-size: 1em;
+}
+
+.right {
+  transform: scaleX(-1);
+}
+
+.right:hover {
+  transform: scale(-1.1, 1.1) !important;
+}
+
+.openAnswerPageBox {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  padding-top: 0.25em;
+}
+
+.pageItem {
+  background-color: white;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pageItem.selected {
+  background-color: var(--primary-light-blue);
+}
+
+.answerOutBox svg {
+  user-select: none;
+}

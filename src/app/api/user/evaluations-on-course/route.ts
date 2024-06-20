@@ -69,6 +69,10 @@ export async function GET(req: Request) {
         path: "evaluationId",
         model: EvaluationTest,
       },
+      {
+        path: "openQuestionAnswer.estudianteId",
+        model: User,
+      },
     ]);
     let users = [];
     if (evaluationAssignFind.curso) {
