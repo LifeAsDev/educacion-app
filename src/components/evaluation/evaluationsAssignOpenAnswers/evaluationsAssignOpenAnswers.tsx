@@ -129,7 +129,8 @@ export default function EvaluationsASsignOpenAnswers({
                   </td>
                   <td className={styles.td}>
                     <div className={styles.answerOutBox}>
-                      <svg
+                      <div
+                        className={styles.openQuestionArrow}
                         onClick={() => {
                           const newOpenQuestionIndexArr = [
                             ...openQuestionIndexArr,
@@ -144,25 +145,28 @@ export default function EvaluationsASsignOpenAnswers({
 
                           setOpenQuestionIndexArr(newOpenQuestionIndexArr);
                         }}
-                        viewBox="0 0 24 24"
-                        id="left-sign"
-                        data-name="Flat Color"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="var(--primary-light-blue)"
                       >
-                        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                        <g
-                          id="SVGRepo_tracerCarrier"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        ></g>
-                        <g id="SVGRepo_iconCarrier">
-                          <path
-                            id="primary"
-                            d="M9.13,21.49l-5-9a1,1,0,0,1,0-1l5-9A1,1,0,0,1,10,2h9a1,1,0,0,1,.86.49,1,1,0,0,1,0,1L15.14,12l4.73,8.51A1,1,0,0,1,20,21a1,1,0,0,1-.14.51A1,1,0,0,1,19,22H10A1,1,0,0,1,9.13,21.49Z"
-                          ></path>
-                        </g>
-                      </svg>
+                        <svg
+                          viewBox="0 0 24 24"
+                          id="left-sign"
+                          data-name="Flat Color"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="var(--primary-light-blue)"
+                        >
+                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <path
+                              id="primary"
+                              d="M9.13,21.49l-5-9a1,1,0,0,1,0-1l5-9A1,1,0,0,1,10,2h9a1,1,0,0,1,.86.49,1,1,0,0,1,0,1L15.14,12l4.73,8.51A1,1,0,0,1,20,21a1,1,0,0,1-.14.51A1,1,0,0,1,19,22H10A1,1,0,0,1,9.13,21.49Z"
+                            ></path>
+                          </g>
+                        </svg>
+                      </div>
                       <div className={styles.openAnswerBox}>
                         <p
                           dangerouslySetInnerHTML={{
@@ -194,7 +198,8 @@ export default function EvaluationsASsignOpenAnswers({
                           )}
                         </div>
                       </div>
-                      <svg
+                      <div
+                        className={styles.openQuestionArrow}
                         onClick={() => {
                           const newOpenQuestionIndexArr = [
                             ...openQuestionIndexArr,
@@ -211,26 +216,30 @@ export default function EvaluationsASsignOpenAnswers({
 
                           setOpenQuestionIndexArr(newOpenQuestionIndexArr);
                         }}
-                        className={styles.right}
-                        viewBox="0 0 24 24"
-                        id="left-sign"
-                        data-name="Flat Color"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="var(--primary-light-blue)"
                       >
-                        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                        <g
-                          id="SVGRepo_tracerCarrier"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        ></g>
-                        <g id="SVGRepo_iconCarrier">
-                          <path
-                            id="primary"
-                            d="M9.13,21.49l-5-9a1,1,0,0,1,0-1l5-9A1,1,0,0,1,10,2h9a1,1,0,0,1,.86.49,1,1,0,0,1,0,1L15.14,12l4.73,8.51A1,1,0,0,1,20,21a1,1,0,0,1-.14.51A1,1,0,0,1,19,22H10A1,1,0,0,1,9.13,21.49Z"
-                          ></path>
-                        </g>
-                      </svg>
+                        <svg
+                          className={styles.right}
+                          viewBox="0 0 24 24"
+                          id="left-sign"
+                          data-name="Flat Color"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="var(--primary-light-blue)"
+                        >
+                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <path
+                              id="primary"
+                              d="M9.13,21.49l-5-9a1,1,0,0,1,0-1l5-9A1,1,0,0,1,10,2h9a1,1,0,0,1,.86.49,1,1,0,0,1,0,1L15.14,12l4.73,8.51A1,1,0,0,1,20,21a1,1,0,0,1-.14.51A1,1,0,0,1,19,22H10A1,1,0,0,1,9.13,21.49Z"
+                            ></path>
+                          </g>
+                        </svg>
+                      </div>
+
                       <div
                         onClick={() => {}}
                         className={`${styles.btn} ${styles.correct}`}

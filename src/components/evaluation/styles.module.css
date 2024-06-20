@@ -615,10 +615,6 @@
   transform: scaleX(-1);
 }
 
-.right:hover {
-  transform: scale(-1.1, 1.1) !important;
-}
-
 .openAnswerPageBox {
   display: flex;
   flex-direction: row;
@@ -637,6 +633,24 @@
   background-color: var(--primary-light-blue);
 }
 
+.answerOutBox {
+  height: 100%;
+}
+
 .answerOutBox svg {
   user-select: none;
+}
+
+.openQuestionArrow {
+  user-select: none;
+  cursor: pointer;
+  padding: 1.5em 1em;
+}
+
+.openQuestionArrow:hover svg {
+  transform: scale(1.1);
+}
+
+.openQuestionArrow:hover svg.right {
+  transform: scale(-1.1, 1.1) !important;
 }
