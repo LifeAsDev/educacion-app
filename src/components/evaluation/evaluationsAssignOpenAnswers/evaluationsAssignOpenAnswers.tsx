@@ -53,6 +53,61 @@ export default function EvaluationsASsignOpenAnswers({
     fetchMonitor();
   }, []);
 
+  const changeAnswer = (i: number, dir: string, length: number) => {
+    if (
+      dir === "right" &&
+      evaluationAssign?.openQuestionAnswer &&
+      evaluationAssign?.openQuestionAnswer.length > 0
+    ) {
+      const newOpenQuestionIndexArr = [...openQuestionIndexArr];
+      if (newOpenQuestionIndexArr[i] + 1 < length) {
+        newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] + 1;
+      } else {
+        newOpenQuestionIndexArr[i] = 0;
+      }
+      setOpenQuestionIndexArr(newOpenQuestionIndexArr);
+    } else if (
+      evaluationAssign?.openQuestionAnswer &&
+      evaluationAssign?.openQuestionAnswer.length > 0
+    ) {
+      const newOpenQuestionIndexArr = [...openQuestionIndexArr];
+      if (newOpenQuestionIndexArr[i] - 1 > -1) {
+        newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] - 1;
+      } else {
+        newOpenQuestionIndexArr[i] = length - 1;
+      }
+
+      setOpenQuestionIndexArr(newOpenQuestionIndexArr);
+    }
+  };
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (
+      evaluationAssign?.openQuestionAnswer &&
+      evaluationAssign?.openQuestionAnswer.length > 0
+    ) {
+      const length =
+        evaluationAssign?.openQuestionAnswer[0].checkAnswers.length;
+
+      switch (event.key) {
+        case "ArrowRight":
+          changeAnswer(0, "right", length);
+          break;
+        case "ArrowLeft":
+          changeAnswer(0, "left", length);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [evaluationAssign, openQuestionIndexArr]);
+
   return (
     <main className={styles.main}>
       {!fetchingMonitor && evaluationAssign && (
@@ -132,18 +187,7 @@ export default function EvaluationsASsignOpenAnswers({
                       <div
                         className={styles.openQuestionArrow}
                         onClick={() => {
-                          const newOpenQuestionIndexArr = [
-                            ...openQuestionIndexArr,
-                          ];
-                          if (newOpenQuestionIndexArr[i] - 1 > -1) {
-                            newOpenQuestionIndexArr[i] =
-                              newOpenQuestionIndexArr[i] - 1;
-                          } else {
-                            newOpenQuestionIndexArr[i] =
-                              item.checkAnswers.length - 1;
-                          }
-
-                          setOpenQuestionIndexArr(newOpenQuestionIndexArr);
+                          changeAnswer(i, "left", item.checkAnswers.length);
                         }}
                       >
                         <svg
@@ -200,22 +244,9 @@ export default function EvaluationsASsignOpenAnswers({
                       </div>
                       <div
                         className={styles.openQuestionArrow}
-                        onClick={() => {
-                          const newOpenQuestionIndexArr = [
-                            ...openQuestionIndexArr,
-                          ];
-                          if (
-                            newOpenQuestionIndexArr[i] + 1 <
-                            item.checkAnswers.length
-                          ) {
-                            newOpenQuestionIndexArr[i] =
-                              newOpenQuestionIndexArr[i] + 1;
-                          } else {
-                            newOpenQuestionIndexArr[i] = 0;
-                          }
-
-                          setOpenQuestionIndexArr(newOpenQuestionIndexArr);
-                        }}
+                        onClick={() =>
+                          changeAnswer(i, "right", item.checkAnswers.length)
+                        }
                       >
                         <svg
                           className={styles.right}
@@ -239,7 +270,6 @@ export default function EvaluationsASsignOpenAnswers({
                           </g>
                         </svg>
                       </div>
-
                       <div
                         onClick={() => {}}
                         className={`${styles.btn} ${styles.correct}`}
