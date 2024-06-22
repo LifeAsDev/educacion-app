@@ -33,11 +33,14 @@ export default function EvaluationsASsignOpenAnswers({
 
         const resData = await res.json();
         setFetchingMonitor(false);
-        setOpenQuestionIndexArr(
-          Array(resData.evaluationAssignFind.openQuestionAnswer.length).fill(0)
-        );
+
         if (res.ok) {
           setEvaluationAssign(resData.evaluationAssignFind);
+          setOpenQuestionIndexArr(
+            Array(resData.evaluationAssignFind.openQuestionAnswer.length).fill(
+              0
+            )
+          );
           return;
         } else {
           return;
@@ -51,35 +54,63 @@ export default function EvaluationsASsignOpenAnswers({
 
   useEffect(() => {
     fetchMonitor();
-  }, []);
+  }, [evaluationAssignId]);
 
-  const changeAnswer = (i: number, dir: string, length: number) => {
+  const changeAnswerIndex = (i: number, dir: string, length: number) => {
     if (
-      dir === "right" &&
       evaluationAssign?.openQuestionAnswer &&
       evaluationAssign?.openQuestionAnswer.length > 0
     ) {
-      const newOpenQuestionIndexArr = [...openQuestionIndexArr];
-      if (newOpenQuestionIndexArr[i] + 1 < length) {
-        newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] + 1;
+      if (dir === "right") {
+        const newOpenQuestionIndexArr = [...openQuestionIndexArr];
+        if (newOpenQuestionIndexArr[i] + 1 < length) {
+          newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] + 1;
+        } else {
+          newOpenQuestionIndexArr[i] = 0;
+        }
+        setOpenQuestionIndexArr(newOpenQuestionIndexArr);
       } else {
-        newOpenQuestionIndexArr[i] = 0;
-      }
-      setOpenQuestionIndexArr(newOpenQuestionIndexArr);
-    } else if (
-      evaluationAssign?.openQuestionAnswer &&
-      evaluationAssign?.openQuestionAnswer.length > 0
-    ) {
-      const newOpenQuestionIndexArr = [...openQuestionIndexArr];
-      if (newOpenQuestionIndexArr[i] - 1 > -1) {
-        newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] - 1;
-      } else {
-        newOpenQuestionIndexArr[i] = length - 1;
-      }
+        const newOpenQuestionIndexArr = [...openQuestionIndexArr];
+        if (newOpenQuestionIndexArr[i] - 1 > -1) {
+          newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] - 1;
+        } else {
+          newOpenQuestionIndexArr[i] = length - 1;
+        }
 
-      setOpenQuestionIndexArr(newOpenQuestionIndexArr);
+        setOpenQuestionIndexArr(newOpenQuestionIndexArr);
+      }
     }
   };
+
+  const setAnswer = (i: number, state: string) => {
+    if (
+      evaluationAssign?.openQuestionAnswer &&
+      evaluationAssign?.openQuestionAnswer.length > 0
+    ) {
+      const newOpenQuestionAnswer = { ...evaluationAssign };
+      newOpenQuestionAnswer.openQuestionAnswer[i].checkAnswers.splice(
+        openQuestionIndexArr[i],
+        1
+      );
+
+      const newOpenQuestionIndexArr = [...openQuestionIndexArr];
+      if (
+        newOpenQuestionIndexArr[i] + 1 >
+        newOpenQuestionAnswer.openQuestionAnswer[i].checkAnswers.length
+      ) {
+        newOpenQuestionIndexArr[i] = newOpenQuestionIndexArr[i] - 1;
+        setOpenQuestionIndexArr(newOpenQuestionIndexArr);
+      }
+      if (!newOpenQuestionAnswer.openQuestionAnswer[i].checkAnswers.length) {
+        newOpenQuestionAnswer.openQuestionAnswer.splice(i, 1);
+      }
+      setEvaluationAssign(newOpenQuestionAnswer);
+      if (state === "correct") {
+      } else {
+      }
+    }
+  };
+
   const handleKeyDown = (event: KeyboardEvent) => {
     if (
       evaluationAssign?.openQuestionAnswer &&
@@ -90,10 +121,16 @@ export default function EvaluationsASsignOpenAnswers({
 
       switch (event.key) {
         case "ArrowRight":
-          changeAnswer(0, "right", length);
+          changeAnswerIndex(0, "right", length);
           break;
         case "ArrowLeft":
-          changeAnswer(0, "left", length);
+          changeAnswerIndex(0, "left", length);
+          break;
+        case "z":
+          setAnswer(0, "correct");
+          break;
+        case "x":
+          setAnswer(0, "incorrect");
           break;
         default:
           break;
@@ -187,7 +224,11 @@ export default function EvaluationsASsignOpenAnswers({
                       <div
                         className={styles.openQuestionArrow}
                         onClick={() => {
-                          changeAnswer(i, "left", item.checkAnswers.length);
+                          changeAnswerIndex(
+                            i,
+                            "left",
+                            item.checkAnswers.length
+                          );
                         }}
                       >
                         <svg
@@ -245,7 +286,11 @@ export default function EvaluationsASsignOpenAnswers({
                       <div
                         className={styles.openQuestionArrow}
                         onClick={() =>
-                          changeAnswer(i, "right", item.checkAnswers.length)
+                          changeAnswerIndex(
+                            i,
+                            "right",
+                            item.checkAnswers.length
+                          )
                         }
                       >
                         <svg
@@ -271,13 +316,17 @@ export default function EvaluationsASsignOpenAnswers({
                         </svg>
                       </div>
                       <div
-                        onClick={() => {}}
+                        onClick={() => {
+                          setAnswer(i, "correct");
+                        }}
                         className={`${styles.btn} ${styles.correct}`}
                       >
                         Correcto(z)
                       </div>
                       <div
-                        onClick={() => {}}
+                        onClick={() => {
+                          setAnswer(i, "incorrect");
+                        }}
                         className={`${styles.btn} ${styles.wrong}`}
                       >
                         Incorrecto(x)

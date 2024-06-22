@@ -582,6 +582,7 @@
 .btn.wrong {
   margin-left: 0.5em;
   background-color: var(--primary-red);
+  user-select: none;
 }
 
 .btn.wrong:hover {
@@ -591,6 +592,7 @@
 .btn.correct {
   margin-left: auto;
   background-color: var(--primary-green);
+  user-select: none;
 }
 
 .btn.correct:hover {
