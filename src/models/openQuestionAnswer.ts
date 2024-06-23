@@ -1,5 +1,6 @@
 import User from "@/models/user";
 interface CheckAnswer {
+  _id?: string;
   questionId: string;
   answer: string;
 }

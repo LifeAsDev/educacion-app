@@ -141,19 +141,24 @@ export default function InEvaluation({ id }: { id?: string }) {
         const blankAnswers = questionArr.map((question, i): Answers => {
           return { questionId: question._id!, answer: "" };
         });
-        const newAnswers: Answers[] = blankAnswers.map((answer, i) => {
-          const answerIndex = evalOnCourse.answers.findIndex(
-            (evaluationAnswer: { questionId: string }) =>
-              answer.questionId === evaluationAnswer.questionId
-          );
+        if (session.rol === "Estudiante") {
+          const newAnswers: Answers[] = blankAnswers.map((answer, i) => {
+            const answerIndex = evalOnCourse.answers.findIndex(
+              (evaluationAnswer: { questionId: string }) =>
+                answer.questionId === evaluationAnswer.questionId
+            );
 
-          const newAnswer =
-            answerIndex === -1 ? "" : evalOnCourse.answers[answerIndex].answer;
+            const newAnswer =
+              answerIndex === -1
+                ? ""
+                : evalOnCourse.answers[answerIndex].answer;
 
-          return { ...answer, answer: newAnswer };
-        });
+            return { ...answer, answer: newAnswer };
+          });
+          setAnswers(newAnswers);
+        }
+        setAnswers(blankAnswers);
 
-        setAnswers(newAnswers);
         setEditFetch(false);
       }
     }
@@ -202,8 +207,7 @@ export default function InEvaluation({ id }: { id?: string }) {
             setQuestionArr(shuffleQuestionArr);
             setType(data.evaluationTest.type);
             setDifficulty(data.evaluationTest.difficulty);
-            console.log();
-            setAsignatura(data.evaluationAssignFind.asignatura?.name ?? "N/A");
+            setAsignatura(data.evaluationTest.asignatura?.name ?? "N/A");
             setEvaluationTime(data.evaluationTest.tiempo ?? 90);
             if (session.rol === "Estudiante") {
               setEvalOnCourse(data.evalOnCourse);

@@ -88,11 +88,39 @@ export default function EvaluationsASsignOpenAnswers({
       evaluationAssign?.openQuestionAnswer.length > 0
     ) {
       const newOpenQuestionAnswer = { ...evaluationAssign };
-      newOpenQuestionAnswer.openQuestionAnswer[i].checkAnswers.splice(
-        openQuestionIndexArr[i],
-        1
-      );
+      const checkAnswer = newOpenQuestionAnswer.openQuestionAnswer[
+        i
+      ].checkAnswers.splice(openQuestionIndexArr[i], 1);
+      const fetchSetAnswer = async (correct: string) => {
+        try {
+          const searchParams = new URLSearchParams();
+          searchParams.append("correct", correct);
+          searchParams.append("checkAnswerId", checkAnswer[0]._id as string);
 
+          searchParams.append(
+            "estudianteId",
+            newOpenQuestionAnswer.openQuestionAnswer[i].estudianteId._id
+          );
+
+          const res = await fetch(
+            `/api/user/evaluation-assign/${evaluationAssignId}/open-answer?${searchParams.toString()}`,
+            {
+              method: "PATCH",
+            }
+          );
+
+          const resData = await res.json();
+          setFetchingMonitor(false);
+
+          if (res.ok) {
+            return;
+          } else {
+            return;
+          }
+        } catch (error) {
+          return;
+        }
+      };
       const newOpenQuestionIndexArr = [...openQuestionIndexArr];
       if (
         newOpenQuestionIndexArr[i] + 1 >
@@ -105,8 +133,13 @@ export default function EvaluationsASsignOpenAnswers({
         newOpenQuestionAnswer.openQuestionAnswer.splice(i, 1);
       }
       setEvaluationAssign(newOpenQuestionAnswer);
+
+      setFetchingMonitor(true);
+
       if (state === "correct") {
+        fetchSetAnswer("correct");
       } else {
+        fetchSetAnswer("incorrect");
       }
     }
   };

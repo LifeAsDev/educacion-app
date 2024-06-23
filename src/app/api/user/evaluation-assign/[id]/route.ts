@@ -159,7 +159,6 @@ export async function PATCH(req: Request, { params }: any) {
       path: "estudianteId",
       model: User,
     }); */
-    console.log(questions.map((item: { _id: any }) => item._id));
     let canSave = false;
     for (const evaluationOnCourse of evaluationsOnCourseFind) {
       const openQuestionAnswer: {
@@ -173,17 +172,21 @@ export async function PATCH(req: Request, { params }: any) {
         checkAnswers: [],
       };
       for (const answer of evaluationOnCourse.answers) {
-        const question = questions.find((item: { _id: string }) => {
-          //  console.log({ questionId: item._id });
-          return item._id.toString() === answer.questionId.toString();
-        });
-
-        console.log({ answerQuestionId: answer.questionId });
+        const question = questions.find(
+          (item: { _id: string; type: string }) => {
+            //  console.log({ questionId: item._id });
+            return (
+              item._id.toString() === answer.questionId.toString() &&
+              item.type === "open"
+            );
+          }
+        );
 
         if (
           question &&
-          question.openAnswers &&
-          !question.openAnswers.includes(answer.answer)
+          ((question.openAnswers &&
+            !question.openAnswers.includes(answer.answer)) ||
+            !question.openAnswers)
         ) {
           openQuestionAnswer.checkAnswers.push({
             questionId: answer.questionId,
@@ -196,7 +199,6 @@ export async function PATCH(req: Request, { params }: any) {
         canSave = true;
       }
     }
-    console.log(evaluationAssignFind.openQuestionAnswer);
     if (canSave) evaluationAssignFind.save();
 
     return NextResponse.json({
