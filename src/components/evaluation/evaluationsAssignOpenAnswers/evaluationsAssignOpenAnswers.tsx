@@ -121,6 +121,15 @@ export default function EvaluationsASsignOpenAnswers({
           return;
         }
       };
+
+      setFetchingMonitor(true);
+
+      if (state === "correct") {
+        fetchSetAnswer("correct");
+      } else {
+        fetchSetAnswer("incorrect");
+      }
+
       const newOpenQuestionIndexArr = [...openQuestionIndexArr];
       if (
         newOpenQuestionIndexArr[i] + 1 >
@@ -133,14 +142,6 @@ export default function EvaluationsASsignOpenAnswers({
         newOpenQuestionAnswer.openQuestionAnswer.splice(i, 1);
       }
       setEvaluationAssign(newOpenQuestionAnswer);
-
-      setFetchingMonitor(true);
-
-      if (state === "correct") {
-        fetchSetAnswer("correct");
-      } else {
-        fetchSetAnswer("incorrect");
-      }
     }
   };
 
@@ -242,6 +243,7 @@ export default function EvaluationsASsignOpenAnswers({
               </>
             ) : (
               evaluationAssign?.openQuestionAnswer &&
+              openQuestionIndexArr.length > 0 &&
               evaluationAssign?.openQuestionAnswer.map((item, i) => (
                 <tr
                   key={`${item._id}`}
