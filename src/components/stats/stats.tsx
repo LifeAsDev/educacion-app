@@ -5,6 +5,7 @@ import User from "@/models/user";
 import Curso from "@/models/curso";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CursoWrap } from "@/components/management/management";
+import { useOnboardingContext } from "@/lib/context";
 
 export default function Stats() {
   const [keyword, setKeyword] = useState("");
@@ -13,6 +14,7 @@ export default function Stats() {
   const [filterCursoInput, setFilterCursoInput] = useState("Todos");
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
   const [inputSearch, setInputSearch] = useState("");
+  const { session } = useOnboardingContext();
 
   useEffect(() => {
     setFetchingUsers(true);
@@ -94,11 +96,22 @@ export default function Stats() {
             value={filterCursoInput}
           >
             <option value="Todos">Todos</option>
-            {cursosArr.map((curso) => (
-              <option key={curso._id} value={curso._id}>
-                {curso.name}
-              </option>
-            ))}
+            {session &&
+              cursosArr
+                .filter(
+                  (curso) =>
+                    session.rol === "Admin" ||
+                    session.rol === "Directivo" ||
+                    session.curso.some(
+                      (sessionCurso: { _id: string }) =>
+                        sessionCurso._id === curso._id
+                    )
+                )
+                .map((curso) => (
+                  <option key={curso._id} value={curso._id}>
+                    {curso.name}
+                  </option>
+                ))}
           </select>
         </div>
       </div>
