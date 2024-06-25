@@ -1,49 +1,81 @@
+"use client";
 import styles from "@/components/management/styles.module.css";
 import SearchInput from "@/components/management/searchInput/searchInput";
 import User from "@/models/user";
 import Curso from "@/models/curso";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { CursoWrap } from "@/components/management/management";
 
-export default function Stats({
-  setInputSearch,
-  inputSearch,
-  setKeyword,
-  deleteUsers,
-  fetchingUsers,
-  usersArr,
-  pageSelected,
-  pageArr,
-  setPageSelected,
-  filterCursoInput,
-  setFilterCursoInput,
-  cursosArr,
-}: {
-  setInputSearch: Dispatch<SetStateAction<string>>;
-  setKeyword: (arg0: string) => void;
-  setFilterRolInput: (arg0: string) => void;
-  setFilterReviewInput: Dispatch<SetStateAction<boolean>>;
-  inputSearch: string;
-  filterRolInput: string;
-  filterReviewInput: boolean;
-  deleteUsers: string[] | null;
-  setDeleteUsers: Dispatch<SetStateAction<string[] | null>>;
-  setDeleteUsersConfirm: () => void;
-  passwordShowArr: boolean[];
-  setPasswordShowArr: (arg0: boolean[]) => void;
-  fetchingUsers: boolean;
-  usersArr: User[];
-  pageSelected: number;
-  setUserDeleteIndex: (arg0: number) => void;
-  setPageSelected: (arg0: number) => void;
-  pageArr: number[];
-  setUserSelected: Dispatch<SetStateAction<User | null | string>>;
-  filterCursoInput: string;
-  setFilterCursoInput: Dispatch<SetStateAction<string>>;
-  cursosArr: CursoWrap[];
-}) {
+export default function Stats() {
+  const [keyword, setKeyword] = useState("");
+  const [fetchingUsers, setFetchingUsers] = useState(false);
+  const [usersArr, setUsersArr] = useState<User[]>([]);
+  const [filterCursoInput, setFilterCursoInput] = useState("Todos");
+  const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
+  const [inputSearch, setInputSearch] = useState("");
+
+  useEffect(() => {
+    setFetchingUsers(true);
+
+    const divElement = document.getElementById("usersList");
+    divElement!.scrollTop = 0;
+
+    const fetchSubmit = async () => {
+      try {
+        const data = new FormData();
+        const searchParams = new URLSearchParams();
+
+        searchParams.append("keyword", keyword);
+
+        searchParams.append("cursoId", filterCursoInput);
+
+        const res = await fetch(`/api/user?${searchParams.toString()}`, {
+          method: "GET",
+        });
+
+        const resData = await res.json();
+        if (res.ok) {
+          setFetchingUsers(false);
+          setUsersArr(resData.users);
+          return;
+        } else {
+          setFetchingUsers(false);
+
+          return;
+        }
+      } catch (error) {
+        setFetchingUsers(false);
+
+        return;
+      }
+    };
+    fetchSubmit();
+    const fetchCursos = async () => {
+      try {
+        const res = await fetch(`/api/curso`, {
+          method: "GET",
+        });
+
+        const resData = await res.json();
+        if (res.ok) {
+          const newCursos = resData.cursos.map((curso: CursoWrap) => {
+            return { ...curso, edit: false };
+          });
+          setCursosArr(newCursos);
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        setFetchingUsers(false);
+        return;
+      }
+    };
+    fetchSubmit();
+    fetchCursos();
+  }, [keyword, filterCursoInput]);
   return (
-    <>
+    <main className={styles.main}>
       <div className={styles.top}>
         <div className={styles.filterBox}>
           <SearchInput
@@ -101,21 +133,9 @@ export default function Stats({
             ) : (
               usersArr.map((user: User, index) => {
                 return (
-                  <tr
-                    className={`${
-                      deleteUsers?.includes(user._id)
-                        ? `${styles.itemSelectedOverlay} ${styles.select}`
-                        : user.review
-                        ? `${styles.itemSelectedOverlay} ${styles.wrong}`
-                        : ""
-                    }  ${styles.userItem} ${
-                      deleteUsers ? "cursor-pointer" : ""
-                    }`}
-                    key={user._id}
-                  >
+                  <tr className={`${styles.userItem}`} key={user._id}>
                     <td className={styles.tableItem}>
                       <p className={styles.name}>
-                        <span>{25 * (pageSelected - 1) + index + 1}</span>
                         {`${user.nombre} ${user.apellido}`}
                       </p>
                     </td>
@@ -148,23 +168,6 @@ export default function Stats({
           ""
         )}
       </div>
-      <div className={styles.pageBox}>
-        {pageArr.map((page) => (
-          <div
-            onClick={() => {
-              if (pageSelected !== page) {
-                setPageSelected(page);
-              }
-            }}
-            className={`${styles.page} ${
-              pageSelected === page ? styles.selected : ""
-            }`}
-            key={page}
-          >
-            {page}
-          </div>
-        ))}
-      </div>
-    </>
+    </main>
   );
 }
