@@ -94,6 +94,7 @@ export default function AssignedEvaluations({
       setCursoInput("Todos");
     }
   }, [session]);
+
   useEffect(() => {
     setEvaluationsAssign([]);
     setFetchingAssigns(false);
@@ -185,7 +186,6 @@ export default function AssignedEvaluations({
             ) : (
               <option value="N/A">Escoja un curso</option>
             )}
-
             {session &&
               cursosArr
                 .filter(

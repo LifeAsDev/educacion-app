@@ -3,7 +3,7 @@ import styles from "@/components/management/styles.module.css";
 import SearchInput from "@/components/management/searchInput/searchInput";
 import User from "@/models/user";
 import Curso from "@/models/curso";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CursoWrap } from "@/components/management/management";
 import { useOnboardingContext } from "@/lib/context";
 
@@ -11,47 +11,18 @@ export default function Stats() {
   const [keyword, setKeyword] = useState("");
   const [fetchingUsers, setFetchingUsers] = useState(false);
   const [usersArr, setUsersArr] = useState<User[]>([]);
-  const [filterCursoInput, setFilterCursoInput] = useState("Todos");
+  const [filterCursoInput, setFilterCursoInput] = useState("N/A");
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
   const [inputSearch, setInputSearch] = useState("");
   const { session } = useOnboardingContext();
 
   useEffect(() => {
-    setFetchingUsers(true);
+    if (session && session.rol === "Profesor") {
+      setFilterCursoInput("Todos");
+    }
+  }, [session]);
 
-    const divElement = document.getElementById("usersList");
-    divElement!.scrollTop = 0;
-
-    const fetchSubmit = async () => {
-      try {
-        const data = new FormData();
-        const searchParams = new URLSearchParams();
-
-        searchParams.append("keyword", keyword);
-
-        searchParams.append("cursoId", filterCursoInput);
-
-        const res = await fetch(`/api/user?${searchParams.toString()}`, {
-          method: "GET",
-        });
-
-        const resData = await res.json();
-        if (res.ok) {
-          setFetchingUsers(false);
-          setUsersArr(resData.users);
-          return;
-        } else {
-          setFetchingUsers(false);
-
-          return;
-        }
-      } catch (error) {
-        setFetchingUsers(false);
-
-        return;
-      }
-    };
-    fetchSubmit();
+  useEffect(() => {
     const fetchCursos = async () => {
       try {
         const res = await fetch(`/api/curso`, {
@@ -73,9 +44,51 @@ export default function Stats() {
         return;
       }
     };
-    fetchSubmit();
     fetchCursos();
+  }, []);
+
+  useEffect(() => {
+    const divElement = document.getElementById("usersList");
+    divElement!.scrollTop = 0;
+
+    const fetchSubmit = async () => {
+      try {
+        const data = new FormData();
+        const searchParams = new URLSearchParams();
+
+        searchParams.append("keyword", keyword);
+
+        searchParams.append("cursoId", filterCursoInput);
+
+        const res = await fetch(`/api/user?${searchParams.toString()}`, {
+          method: "GET",
+        });
+
+        const resData = await res.json();
+
+        if (res.ok && filterCursoInput !== "N/A") {
+          setFetchingUsers(false);
+          setUsersArr(resData.users);
+          return;
+        } else {
+          setFetchingUsers(false);
+          return;
+        }
+      } catch (error) {
+        setFetchingUsers(false);
+
+        return;
+      }
+    };
+    if (filterCursoInput !== "N/A") {
+      setFetchingUsers(true);
+      fetchSubmit();
+    } else {
+      setUsersArr([]);
+      setFetchingUsers(false);
+    }
   }, [keyword, filterCursoInput]);
+
   return (
     <main className={styles.main}>
       <div className={styles.top}>
@@ -95,7 +108,11 @@ export default function Stats() {
             id="cursoFilter"
             value={filterCursoInput}
           >
-            <option value="Todos">Todos</option>
+            {session && session.rol === "Profesor" ? (
+              <option value="Todos">Todos</option>
+            ) : (
+              <option value="N/A">Escoja un curso</option>
+            )}
             {session &&
               cursosArr
                 .filter(
@@ -155,17 +172,22 @@ export default function Stats() {
                     <td className={styles.tableItem}>
                       <p className={styles.name}>{`${user.dni}`}</p>
                     </td>
-                    <td className={styles.tableItem}>
-                      <p className={styles.name}>
-                        {Array.isArray(user.curso) && user.curso.length > 0
-                          ? user.curso
-                              .map((curso) => {
-                                if ((curso as Curso).name)
-                                  return (curso as Curso).name;
-                              })
-                              .join(" | ")
-                          : "N/A"}
-                      </p>
+                    <td className={styles.a}>
+                      <div className={styles.cursoBox}>
+                        <p className={styles.name}>
+                          {Array.isArray(user.curso) && user.curso.length > 0
+                            ? user.curso
+                                .map((curso) => {
+                                  if ((curso as Curso).name)
+                                    return (curso as Curso).name;
+                                })
+                                .join(" | ")
+                            : "N/A"}
+                        </p>
+                        <div className={`${styles.btn} ${styles.monitorear}`}>
+                          Resultados
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -173,6 +195,20 @@ export default function Stats() {
             )}
           </tbody>
         </table>
+        {session &&
+          session.rol !== "Profesor" &&
+          filterCursoInput === "N/A" && (
+            <div className={styles.tableNone}>Escoja un curso</div>
+          )}
+        {session &&
+          (session.rol === "Profesor" ||
+            (session.rol !== "Profesor" && filterCursoInput !== "N/A")) &&
+          !fetchingUsers &&
+          usersArr.length === 0 && (
+            <div className={styles.tableNone}>
+              No se encontró ningún estudiante
+            </div>
+          )}
         {fetchingUsers ? (
           <div className={styles.overlay}>
             <div className={styles.loader}></div>
