@@ -58,9 +58,17 @@ export default function Stats() {
 
         searchParams.append("keyword", keyword);
 
-        searchParams.append("cursoId", filterCursoInput);
+        if (filterCursoInput === "Todos") {
+          if (session.curso) {
+            session.curso.map((item: { _id: any }) =>
+              searchParams.append("cursos", item._id)
+            );
+          }
+        } else {
+          searchParams.append("cursos", filterCursoInput);
+        }
 
-        const res = await fetch(`/api/user?${searchParams.toString()}`, {
+        const res = await fetch(`/api/stats?${searchParams.toString()}`, {
           method: "GET",
         });
 
