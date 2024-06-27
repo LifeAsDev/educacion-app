@@ -8,13 +8,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const keyword = searchParams.get("keyword");
   const cursos = searchParams.getAll("cursos");
-  console.log({ cursos });
 
   await connectMongoDB();
-
-  const resultados = await User.find({
-    "curso.0": { $in: cursos },
-  });
 
   let aggregatePipeline: any[] = [];
   if (cursos) {

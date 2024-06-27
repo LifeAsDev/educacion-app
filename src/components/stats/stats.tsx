@@ -6,6 +6,7 @@ import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
 import { CursoWrap } from "@/components/management/management";
 import { useOnboardingContext } from "@/lib/context";
+import UserStats from "./userStats/userStats";
 
 export default function Stats() {
   const [keyword, setKeyword] = useState("");
@@ -15,6 +16,7 @@ export default function Stats() {
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
   const [inputSearch, setInputSearch] = useState("");
   const { session } = useOnboardingContext();
+  const [userSelected, setUserSelected] = useState<User | null>(null);
 
   useEffect(() => {
     if (session && session.rol === "Profesor") {
@@ -99,6 +101,12 @@ export default function Stats() {
 
   return (
     <main className={styles.main}>
+      {userSelected && (
+        <UserStats
+          setUserSelected={setUserSelected}
+          userSelected={userSelected}
+        />
+      )}
       <div className={styles.top}>
         <div className={styles.filterBox}>
           <SearchInput
@@ -184,15 +192,13 @@ export default function Stats() {
                       <div className={styles.cursoBox}>
                         <p className={styles.name}>
                           {Array.isArray(user.curso) && user.curso.length > 0
-                            ? user.curso
-                                .map((curso) => {
-                                  if ((curso as Curso).name)
-                                    return (curso as Curso).name;
-                                })
-                                .join(" | ")
+                            ? (user.curso[0] as Curso).name
                             : "N/A"}
                         </p>
-                        <div className={`${styles.btn} ${styles.monitorear}`}>
+                        <div
+                          onClick={() => setUserSelected(user)}
+                          className={`${styles.btn} ${styles.monitorear}`}
+                        >
                           Resultados
                         </div>
                       </div>
