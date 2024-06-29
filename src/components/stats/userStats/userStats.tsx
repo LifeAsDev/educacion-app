@@ -89,7 +89,13 @@ export default function UserStats({
           </svg>
         </div>
         <div className={styles.evaluationsBox}>
-          <div className={styles.evaluationBox}></div>
+          {Array.from({ length: 15 }, (_, index) => (
+            <div className={styles.evaluationBox}>
+              <p>Evaluacion</p>
+              <p>10/20</p>
+              <p>50%</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
