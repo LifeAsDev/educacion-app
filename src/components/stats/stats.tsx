@@ -97,7 +97,7 @@ export default function Stats() {
       setUsersArr([]);
       setFetchingUsers(false);
     }
-  }, [keyword, filterCursoInput]);
+  }, [keyword, filterCursoInput, session.curso]);
 
   return (
     <main className={styles.main}>

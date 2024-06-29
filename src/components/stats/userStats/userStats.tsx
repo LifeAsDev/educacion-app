@@ -48,7 +48,7 @@ export default function UserStats({
       }
     };
     fetchUserStats();
-  }, []);
+  }, [userSelected._id]);
 
   return (
     <div className={styles.overlay}>

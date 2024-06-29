@@ -54,6 +54,7 @@ export default function EvaluationsASsignOpenAnswers({
 
   useEffect(() => {
     fetchMonitor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evaluationAssignId]);
 
   const changeAnswerIndex = (i: number, dir: string, length: number) => {
@@ -145,33 +146,33 @@ export default function EvaluationsASsignOpenAnswers({
     }
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (
-      evaluationAssign?.openQuestionAnswer &&
-      evaluationAssign?.openQuestionAnswer.length > 0
-    ) {
-      const length =
-        evaluationAssign?.openQuestionAnswer[0].checkAnswers.length;
-
-      switch (event.key) {
-        case "ArrowRight":
-          changeAnswerIndex(0, "right", length);
-          break;
-        case "ArrowLeft":
-          changeAnswerIndex(0, "left", length);
-          break;
-        case "z":
-          setAnswer(0, "correct");
-          break;
-        case "x":
-          setAnswer(0, "incorrect");
-          break;
-        default:
-          break;
-      }
-    }
-  };
   useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        evaluationAssign?.openQuestionAnswer &&
+        evaluationAssign?.openQuestionAnswer.length > 0
+      ) {
+        const length =
+          evaluationAssign?.openQuestionAnswer[0].checkAnswers.length;
+
+        switch (event.key) {
+          case "ArrowRight":
+            changeAnswerIndex(0, "right", length);
+            break;
+          case "ArrowLeft":
+            changeAnswerIndex(0, "left", length);
+            break;
+          case "z":
+            setAnswer(0, "correct");
+            break;
+          case "x":
+            setAnswer(0, "incorrect");
+            break;
+          default:
+            break;
+        }
+      }
+    };
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {

@@ -76,6 +76,7 @@ export default function EvaluationsOnCourseTable({
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteEvaluationOnCourseFromUser = async (estudianteId: string) => {

@@ -162,12 +162,13 @@ export default function InEvaluation({ id }: { id?: string }) {
         setEditFetch(false);
       }
     }
-  }, [session, asignatura, evalOnCourse]);
+  }, [session, asignatura, evalOnCourse, answers.length, questionArr]);
 
   const cache = useRef(false);
 
   useEffect(() => {
     if (time === 0) submitEvaluationTest(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time]);
 
   useEffect(() => {
@@ -226,7 +227,7 @@ export default function InEvaluation({ id }: { id?: string }) {
       };
       fetchEvaluationTest(id);
     }
-  }, [id, router, session]);
+  }, [id, router, session, asignatura]);
 
   const handleAnswer = (
     answer: string,

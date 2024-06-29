@@ -87,6 +87,7 @@ export default function AssignedEvaluations({
       }
     };
     if (session && fetchingAssigns) fetchEvaluationsAssign();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, fetchingAssigns]);
 
   useEffect(() => {
@@ -135,6 +136,7 @@ export default function AssignedEvaluations({
     };
     fetchFinish();
   };
+
   return (
     <>
       <div className={styles.top}>

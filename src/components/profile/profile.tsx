@@ -96,7 +96,11 @@ export default function Profile({}: {}) {
       if (!cursoAndAsignaturaFetched.asignatura) fetchAsignaturas();
       if (!cursoAndAsignaturaFetched.curso) fetchCursos();
     }
-  }, [session]);
+  }, [
+    session,
+    cursoAndAsignaturaFetched.asignatura,
+    cursoAndAsignaturaFetched.curso,
+  ]);
   const patchUser = () => {
     setPatching(true);
     const newErrors: string[] = [];
