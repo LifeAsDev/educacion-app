@@ -14,4 +14,5 @@ interface EvaluationOnCourse {
   evaluationAssignId?: Types.ObjectId;
   estudianteId: Types.ObjectId;
 }
+export default EvaluationOnCourse;
 export type { Answer, EvaluationOnCourse };
