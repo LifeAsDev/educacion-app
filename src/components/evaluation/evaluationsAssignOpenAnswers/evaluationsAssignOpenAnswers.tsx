@@ -123,8 +123,6 @@ export default function EvaluationsASsignOpenAnswers({
         }
       };
 
-      setFetchingMonitor(true);
-
       if (state === "correct") {
         fetchSetAnswer("correct");
       } else {
