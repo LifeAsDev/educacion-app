@@ -90,14 +90,14 @@ export default function Stats() {
         return;
       }
     };
-    if (filterCursoInput !== "N/A") {
+    if (filterCursoInput !== "N/A" && session) {
       setFetchingUsers(true);
       fetchSubmit();
     } else {
       setUsersArr([]);
       setFetchingUsers(false);
     }
-  }, [keyword, filterCursoInput, session.curso]);
+  }, [keyword, filterCursoInput, session]);
 
   return (
     <main className={styles.main}>

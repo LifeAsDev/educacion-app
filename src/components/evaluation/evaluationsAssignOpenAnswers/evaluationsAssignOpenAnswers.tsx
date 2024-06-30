@@ -178,6 +178,7 @@ export default function EvaluationsASsignOpenAnswers({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evaluationAssign, openQuestionIndexArr]);
 
   return (
