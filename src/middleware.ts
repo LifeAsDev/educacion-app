@@ -1,11 +1,16 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { connectMongoDB } from "@/lib/mongodb";
-import EvaluationTest from "@/schemas/evaluationTest";
 
 const blockedPagesWithoutLogin = ["/home", "/create-event", "/event"];
-const pagesNotAllowedForEstudiantes = ["/create", "/edit", "/management"];
+const pagesNotAllowedForEstudiantes = [
+  "/create",
+  "/edit",
+  "/management",
+  "/evaluation/answers",
+  "/evaluation/monitor",
+  "/stats",
+];
 const pagesNotAllowedForProfesores = ["/management"];
 
 export default async function middleware(req: NextRequest) {

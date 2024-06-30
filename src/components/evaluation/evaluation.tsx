@@ -9,7 +9,6 @@ import { CursoWrap } from "@/components/management/management";
 import ManageEvaluations from "@/components/evaluation/manageEvaluations/manageEvaluations";
 import EvaluationTable from "@/components/evaluation/evaluationTable/evaluationTable";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import evaluationTest from "@/schemas/evaluationTest";
 
 export default function Evaluation() {
   const router = useRouter();

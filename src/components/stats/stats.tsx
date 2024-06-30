@@ -97,7 +97,8 @@ export default function Stats() {
       setUsersArr([]);
       setFetchingUsers(false);
     }
-  }, [keyword, filterCursoInput, session]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyword, filterCursoInput]);
 
   return (
     <main className={styles.main}>
