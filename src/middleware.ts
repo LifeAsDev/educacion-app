@@ -66,6 +66,33 @@ export default async function middleware(req: NextRequest) {
           return NextResponse.redirect(evaluation);
         }
       }
+      if (
+        currentUrl.startsWith("/evaluation/monitor") ||
+        currentUrl.startsWith("/evaluation/answers")
+      ) {
+        const urlParam = currentUrl.split("/");
+        try {
+          const searchParams = new URLSearchParams();
+          searchParams.append("userId", session.sub!);
+
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/evaluation-assign/${
+              urlParam[3]
+            }/check-creatorId?${searchParams.toString()}`,
+            {
+              method: "GET",
+            }
+          );
+          const resData = await res.json();
+          if (resData.ok) {
+          } else {
+            return NextResponse.redirect(evaluation);
+          }
+        } catch (error) {
+          console.log({ error });
+          return NextResponse.redirect(evaluation);
+        }
+      }
 
       if (
         pagesNotAllowedForProfesores.some((page) => currentUrl.startsWith(page))
