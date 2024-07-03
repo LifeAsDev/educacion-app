@@ -74,6 +74,8 @@
   height: 20em;
   padding: 0.5em;
   padding-left: 4px;
+  border-top: 2px solid var(--grey);
+  border-bottom: 2px solid var(--grey);
 }
 
 .tableBox table {
@@ -108,4 +110,8 @@
   align-items: center;
   width: 30em;
   height: 20em;
+}
+
+.generalScore {
+  margin-left: 1em;
 }

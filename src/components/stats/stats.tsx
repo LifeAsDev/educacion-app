@@ -1,28 +1,30 @@
 "use client";
 import styles from "@/components/management/styles.module.css";
+import styles2 from "./userStats/styles.module.css";
 import SearchInput from "@/components/management/searchInput/searchInput";
-import User from "@/models/user";
 import Curso from "@/models/curso";
 import { useEffect, useState } from "react";
 import { CursoWrap } from "@/components/management/management";
 import { useOnboardingContext } from "@/lib/context";
 import UserStats from "./userStats/userStats";
+import UserResult from "@/models/userResult";
 
 export default function Stats() {
   const [keyword, setKeyword] = useState("");
   const [fetchingUsers, setFetchingUsers] = useState(false);
-  const [usersArr, setUsersArr] = useState<User[]>([]);
+  const [usersArr, setUsersArr] = useState<UserResult[]>([]);
   const [filterCursoInput, setFilterCursoInput] = useState("N/A");
   const [cursosArr, setCursosArr] = useState<CursoWrap[]>([]);
   const [inputSearch, setInputSearch] = useState("");
   const { session } = useOnboardingContext();
-  const [userSelected, setUserSelected] = useState<User | null>(null);
+  const [userSelected, setUserSelected] = useState<UserResult | null>(null);
+  const [generalScore, setGeneralScore] = useState(0);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     if (session && session.rol === "Profesor") {
       setFilterCursoInput("Todos");
     }
-  }, [session]);
+  }, [session]); */
 
   useEffect(() => {
     const fetchCursos = async () => {
@@ -79,6 +81,8 @@ export default function Stats() {
         if (res.ok && filterCursoInput !== "N/A") {
           setFetchingUsers(false);
           setUsersArr(resData.users);
+          setGeneralScore(resData.generalScore);
+
           return;
         } else {
           setFetchingUsers(false);
@@ -105,7 +109,9 @@ export default function Stats() {
       {userSelected && (
         <UserStats
           setUserSelected={setUserSelected}
-          userSelected={userSelected}
+          userSelected={userSelected.user}
+          evaluationsList={userSelected.results.evaluationList}
+          mainPercentage={userSelected.results.mainPercentage}
         />
       )}
       <div className={styles.top}>
@@ -117,7 +123,6 @@ export default function Stats() {
               setKeyword(inputSearch);
             }}
           />
-
           <p>Curso:</p>
           <select
             onChange={(e) => setFilterCursoInput(e.target.value)}
@@ -125,11 +130,11 @@ export default function Stats() {
             id="cursoFilter"
             value={filterCursoInput}
           >
-            {session && session.rol === "Profesor" ? (
+            <option value="N/A">Escoja un curso</option>
+            {/*       {session && session.rol === "Profesor" ? (
               <option value="Todos">Todos</option>
             ) : (
-              <option value="N/A">Escoja un curso</option>
-            )}
+            )} */}
             {session &&
               cursosArr
                 .filter(
@@ -147,6 +152,11 @@ export default function Stats() {
                   </option>
                 ))}
           </select>
+          {filterCursoInput !== "N/A" && !fetchingUsers && (
+            <p className={styles2.generalScore}>
+              Promedio General:<span> {generalScore}%</span>
+            </p>
+          )}
         </div>
       </div>
       <div
@@ -178,22 +188,23 @@ export default function Stats() {
                 ))}
               </>
             ) : (
-              usersArr.map((user: User, index) => {
+              usersArr.map((user, index) => {
                 return (
-                  <tr className={`${styles.userItem}`} key={user._id}>
+                  <tr className={`${styles.userItem}`} key={user.user._id}>
                     <td className={styles.tableItem}>
                       <p className={styles.name}>
-                        {`${user.nombre} ${user.apellido}`}
+                        {`${user.user.nombre} ${user.user.apellido}`}
                       </p>
                     </td>
                     <td className={styles.tableItem}>
-                      <p className={styles.name}>{`${user.dni}`}</p>
+                      <p className={styles.name}>{`${user.user.dni}`}</p>
                     </td>
                     <td className={styles.a}>
                       <div className={styles.cursoBox}>
                         <p className={styles.name}>
-                          {Array.isArray(user.curso) && user.curso.length > 0
-                            ? (user.curso[0] as Curso).name
+                          {Array.isArray(user.user.curso) &&
+                          user.user.curso.length > 0
+                            ? (user.user.curso[0] as Curso).name
                             : "N/A"}
                         </p>
                         <div
@@ -210,14 +221,10 @@ export default function Stats() {
             )}
           </tbody>
         </table>
-        {session &&
-          session.rol !== "Profesor" &&
-          filterCursoInput === "N/A" && (
-            <div className={styles.tableNone}>Escoja un curso</div>
-          )}
-        {session &&
-          (session.rol === "Profesor" ||
-            (session.rol !== "Profesor" && filterCursoInput !== "N/A")) &&
+        {filterCursoInput === "N/A" && (
+          <div className={styles.tableNone}>Escoja un curso</div>
+        )}
+        {filterCursoInput !== "N/A" &&
           !fetchingUsers &&
           usersArr.length === 0 && (
             <div className={styles.tableNone}>

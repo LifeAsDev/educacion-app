@@ -2,27 +2,25 @@ import User from "@/models/user";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import Curso from "@/models/curso";
-
-interface EvaluationStats {
-  _id: string;
-  name: string;
-  answersCorrect: number;
-  answersCount: number;
-  percentage: number;
-}
+import UserResult from "@/models/userResult";
+import EvaluationResult from "@/models/evaluationResult";
 
 export default function UserStats({
   setUserSelected,
   userSelected,
+  evaluationsList,
+  mainPercentage,
 }: {
-  setUserSelected: Dispatch<SetStateAction<User | null>>;
+  setUserSelected: Dispatch<SetStateAction<UserResult | null>>;
   userSelected: User;
+  evaluationsList: EvaluationResult[];
+  mainPercentage: number;
 }) {
-  const [evaluationsList, setEvaluationList] = useState<EvaluationStats[]>([]);
-  const [mainPercentage, setMainPercentage] = useState(0);
-  const [fetchingStats, setFetchingStats] = useState(true);
+  /*   const [evaluationsList, setEvaluationList] = useState<EvaluationStats[]>([]);
+  const [mainPercentage, setMainPercentage] = useState(0); */
+  const [fetchingStats, setFetchingStats] = useState(false);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     const fetchUserStats = async () => {
       try {
         const searchParams = new URLSearchParams();
@@ -49,6 +47,7 @@ export default function UserStats({
     };
     fetchUserStats();
   }, [userSelected._id]);
+ */
 
   return (
     <div className={styles.overlay}>
@@ -141,7 +140,10 @@ export default function UserStats({
             <table>
               <tbody className={styles.evaluationsBox}>
                 {evaluationsList.map((evaluation) => (
-                  <tr key={evaluation._id} className={styles.evaluationBox}>
+                  <tr
+                    key={evaluation._id.toString()}
+                    className={styles.evaluationBox}
+                  >
                     <td>{evaluation.name}</td>
                     <td>
                       {evaluation.answersCorrect}/{evaluation.answersCount}
