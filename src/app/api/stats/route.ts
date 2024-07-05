@@ -63,6 +63,10 @@ export async function GET(req: Request) {
 
   const users = await User.aggregate(aggregatePipeline);
 
+  await User.populate(users, {
+    path: "curso",
+    model: Curso,
+  });
   const newUsersResults: UserResult[] = [];
   let generalScore = 0;
 

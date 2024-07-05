@@ -153,9 +153,11 @@ export default function UserStats({
                 ))}
               </tbody>
             </table>
-            <div className={styles.tableNone}>
-              No se encontraron evaluaciones
-            </div>
+            {evaluationsList && !evaluationsList.length && (
+              <div className={styles.tableNone}>
+                No se encontraron evaluaciones
+              </div>
+            )}
           </div>
         </div>
       )}
