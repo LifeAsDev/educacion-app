@@ -4,8 +4,9 @@
   flex-direction: column;
   width: 100%;
   height: 100vh;
-  max-width: 1200px;
   padding-bottom: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 .top {
   width: 100%;
@@ -158,6 +159,7 @@
 .main td {
   text-align: left;
   padding: 0 1em;
+  min-height: 3.25em;
 }
 .main th {
   padding: 1em;
@@ -176,9 +178,9 @@
   overflow: auto;
   position: relative;
   background-color: var(--third-color-light-black);
+  min-width: 768px;
 }
 .testItem {
-  height: 3.25em;
   width: 100%;
   background-color: #8b93a7;
   transition: background-color 0.3s ease;
@@ -571,10 +573,6 @@
   background-color: var(--secondary-yellow);
 }
 
-.spaceBetween {
-  justify-content: space-between !important;
-}
-
 .openQuestionItem {
   min-height: 3.25em;
 }
@@ -603,13 +601,20 @@
   display: flex;
   flex-direction: column;
   font-size: 16px;
-  min-width: 30em;
   justify-content: center;
   align-items: center;
   padding-bottom: 0.5em;
   padding-top: 0.2em;
-}
 
+  flex-grow: 1;
+}
+.openAnswerBox p {
+  word-break: break-all;
+}
+.spaceBetween {
+  justify-content: space-between !important;
+  min-height: 3.25em;
+}
 .openAnswerBox p {
   font-size: 1em;
 }
@@ -656,4 +661,12 @@
 
 .openQuestionArrow:hover svg.right {
   transform: scale(-1.1, 1.1) !important;
+}
+
+.centerText {
+  text-align: center !important;
+}
+
+.main table {
+  min-width: 768px;
 }

@@ -228,7 +228,8 @@ export default function EvaluationsASsignOpenAnswers({
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Preguntas</th>
+              <th className={styles.centerText}>Preguntas</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="evaluationList" className={styles.tbody}>
@@ -237,6 +238,7 @@ export default function EvaluationsASsignOpenAnswers({
                 {Array.from({ length: 15 }, (_, index) => (
                   <tr key={index} className={styles.testItem}>
                     <td className={styles.td}></td>
+                    <td className={styles.td}></td>{" "}
                     <td className={styles.td}></td>
                   </tr>
                 ))}
@@ -350,6 +352,10 @@ export default function EvaluationsASsignOpenAnswers({
                           </g>
                         </svg>
                       </div>
+                    </div>
+                  </td>
+                  <td className={styles.td}>
+                    <div className={styles.answerOutBox}>
                       <div
                         onClick={() => {
                           setAnswer(i, "correct");
