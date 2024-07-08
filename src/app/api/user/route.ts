@@ -242,10 +242,11 @@ export async function POST(req: Request) {
       const findAsignatura = await Asignatura.findOne({
         name: newUser.asignatura,
       });
-      console.log({ findAsignatura: findAsignatura._id });
 
       if (findAsignatura) newUser.asignatura = findAsignatura._id;
-
+      else {
+        delete newUser.asignatura;
+      }
       if (newUser.dni !== "N/A") {
         const isDuplicated = await User.find({ dni: newUser.dni });
         if (isDuplicated && isDuplicated.length > 0) {
