@@ -131,18 +131,19 @@ export async function GET(req: Request) {
       model: Asignatura,
     },
   ]);
-
   const usersCursoDelete = populatedUsers.map((user: any) => {
     const newUser = { ...user }; // Create a shallow copy of the user object
-    newUser.curso = (user.curso! as CursoType[]).map((curso: CursoType) => {
-      return new Types.ObjectId(curso._id); // Convert curso._id to ObjectId
-    });
+
+    if (user.curso) {
+      newUser.curso = (user.curso! as CursoType[]).map((curso: CursoType) => {
+        return new Types.ObjectId(curso._id); // Convert curso._id to ObjectId
+      });
+    }
 
     newUser.asignatura = newUser.asignatura?._id;
 
     return newUser;
   });
-
   for (const updatedUser of usersCursoDelete) {
     // Create a new instance of the User model with the updated user data
     // Save the updated user to the database
