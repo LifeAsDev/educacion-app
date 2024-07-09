@@ -154,7 +154,7 @@ export default function Stats() {
           </select>
           {filterCursoInput !== "N/A" && !fetchingUsers && (
             <p className={styles2.generalScore}>
-              Promedio General:<span> {generalScore}%</span>
+              Promedio general del curso:<span> {generalScore}%</span>
             </p>
           )}
         </div>

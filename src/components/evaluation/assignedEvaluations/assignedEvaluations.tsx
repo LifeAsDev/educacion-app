@@ -152,6 +152,7 @@ export default function AssignedEvaluations({
           >
             <option value="Asignadas">Asignadas</option>
             <option value="Completadas">Completadas</option>
+            <option value="Corregir">Por Corregir</option>
             <option value="Todas">Todas</option>
           </select>
           {session && session.rol !== "Profesor" && (
@@ -243,11 +244,18 @@ export default function AssignedEvaluations({
                   }
                   if (
                     filterState === "Completadas" &&
-                    item.state === "Completada"
+                    item.state === "Completada" &&
+                    !item.openQuestionAnswer.length
                   ) {
                     return true;
                   }
                   if (filterState === "Todas") {
+                    return true;
+                  }
+                  if (
+                    filterState === "Corregir" &&
+                    item.openQuestionAnswer.length
+                  ) {
                     return true;
                   }
                 })
@@ -270,7 +278,13 @@ export default function AssignedEvaluations({
                     </td>
                     <td className={styles.td}>
                       <div>
-                        <p>{item.state}</p>
+                        <p>
+                          {item.state !== "Completada"
+                            ? item.state
+                            : item.openQuestionAnswer.length
+                            ? "Corregir"
+                            : item.state}
+                        </p>
                         <Link
                           href={`/evaluation/monitor/${item._id}`}
                           className={`${styles.btn} ${styles.monitorear}`}
@@ -286,13 +300,15 @@ export default function AssignedEvaluations({
                           >
                             Completar
                           </div>
-                        ) : (
+                        ) : item.openQuestionAnswer.length ? (
                           <Link
                             href={`/evaluation/answers/${item._id}`}
                             className={`${styles.btn} ${styles.corregir}`}
                           >
                             Corregir
                           </Link>
+                        ) : (
+                          ""
                         )}
                       </div>
                     </td>

@@ -11,6 +11,8 @@ export async function GET(req: Request, { params }: any) {
   const curso = searchParams.get("curso");
   const asignatura = searchParams.get("asignatura");
   const profesorId = searchParams.get("profesorId");
+  const state = searchParams.get("state");
+
   try {
     await connectMongoDB();
 
@@ -18,7 +20,18 @@ export async function GET(req: Request, { params }: any) {
     if (curso !== null) query.curso = curso;
     if (asignatura !== null) query.asignatura = asignatura;
     if (profesorId !== null) query.profesorId = profesorId;
-
+    /*   if (state !== null) {
+      if (state === "Completadas") {
+        query.state = "Completa";
+      }
+      if (state === "Asignadas") {
+        query.state = "Asignada";
+      }
+      if (state === "Corregir") {
+        openQuestionAnswer;
+      }
+    }
+ */
     const evaluationAssigneds = await EvaluationAssign.find(query);
 
     await EvaluationAssign.populate(evaluationAssigneds, [
