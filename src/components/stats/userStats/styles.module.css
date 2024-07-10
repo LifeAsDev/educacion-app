@@ -17,7 +17,7 @@
   background-color: white;
   padding: 1em;
   min-height: 18em;
-  gap: 2em;
+  gap: 1em;
 }
 
 .overlay label {
@@ -124,4 +124,21 @@
   justify-content: center;
   align-items: center;
   font-size: 1.5em;
+}
+
+.tableHeadName {
+  text-align: left;
+  background-color: white !important;
+  color: black;
+  padding-top: 1em !important;
+}
+.tableHead {
+}
+
+.thead {
+  background-color: white !important;
+}
+
+.evaluationBox td {
+  text-align: center;
 }

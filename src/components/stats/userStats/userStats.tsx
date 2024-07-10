@@ -138,6 +138,14 @@ export default function UserStats({
           </div>
           <div className={`${styles.tableBox}`}>
             <table>
+              <thead className={styles.thead}>
+                <tr className={styles.tableHead}>
+                  <th className={styles.tableHeadName}>Evalucion</th>
+                  <th className={styles.tableHeadName}>Puntaje Total</th>
+                  <th className={styles.tableHeadName}>Respuestas Correctas</th>
+                  <th className={styles.tableHeadName}>% Acierto</th>
+                </tr>
+              </thead>
               <tbody className={styles.evaluationsBox}>
                 {evaluationsList.map((evaluation) => (
                   <tr
@@ -145,6 +153,9 @@ export default function UserStats({
                     className={styles.evaluationBox}
                   >
                     <td>{evaluation.name}</td>
+                    <td>
+                      {evaluation.score}/{evaluation.totalScore}
+                    </td>
                     <td>
                       {evaluation.answersCorrect}/{evaluation.answersCount}
                     </td>

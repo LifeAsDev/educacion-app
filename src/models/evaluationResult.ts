@@ -6,6 +6,8 @@ interface EvaluationResult {
   answersCorrect: number;
   answersCount: number;
   percentage: number;
+  totalScore: number;
+  score: number;
 }
 
 export default EvaluationResult;
