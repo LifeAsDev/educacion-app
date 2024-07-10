@@ -142,11 +142,8 @@ async function getEvaluationsOnCourse(userId: string): Promise<{
         );
       }
     }
-
-    const percentage =
-      Math.round(
-        (progress.reduce((acc, val) => acc + val, 0) / totalPoints) * 100
-      ) || 0;
+    const points = progress.reduce((acc, val) => acc + val, 0);
+    const percentage = Math.round((points / totalPoints) * 100) || 0;
 
     evaluationList.push({
       name: evaluationOnCourse.evaluationAssignId!.evaluationId.name,
@@ -157,6 +154,8 @@ async function getEvaluationsOnCourse(userId: string): Promise<{
       ),
       answersCount: progress.length,
       percentage,
+      score: points,
+      totalScore: totalPoints,
     });
   }
 
