@@ -670,3 +670,13 @@
 .main table {
   min-width: 768px;
 }
+
+.statsIcon {
+  width: 28px !important;
+}
+
+.svgBox {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
