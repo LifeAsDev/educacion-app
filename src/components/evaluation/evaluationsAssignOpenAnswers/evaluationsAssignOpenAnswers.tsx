@@ -5,7 +5,7 @@ import styles from "../styles.module.css";
 import { useEffect, useState } from "react";
 import EvaluationAssign from "@/models/evaluationAssign";
 
-export default function EvaluationsASsignOpenAnswers({
+export default function EvaluationsAssignOpenAnswers({
   evaluationAssignId,
 }: {
   evaluationAssignId: string;
