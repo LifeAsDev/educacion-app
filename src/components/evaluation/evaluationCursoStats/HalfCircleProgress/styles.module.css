@@ -1,0 +1,53 @@
+.wrapper {
+  overflow: hidden;
+  --circleWidth: 400px;
+}
+
+.circle {
+  width: var(--circleWidth);
+  height: calc(var(--circleWidth) / 2);
+  background-color: transparent;
+  border-top-left-radius: 380px;
+  border-top-right-radius: 380px;
+  border: 50px solid #5e76ff;
+  border-bottom: 0;
+
+  transition: all 1s ease;
+
+  transform-origin: bottom;
+  position: absolute;
+  z-index: 1;
+  transform: rotate(-180deg);
+  bottom: 0;
+  left: -50px;
+}
+
+.circleOut {
+  width: var(--circleWidth);
+  height: calc(var(--circleWidth) / 2);
+  background-color: transparent;
+  border-top-left-radius: 380px;
+  border-top-right-radius: 380px;
+  border: 50px solid #ededed;
+  border-bottom: 0;
+  position: relative;
+}
+
+.timeBox {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.3em;
+  font-weight: 600;
+  height: 80%;
+  color: rgb(29, 29, 29);
+}
+
+.timeBox span {
+  font-weight: 550;
+  color: rgb(53, 53, 53);
+}

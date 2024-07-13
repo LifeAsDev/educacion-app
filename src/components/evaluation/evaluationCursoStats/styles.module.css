@@ -1,0 +1,40 @@
+.main {
+  padding-top: 5em;
+}
+.evaluationTop {
+  background-color: rgba(0, 0, 0, 0.2);
+  font-size: 1.6em;
+  font-weight: 600;
+  padding: 0.5em 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(29, 29, 29);
+  gap: 0.25em;
+}
+
+.evaluationTop span {
+  color: rgb(53, 53, 53);
+}
+
+.evaluationAssignMainDataBox {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  min-height: 23em;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
+
+.evaluationAssignMainDataBox ul li {
+  font-weight: 600;
+  color: rgb(29, 29, 29);
+}
+
+.evaluationAssignMainDataBox ul li span {
+  font-weight: 550;
+  color: rgb(53, 53, 53);
+  margin-right: 0.5em;
+}
