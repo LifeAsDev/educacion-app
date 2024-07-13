@@ -18,6 +18,8 @@ const SemiCircleProgress: React.FC<Props> = ({ progress }) => {
           style={{ transform: `rotate(-${p}deg)` }}
         ></div>
         <div className={styles.timeBox}>
+          Acierto Promedio
+          <span>{progress}%</span>
           Tiempo Promedio
           <span>41:23</span>
         </div>

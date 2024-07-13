@@ -1,6 +1,6 @@
 .wrapper {
   overflow: hidden;
-  --circleWidth: 400px;
+  --circleWidth: 415px;
 }
 
 .circle {
@@ -38,16 +38,20 @@
   bottom: 0;
   width: 100%;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   align-items: center;
-  font-size: 1.3em;
+  font-size: 1.12em;
   font-weight: 600;
   height: 80%;
   color: rgb(29, 29, 29);
+  justify-content: flex-end;
 }
 
 .timeBox span {
   font-weight: 550;
   color: rgb(53, 53, 53);
+}
+
+.timeBox span:first-of-type {
+  margin-bottom: 0.5em;
 }
