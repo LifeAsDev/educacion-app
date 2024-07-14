@@ -40,7 +40,7 @@ export default function EvaluationCursoStats({
 }: {
   evaluationId: string;
 }) {
-  const data = {
+  const data1 = {
     labels: [
       "Pregunta 1",
       "Pregunta 2",
@@ -57,7 +57,16 @@ export default function EvaluationCursoStats({
       },
     ],
   };
-
+  const data2 = {
+    labels: ["Logrado", "Medianamente Logrado", "Por Lograr"],
+    datasets: [
+      {
+        label: "Estudiantes",
+        data: [2, 6, 4],
+        backgroundColor: ["#34eb37", "#5e76ff", "#ff001e"],
+      },
+    ],
+  };
   const options: ChartOptions<"bar"> = {
     scales: {
       y: {
@@ -94,8 +103,15 @@ export default function EvaluationCursoStats({
         </div>
         <HalfCircleProgress progress={55} />
       </section>
-      <section className={styles.questionChart} style={{ height: "300px" }}>
-        <Bar data={data} options={options} />
+      <section className={styles.questionChart}>
+        <div style={{ height: "300px" }}>
+          <h3>Aciertos por pregunta</h3>
+          <Bar data={data1} options={options} />
+        </div>
+        <div style={{ height: "300px" }}>
+          <h3>Logro general</h3>
+          <Bar data={data2} options={options} />
+        </div>
       </section>
     </main>
   );
