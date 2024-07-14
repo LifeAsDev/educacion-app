@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import HalfCircleProgress from "./HalfCircleProgress/HalfCircleProgress";
 import styles from "./styles.module.css";
 import {
@@ -12,6 +13,17 @@ import {
   ChartOptions,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import styles2 from "@/components/management/styles.module.css";
+
+interface EstudianteTable {
+  nombre: string;
+  apellido: string;
+  rut: string;
+  percentageAcierto: number;
+  acierto: number;
+  puntaje: number;
+  _id: string;
+}
 
 // Register the necessary components and scales with ChartJS
 ChartJS.register(
@@ -40,6 +52,17 @@ export default function EvaluationCursoStats({
 }: {
   evaluationId: string;
 }) {
+  const [estudiantesArr, setEstudiantesArr] = useState<EstudianteTable[]>([
+    {
+      nombre: "string",
+      apellido: "string",
+      rut: "string",
+      percentageAcierto: 2,
+      acierto: 2,
+      puntaje: 2,
+      _id: "string",
+    },
+  ]);
   const data1 = {
     labels: [
       "Pregunta 1",
@@ -61,7 +84,7 @@ export default function EvaluationCursoStats({
     labels: ["Logrado", "Medianamente Logrado", "Por Lograr"],
     datasets: [
       {
-        label: "Estudiantes",
+        label: "",
         data: [2, 6, 4],
         backgroundColor: ["#34eb37", "#5e76ff", "#ff001e"],
       },
@@ -114,6 +137,50 @@ export default function EvaluationCursoStats({
         <div style={{ height: "300px" }}>
           <h3>Logro general</h3>
           <Bar data={data2} options={options} />
+        </div>
+        <div>
+          <h3>Tabla de clasificacion</h3>
+          <div className={`${styles2.tableBox}`}>
+            <table>
+              <thead>
+                <tr className={styles2.tableHead}>
+                  <th className={styles2.tableHeadName}>Nombre</th>
+                  <th className={styles2.tableHeadName}>RUT</th>
+                  <th className={styles2.tableHeadName}>% Acierto</th>
+                  <th className={styles2.tableHeadName}>Acierto</th>
+                  <th className={styles2.tableHeadName}>Puntaje</th>
+                </tr>
+              </thead>
+              <tbody id="usersList" className={`${styles2.usersList}`}>
+                {estudiantesArr &&
+                  estudiantesArr.map((user, index) => {
+                    return (
+                      <tr className={`${styles2.userItem}`} key={user._id}>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {`${index + 1}. ${user.nombre} ${user.apellido}`}
+                          </p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>{`${user.rut}`}</p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p
+                            className={styles2.name}
+                          >{`%${user.percentageAcierto}`}</p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>{`${user.acierto}/12`}</p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>{`${user.puntaje}/32`}</p>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>
