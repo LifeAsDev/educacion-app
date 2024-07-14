@@ -99,6 +99,9 @@ export default function EvaluationCursoStats({
             <li>
               <span>Dificultad:</span>Facil
             </li>
+            <li>
+              <span>Puntaje Promedio:</span>10/17
+            </li>
           </ul>
         </div>
         <HalfCircleProgress progress={55} />
