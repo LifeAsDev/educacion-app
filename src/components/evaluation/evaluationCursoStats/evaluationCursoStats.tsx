@@ -182,6 +182,151 @@ export default function EvaluationCursoStats({
             </table>
           </div>
         </div>
+        <div>
+          <h3>Tabla de frecuencia</h3>
+          <div className={`${styles2.tableBox}`}>
+            <table>
+              <thead>
+                <tr className={styles2.tableHead}>
+                  <th className={styles2.tableHeadName}>Acierto</th>
+                  <th className={styles2.tableHeadName}>Frecuencia absoluta</th>
+                  <th className={styles2.tableHeadName}>
+                    Frecuencia absoluta acumulada
+                  </th>
+                  <th className={styles2.tableHeadName}>Frecuencia relativa</th>
+                  <th className={styles2.tableHeadName}>
+                    Frecuencia relativa acumulada
+                  </th>
+                  <th className={styles2.tableHeadName}>
+                    % De frecuencia relativa
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="usersList" className={`${styles2.usersList}`}>
+                <tr className={`${styles2.userItem}`}>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>10%</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0%`}</p>
+                  </td>
+                </tr>{" "}
+                <tr className={`${styles2.userItem}`}>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>20%</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0%`}</p>
+                  </td>
+                </tr>{" "}
+                <tr className={`${styles2.userItem}`}>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>10%</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0%`}</p>
+                  </td>
+                </tr>{" "}
+                <tr className={`${styles2.userItem}`}>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>10%</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0%`}</p>
+                  </td>
+                </tr>{" "}
+                <tr className={`${styles2.userItem}`}>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>10%</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0%`}</p>
+                  </td>
+                </tr>{" "}
+                <tr className={`${styles2.userItem}`}>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>10%</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0`}</p>
+                  </td>
+                  <td className={styles2.tableItem}>
+                    <p className={styles2.name}>{`0%`}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
     </main>
   );
