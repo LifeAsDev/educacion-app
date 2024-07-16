@@ -8,6 +8,8 @@ interface EvaluationResult {
   percentage: number;
   totalScore: number;
   score: number;
+  evaluationStartTime?: Date;
+  evaluationEndTime?: Date;
 }
 
 export default EvaluationResult;
