@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HalfCircleProgress from "./HalfCircleProgress/HalfCircleProgress";
 import styles from "./styles.module.css";
 import {
@@ -47,11 +47,20 @@ const ChartBackground = {
 
 ChartJS.register(ChartBackground);
 
+interface QuestionAciertos {
+  labels: string[];
+  aciertos: number[];
+}
+
 export default function EvaluationCursoStats({
   evaluationId,
 }: {
   evaluationId: string;
 }) {
+  const [questionsAciertos, setQuestionAciertos] = useState<QuestionAciertos>({
+    labels: [],
+    aciertos: [],
+  });
   const [estudiantesArr, setEstudiantesArr] = useState<EstudianteTable[]>([
     {
       nombre: "string",
@@ -63,23 +72,82 @@ export default function EvaluationCursoStats({
       _id: "string",
     },
   ]);
-  const data1 = {
-    labels: [
-      "Pregunta 1",
-      "Pregunta 2",
-      "Pregunta 3",
-      "Pregunta 4",
-      "Pregunta 5",
-      "Pregunta 6",
-    ],
-    datasets: [
-      {
-        label: "Aciertos",
-        data: [2, 3, 4, 5, 6, 7],
-        backgroundColor: "#5e76ff",
+
+  useEffect(() => {
+    const fetchEvaluationsStats = async () => {
+      try {
+        const searchParams = new URLSearchParams();
+        searchParams.append("curso", "");
+
+        const res = await fetch(
+          `/api/stats/${evaluationId}?${searchParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+
+        const resData = await res.json();
+
+        if (res.ok) {
+          setQuestionAciertos(resData.questionsAciertos);
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    fetchEvaluationsStats();
+  }, []);
+  const data1 = useMemo(() => {
+    function removeHtmlTags(input: string): string {
+      // Crear un elemento temporal en el DOM
+      const tempElement = document.createElement("div");
+      // Asignar el contenido de la variable al elemento
+      tempElement.innerHTML = input;
+      // Obtener solo el texto del elemento, sin HTML
+      return tempElement.textContent || tempElement.innerText || "";
+    }
+
+    const maxDataValue = questionsAciertos?.aciertos
+      ? Math.max(...questionsAciertos.aciertos)
+      : 0;
+
+    const maxAxisValue = Math.max(maxDataValue, 5);
+
+    return {
+      data: {
+        labels: questionsAciertos?.labels.map((label) => removeHtmlTags(label)),
+        datasets: [
+          {
+            label: "Aciertos",
+            data: questionsAciertos?.aciertos.map((acierto) => acierto),
+            backgroundColor: "#5e76ff",
+          },
+        ],
       },
-    ],
-  };
+      options: {
+        indexAxis: "y" as const, // Esto invierte los ejes
+
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+          x: {
+            ticks: {
+              // forces step size to be 50 units
+              stepSize: 1,
+            },
+            max: maxAxisValue, // Establece el máximo del eje X en 5
+            beginAtZero: true,
+          },
+        },
+        maintainAspectRatio: false, // Permite ajustar el ancho y alto del gráfico
+      },
+    };
+  }, [questionsAciertos]);
+
   const data2 = {
     labels: ["Logrado", "Medianamente Logrado", "Por Lograr"],
     datasets: [
@@ -91,8 +159,18 @@ export default function EvaluationCursoStats({
     ],
   };
   const options: ChartOptions<"bar"> = {
+    indexAxis: "y" as const, // Esto invierte los ejes
+
     scales: {
       y: {
+        beginAtZero: true,
+      },
+      x: {
+        ticks: {
+          // forces step size to be 50 units
+          stepSize: 1,
+        },
+        max: 5, // Establece el máximo del eje X en 5
         beginAtZero: true,
       },
     },
@@ -130,9 +208,14 @@ export default function EvaluationCursoStats({
         <HalfCircleProgress progress={55} />
       </section>
       <section className={styles.questionChart}>
-        <div style={{ height: "300px" }}>
+        <div
+          style={{
+            height: questionsAciertos.aciertos.length * 40,
+            minHeight: "100px",
+          }}
+        >
           <h3>Aciertos por pregunta</h3>
-          <Bar data={data1} options={options} />
+          <Bar data={data1.data} options={data1.options} />
         </div>
         <div style={{ height: "300px" }}>
           <h3>Logro general</h3>

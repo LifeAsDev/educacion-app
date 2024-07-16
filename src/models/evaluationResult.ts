@@ -10,6 +10,7 @@ interface EvaluationResult {
   score: number;
   evaluationStartTime?: Date;
   evaluationEndTime?: Date;
+  progress: number[];
 }
 
 export default EvaluationResult;

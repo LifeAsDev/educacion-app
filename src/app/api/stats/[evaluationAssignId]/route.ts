@@ -14,23 +14,33 @@ import UserModel from "@/models/user";
 export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
   const curso = searchParams.get("curso");
-  const evaluationAssignId = params.evaluationAssignId;
+  const evaluationId = params.evaluationAssignId;
 
   await connectMongoDB();
-  const users = await User.find({ "curso.0": curso });
+  const users = await User.find({ "curso.0": "664e08e61b92114795edcb40" });
+  const evaluationAssign = await EvaluationAssign.findOne({
+    evaluationId,
+  })
+    .sort({ createdAt: -1 })
+    .populate({ path: "evaluationId", model: EvaluationTest });
 
   await User.populate(users, {
     path: "curso",
     model: Curso,
   });
+
   const newUsersResults: UserResult[] = [];
   let generalScore = 0;
-
+  let userIndex = 0;
+  let questionsLabel: string[] = [];
+  let questionsCorrect: number[] = [];
   for (const user of users) {
-    const evaluationOnCourse = await EvaluationOnCourse.find({
-      estudianteId: user._id,
-      evaluationAssignId,
-    });
+    const evaluationOnCourse: EvaluationOnCourseModel[] =
+      await EvaluationOnCourse.find({
+        estudianteId: user._id,
+        evaluationAssignId: evaluationAssign._id,
+      });
+
     if (evaluationOnCourse) {
       const results = await getEvaluationsOnCourse(
         user._id,
@@ -40,9 +50,46 @@ export async function GET(req: Request, { params }: any) {
       generalScore += results.mainPercentage;
 
       newUsersResults.push(newUserResult);
+
+      if (userIndex === 0 && !!results.evaluationList.length) {
+        userIndex++;
+
+        await EvaluationOnCourse.populate(evaluationOnCourse, {
+          path: "evaluationAssignId",
+          model: EvaluationAssign,
+          populate: {
+            path: "evaluationId",
+            model: EvaluationTest,
+          },
+        });
+
+        questionsLabel = evaluationAssign.evaluationId.questionArr.map(
+          (question: { pregunta: string }) => question.pregunta
+        );
+
+        questionsCorrect = questionsLabel.map((question) => 0);
+        for (let i = 0; i < questionsCorrect.length; i++) {
+          questionsCorrect[i] += results.evaluationList[0].progress[i] ? 1 : 0;
+        }
+      }
     }
   }
   generalScore = Math.round(generalScore / newUsersResults.length) || 0;
+
+  if (users.length > 0) {
+    return NextResponse.json(
+      {
+        questionsAciertos: {
+          labels: questionsLabel,
+          aciertos: questionsCorrect.map(
+            (acierto) => acierto + Math.floor(Math.random() * 20)
+          ),
+        },
+        message: "stats",
+      },
+      { status: 200 }
+    );
+  }
 
   return NextResponse.json(
     {

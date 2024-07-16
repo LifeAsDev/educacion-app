@@ -58,6 +58,7 @@ export default async function getEvaluationsOnCourse(
     const percentage = Math.round((points / totalPoints) * 100) || 0;
 
     evaluationList.push({
+      progress,
       name: evaluationOnCourse.evaluationAssignId!.evaluationId.name,
       _id: evaluationOnCourse._id,
       answersCorrect: progress.reduce(
