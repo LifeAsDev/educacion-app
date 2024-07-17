@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import styles2 from "@/components/management/styles.module.css";
+import EvaluationAssign from "@/models/evaluationAssign";
 
 interface EstudianteTable {
   nombre: string;
@@ -62,7 +63,7 @@ export default function EvaluationCursoStats({
     aciertos: [],
   });
   const [estudiantesLogro, setEstudiantesLogro] = useState<number[]>([0, 0, 0]);
-
+  const [evaluationAssign, setEvaluationAssign] = useState<EvaluationAssign>();
   const [estudiantesArr, setEstudiantesArr] = useState<EstudianteTable[]>([
     {
       nombre: "string",
@@ -93,6 +94,8 @@ export default function EvaluationCursoStats({
         if (res.ok) {
           setQuestionAciertos(resData.questionsAciertos);
           setEstudiantesLogro(resData.estudiantesLogro);
+          setEvaluationAssign(resData.evaluationAssign);
+
           return;
         } else {
           return;

@@ -10,27 +10,29 @@ import EvaluationOnCourseModel from "@/models/evaluationOnCourse";
 import UserResult from "@/models/userResult";
 import getEvaluationsOnCourse from "@/lib/userStatsFunction";
 import UserModel from "@/models/user";
+import Asignatura from "@/schemas/asignatura";
+import evaluationTest from "@/schemas/evaluationTest";
 
 export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
   const curso = searchParams.get("curso");
-  const evaluationId = params.evaluationAssignId;
+  const evaluationAssignId = params.evaluationAssignId;
 
   await connectMongoDB();
-  const users = await User.find({
-    "curso.0": "664e08e61b92114795edcb40",
-    rol: "Estudiante",
-  });
-  const evaluationAssign = await EvaluationAssign.findOne({
-    evaluationId,
-  })
-    .sort({ createdAt: -1 })
-    .populate({ path: "evaluationId", model: EvaluationTest });
 
-  await User.populate(users, {
-    path: "curso",
-    model: Curso,
-  });
+  const evaluationAssign = await EvaluationAssign.findById(
+    evaluationAssignId
+  ).populate([
+    { path: "evaluationId", model: EvaluationTest },
+    { path: "profesorId", model: User },
+    { path: "curso", model: Curso },
+    { path: "asignatura", model: Asignatura },
+  ]);
+
+  const evaluationsOnCourse: EvaluationOnCourseModel[] =
+    await EvaluationOnCourse.find({
+      evaluationAssignId: evaluationAssign._id,
+    }).populate([{ path: "estudianteId", model: User }]);
 
   const newUsersResults: UserResult[] = [];
   let generalScore = 0;
@@ -38,58 +40,55 @@ export async function GET(req: Request, { params }: any) {
   let questionsLabel: string[] = [];
   let questionsCorrect: number[] = [];
   let estudiantesLogro: number[] = [0, 0, 0];
-  for (const user of users) {
-    const evaluationOnCourse: EvaluationOnCourseModel[] =
-      await EvaluationOnCourse.find({
-        estudianteId: user._id,
-        evaluationAssignId: evaluationAssign._id,
+  for (const evaluationOnCourse of evaluationsOnCourse) {
+    const results = await getEvaluationsOnCourse(
+      evaluationOnCourse.estudianteId._id,
+      [evaluationOnCourse],
+      evaluationAssign.evaluationId
+    );
+
+    const newUserResult = {
+      user: evaluationOnCourse.estudianteId as UserModel,
+      results,
+    };
+    if (results.mainPercentage <= 49) {
+      estudiantesLogro[2]++;
+    } else if (results.mainPercentage <= 84) {
+      estudiantesLogro[1]++;
+    } else {
+      estudiantesLogro[0]++;
+    }
+    generalScore += results.mainPercentage;
+
+    newUsersResults.push(newUserResult);
+
+    if (userIndex === 0 && !!results.evaluationList.length) {
+      userIndex++;
+
+      await EvaluationOnCourse.populate(evaluationOnCourse, {
+        path: "evaluationAssignId",
+        model: EvaluationAssign,
+        populate: {
+          path: "evaluationId",
+          model: EvaluationTest,
+        },
       });
 
-    if (evaluationOnCourse) {
-      const results = await getEvaluationsOnCourse(
-        user._id,
-        evaluationOnCourse
+      questionsLabel = evaluationAssign.evaluationId.questionArr.map(
+        (question: { pregunta: string }) => question.pregunta
       );
-      const newUserResult = { user: user as UserModel, results };
-      if (results.mainPercentage <= 49) {
-        estudiantesLogro[2]++;
-      } else if (results.mainPercentage <= 84) {
-        estudiantesLogro[1]++;
-      } else {
-        estudiantesLogro[0]++;
-      }
-      generalScore += results.mainPercentage;
 
-      newUsersResults.push(newUserResult);
-
-      if (userIndex === 0 && !!results.evaluationList.length) {
-        userIndex++;
-
-        await EvaluationOnCourse.populate(evaluationOnCourse, {
-          path: "evaluationAssignId",
-          model: EvaluationAssign,
-          populate: {
-            path: "evaluationId",
-            model: EvaluationTest,
-          },
-        });
-
-        questionsLabel = evaluationAssign.evaluationId.questionArr.map(
-          (question: { pregunta: string }) => question.pregunta
-        );
-
-        questionsCorrect = questionsLabel.map((question) => 0);
-        for (let i = 0; i < questionsCorrect.length; i++) {
-          questionsCorrect[i] += results.evaluationList[0].progress[i] ? 1 : 0;
-        }
+      questionsCorrect = questionsLabel.map((question) => 0);
+      for (let i = 0; i < questionsCorrect.length; i++) {
+        questionsCorrect[i] += results.evaluationList[0].progress[i] ? 1 : 0;
       }
     }
   }
   generalScore = Math.round(generalScore / newUsersResults.length) || 0;
-  console.log({ estudiantesLogro });
-  if (users.length > 0) {
+  if (evaluationsOnCourse.length > 0) {
     return NextResponse.json(
       {
+        evaluationAssign,
         estudiantesLogro,
         questionsAciertos: {
           labels: questionsLabel,

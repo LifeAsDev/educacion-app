@@ -4,10 +4,12 @@ import EvaluationAssign from "@/schemas/evaluationAssign";
 import EvaluationResult from "@/models/evaluationResult";
 import EvaluationOnCourseModel from "@/models/evaluationOnCourse";
 import { connectMongoDB } from "@/lib/mongodb";
+import EvaluationTestModel from "@/models/evaluationTest";
 
 export default async function getEvaluationsOnCourse(
   userId: string,
-  evaluationsOnCourse?: EvaluationOnCourseModel[]
+  evaluationsOnCourse?: EvaluationOnCourseModel[],
+  evaluationTest?: EvaluationTestModel
 ): Promise<{
   evaluationList: EvaluationResult[];
   mainPercentage: number;
@@ -22,22 +24,29 @@ export default async function getEvaluationsOnCourse(
       state: "Completada",
     });
   }
-
-  await EvaluationOnCourse.populate(evaluationsOnCourse, {
-    path: "evaluationAssignId",
-    model: EvaluationAssign,
-    populate: {
-      path: "evaluationId",
-      model: EvaluationTest,
-    },
-  });
+  if (!evaluationTest) {
+    await EvaluationOnCourse.populate(evaluationsOnCourse, {
+      path: "evaluationAssignId",
+      model: EvaluationAssign,
+      populate: {
+        path: "evaluationId",
+        model: EvaluationTest,
+      },
+    });
+  }
 
   for (const evaluationOnCourse of evaluationsOnCourse) {
+    let evaluationTestLoop;
+
+    if (evaluationTest) {
+      evaluationTestLoop = evaluationTest;
+    } else {
+      evaluationTestLoop = evaluationOnCourse.evaluationAssignId.evaluationId;
+    }
     const progress: number[] = [];
     let totalPoints = 0;
 
-    for (const question of evaluationOnCourse.evaluationAssignId.evaluationId
-      .questionArr) {
+    for (const question of evaluationTestLoop.questionArr) {
       const points =
         !question.puntos || question.puntos === 0 ? 1 : question.puntos;
       totalPoints += points;
@@ -59,7 +68,7 @@ export default async function getEvaluationsOnCourse(
 
     evaluationList.push({
       progress,
-      name: evaluationOnCourse.evaluationAssignId!.evaluationId.name,
+      name: evaluationTestLoop.name,
       _id: evaluationOnCourse._id,
       answersCorrect: progress.reduce(
         (acc, val) => (val > 0 ? acc + 1 : acc),
