@@ -308,7 +308,12 @@ export default function AssignedEvaluations({
                             Corregir
                           </Link>
                         ) : (
-                          ""
+                          <a
+                            className={`${styles.btn} ${styles.corregir}`}
+                            href={`/evaluation/stats/${item._id}`}
+                          >
+                            Estadisticas
+                          </a>
                         )}
                       </div>
                     </td>
