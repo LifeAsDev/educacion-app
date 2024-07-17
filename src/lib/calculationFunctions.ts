@@ -32,8 +32,8 @@ function formatMinutesBeautiful(minutes: number): string {
 }
 
 function getFinishTime(
-  startTime: string,
-  endTime: string,
+  startTime: string = Date.now().toString(),
+  endTime: string = Date.now().toString(),
   remainingTime: number = 90
 ): number {
   const startTimeMs = new Date(startTime).getTime(); // Convertir startTime a milisegundos

@@ -5,6 +5,7 @@ import EvaluationResult from "@/models/evaluationResult";
 import EvaluationOnCourseModel from "@/models/evaluationOnCourse";
 import { connectMongoDB } from "@/lib/mongodb";
 import EvaluationTestModel from "@/models/evaluationTest";
+import { getFinishTime } from "./calculationFunctions";
 
 export default async function getEvaluationsOnCourse(
   userId: string,
@@ -80,6 +81,11 @@ export default async function getEvaluationsOnCourse(
       totalScore: totalPoints,
       evaluationStartTime: evaluationOnCourse.startTime,
       evaluationEndTime: evaluationOnCourse.endTime,
+      finishTime: getFinishTime(
+        evaluationOnCourse.startTime?.toString(),
+        evaluationOnCourse.endTime?.toString(),
+        evaluationTestLoop.tiempo
+      ),
     });
   }
 

@@ -40,6 +40,9 @@ export async function GET(req: Request, { params }: any) {
   let questionsLabel: string[] = [];
   let questionsCorrect: number[] = [];
   let estudiantesLogro: number[] = [0, 0, 0];
+  let puntajePromedio = 0;
+  let puntajeTotal = 0;
+  let tiempoPromedio = 0;
   for (const evaluationOnCourse of evaluationsOnCourse) {
     const results = await getEvaluationsOnCourse(
       evaluationOnCourse.estudianteId._id,
@@ -59,12 +62,13 @@ export async function GET(req: Request, { params }: any) {
       estudiantesLogro[0]++;
     }
     generalScore += results.mainPercentage;
-
+    puntajePromedio += results.evaluationList[0].score;
+    tiempoPromedio += results.evaluationList[0].finishTime;
     newUsersResults.push(newUserResult);
 
     if (userIndex === 0 && !!results.evaluationList.length) {
       userIndex++;
-
+      puntajeTotal = results.evaluationList[0].totalScore;
       await EvaluationOnCourse.populate(evaluationOnCourse, {
         path: "evaluationAssignId",
         model: EvaluationAssign,
@@ -85,6 +89,10 @@ export async function GET(req: Request, { params }: any) {
     }
   }
   generalScore = Math.round(generalScore / newUsersResults.length) || 0;
+  puntajePromedio = Math.round(puntajePromedio / newUsersResults.length) || 0;
+
+  tiempoPromedio = Math.round(tiempoPromedio / newUsersResults.length) || 0;
+
   if (evaluationsOnCourse.length > 0) {
     return NextResponse.json(
       {
@@ -95,6 +103,10 @@ export async function GET(req: Request, { params }: any) {
           aciertos: questionsCorrect.map((acierto) => acierto),
         },
         message: "stats",
+        puntajePromedio,
+        puntajeTotal,
+        generalScore,
+        tiempoPromedio,
       },
       { status: 200 }
     );

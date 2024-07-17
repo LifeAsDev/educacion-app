@@ -75,7 +75,12 @@ export default function EvaluationCursoStats({
       _id: "string",
     },
   ]);
-
+  const [puntaje, setPuntaje] = useState({
+    puntajePromedio: 0,
+    puntajeTotal: 0,
+  });
+  const [generalScore, setGeneralScore] = useState(0);
+  const [timeGeneral, setTimeGeneral] = useState(0);
   useEffect(() => {
     const fetchEvaluationsStats = async () => {
       try {
@@ -95,6 +100,12 @@ export default function EvaluationCursoStats({
           setQuestionAciertos(resData.questionsAciertos);
           setEstudiantesLogro(resData.estudiantesLogro);
           setEvaluationAssign(resData.evaluationAssign);
+          setPuntaje({
+            puntajePromedio: resData.puntajePromedio,
+            puntajeTotal: resData.puntajeTotal,
+          });
+          setGeneralScore(resData.generalScore);
+          setTimeGeneral(resData.tiempoPromedio);
 
           return;
         } else {
@@ -192,35 +203,45 @@ export default function EvaluationCursoStats({
     };
   }, [estudiantesLogro]);
 
+  if (!evaluationAssign)
+    return (
+      <div className={styles.loadBox}>
+        <div className={styles.loader}></div>
+      </div>
+    );
+
   return (
     <main className={styles.main}>
       <section className={styles.evaluationTop}>
-        <span>Resultados: </span> Evaluacion B, Historia
+        <span>Resultados: </span>
+        {evaluationAssign.evaluationId.name},{" "}
+        {evaluationAssign.asignatura?.name}, {evaluationAssign.curso.name}
       </section>
       <section className={styles.evaluationAssignMainDataBox}>
         <div className={styles.evaluationAssignMainData}>
           <ul>
             <li>
-              <span>Profesor:</span>Osvaldo Alveal Mena
+              <span>Profesor:</span>
+              {`${evaluationAssign.profesorId.nombre} ${evaluationAssign.profesorId.apellido}`}
             </li>
             <li>
-              <span>Tiempo:</span>90 Minutos
+              <span>Tiempo:</span>
+              {evaluationAssign.evaluationId.tiempo} Minutos
             </li>
             <li>
-              <span>Curso:</span>3° Medio A
+              <span>Tipo:</span> {evaluationAssign.evaluationId.type}
             </li>
             <li>
-              <span>Tipo:</span>PAES
+              <span>Dificultad:</span>
+              {evaluationAssign.evaluationId.difficulty}
             </li>
             <li>
-              <span>Dificultad:</span>Facil
-            </li>
-            <li>
-              <span>Puntaje Promedio:</span>10/17
+              <span>Puntaje Promedio:</span>
+              {puntaje.puntajePromedio}/{puntaje.puntajeTotal}
             </li>
           </ul>
         </div>
-        <HalfCircleProgress progress={55} />
+        <HalfCircleProgress progress={generalScore} time={timeGeneral} />
       </section>
       <section className={styles.questionChart}>
         <div

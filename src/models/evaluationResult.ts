@@ -11,6 +11,7 @@ interface EvaluationResult {
   evaluationStartTime?: Date;
   evaluationEndTime?: Date;
   progress: number[];
+  finishTime: number;
 }
 
 export default EvaluationResult;
