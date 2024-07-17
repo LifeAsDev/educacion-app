@@ -17,7 +17,10 @@ export async function GET(req: Request, { params }: any) {
   const evaluationId = params.evaluationAssignId;
 
   await connectMongoDB();
-  const users = await User.find({ "curso.0": "664e08e61b92114795edcb40" });
+  const users = await User.find({
+    "curso.0": "664e08e61b92114795edcb40",
+    rol: "Estudiante",
+  });
   const evaluationAssign = await EvaluationAssign.findOne({
     evaluationId,
   })
@@ -34,6 +37,7 @@ export async function GET(req: Request, { params }: any) {
   let userIndex = 0;
   let questionsLabel: string[] = [];
   let questionsCorrect: number[] = [];
+  let estudiantesLogro: number[] = [0, 0, 0];
   for (const user of users) {
     const evaluationOnCourse: EvaluationOnCourseModel[] =
       await EvaluationOnCourse.find({
@@ -47,6 +51,13 @@ export async function GET(req: Request, { params }: any) {
         evaluationOnCourse
       );
       const newUserResult = { user: user as UserModel, results };
+      if (results.mainPercentage <= 49) {
+        estudiantesLogro[2]++;
+      } else if (results.mainPercentage <= 84) {
+        estudiantesLogro[1]++;
+      } else {
+        estudiantesLogro[0]++;
+      }
       generalScore += results.mainPercentage;
 
       newUsersResults.push(newUserResult);
@@ -75,15 +86,14 @@ export async function GET(req: Request, { params }: any) {
     }
   }
   generalScore = Math.round(generalScore / newUsersResults.length) || 0;
-
+  console.log({ estudiantesLogro });
   if (users.length > 0) {
     return NextResponse.json(
       {
+        estudiantesLogro,
         questionsAciertos: {
           labels: questionsLabel,
-          aciertos: questionsCorrect.map(
-            (acierto) => acierto + Math.floor(Math.random() * 20)
-          ),
+          aciertos: questionsCorrect.map((acierto) => acierto),
         },
         message: "stats",
       },

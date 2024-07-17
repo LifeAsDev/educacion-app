@@ -77,7 +77,12 @@ export default async function getEvaluationsOnCourse(
   const mainPercentage = Math.round(
     evaluationList.reduce((acc, curr) => acc + curr.percentage, 0) /
       evaluationList.length
-  );
+  )
+    ? Math.round(
+        evaluationList.reduce((acc, curr) => acc + curr.percentage, 0) /
+          evaluationList.length
+      )
+    : 0;
 
   return {
     evaluationList,

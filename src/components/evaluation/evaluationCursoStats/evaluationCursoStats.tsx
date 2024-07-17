@@ -61,6 +61,8 @@ export default function EvaluationCursoStats({
     labels: [],
     aciertos: [],
   });
+  const [estudiantesLogro, setEstudiantesLogro] = useState<number[]>([0, 0, 0]);
+
   const [estudiantesArr, setEstudiantesArr] = useState<EstudianteTable[]>([
     {
       nombre: "string",
@@ -90,6 +92,7 @@ export default function EvaluationCursoStats({
 
         if (res.ok) {
           setQuestionAciertos(resData.questionsAciertos);
+          setEstudiantesLogro(resData.estudiantesLogro);
           return;
         } else {
           return;
@@ -100,6 +103,7 @@ export default function EvaluationCursoStats({
     };
     fetchEvaluationsStats();
   }, []);
+
   const data1 = useMemo(() => {
     function removeHtmlTags(input: string): string {
       // Crear un elemento temporal en el DOM
@@ -148,34 +152,42 @@ export default function EvaluationCursoStats({
     };
   }, [questionsAciertos]);
 
-  const data2 = {
-    labels: ["Logrado", "Medianamente Logrado", "Por Lograr"],
-    datasets: [
-      {
-        label: "",
-        data: [2, 6, 4],
-        backgroundColor: ["#34eb37", "#5e76ff", "#ff001e"],
-      },
-    ],
-  };
-  const options: ChartOptions<"bar"> = {
-    indexAxis: "y" as const, // Esto invierte los ejes
+  const data2 = useMemo(() => {
+    const maxDataValue = estudiantesLogro ? Math.max(...estudiantesLogro) : 0;
 
-    scales: {
-      y: {
-        beginAtZero: true,
+    const maxAxisValue = Math.max(maxDataValue, 5);
+
+    return {
+      data: {
+        labels: ["Logrado", "Medianamente Logrado", "Por Lograr"],
+        datasets: [
+          {
+            label: "",
+            data: estudiantesLogro,
+            backgroundColor: ["#34eb37", "#5e76ff", "#ff001e"],
+          },
+        ],
       },
-      x: {
-        ticks: {
-          // forces step size to be 50 units
-          stepSize: 1,
+      options: {
+        indexAxis: "x" as const, // Esto invierte los ejes
+
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              // forces step size to be 50 units
+              stepSize: 1,
+            },
+          },
+          x: {
+            max: maxAxisValue, // Establece el máximo del eje X en 5
+            beginAtZero: true,
+          },
         },
-        max: 5, // Establece el máximo del eje X en 5
-        beginAtZero: true,
+        maintainAspectRatio: false, // Permite ajustar el ancho y alto del gráfico
       },
-    },
-    maintainAspectRatio: false, // Permite ajustar el ancho y alto del gráfico
-  };
+    };
+  }, [estudiantesLogro]);
 
   return (
     <main className={styles.main}>
@@ -219,7 +231,7 @@ export default function EvaluationCursoStats({
         </div>
         <div style={{ height: "300px" }}>
           <h3>Logro general</h3>
-          <Bar data={data2} options={options} />
+          <Bar data={data2.data} options={data2.options} />
         </div>
         <div>
           <h3>Tabla de clasificacion</h3>
