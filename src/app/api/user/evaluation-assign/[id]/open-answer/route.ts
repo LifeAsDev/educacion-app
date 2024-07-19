@@ -2,6 +2,7 @@ import { connectMongoDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import EvaluationAssign from "@/schemas/evaluationAssign";
 import EvaluationTest from "@/schemas/evaluationTest";
+import mongoose from "mongoose";
 
 export async function PATCH(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
@@ -18,7 +19,6 @@ export async function PATCH(req: Request, { params }: any) {
     const evaluationAssign = await EvaluationAssign.findById(
       evaluationAssignId
     );
-
     if (!evaluationAssign) {
       return NextResponse.json(
         { message: "EvaluationAssign no encontrado" },
@@ -26,68 +26,60 @@ export async function PATCH(req: Request, { params }: any) {
       );
     }
 
-    const openQuestionAnswers = evaluationAssign.openQuestionAnswer;
+    // Encuentra el checkAnswer y almacena la respuesta si es correcta
     let answerToAdd: { questionId?: any; answer: any; _id?: any } | null = null;
 
-    // Encuentra y elimina el checkAnswer, y guarda la respuesta si es correcta
-    evaluationAssign.openQuestionAnswer = openQuestionAnswers
-      .map((openQuestionAnswer: { estudianteId: any; checkAnswers: any[] }) => {
-        if (openQuestionAnswer.estudianteId.toString() === estudianteId) {
-          openQuestionAnswer.checkAnswers =
-            openQuestionAnswer.checkAnswers.filter(
-              (checkAnswer: { _id: any; answer: string }) => {
-                if (
-                  checkAnswer._id.toString() === checkAnswerId &&
-                  correct === "correct"
-                ) {
-                  answerToAdd = checkAnswer;
-                }
-                return checkAnswer._id.toString() !== checkAnswerId;
-              }
-            );
-        }
-        return openQuestionAnswer;
-      })
-      .filter(
-        (openQuestionAnswer: { checkAnswers: any[] }) =>
-          openQuestionAnswer.checkAnswers.length > 0
-      );
-    // Si la respuesta es correcta, agregarla a openAnswers de EvaluationTest
-    if (correct === "correct" && answerToAdd) {
-      const evaluationTest = await EvaluationTest.findById(
-        evaluationAssign.evaluationId
-      );
-
-      if (!evaluationTest) {
-        return NextResponse.json(
-          { message: "EvaluationTest no encontrado" },
-          { status: 404 }
+    for (const openQuestionAnswer of evaluationAssign.openQuestionAnswer) {
+      if (openQuestionAnswer.estudianteId.toString() === estudianteId) {
+        const checkAnswer = openQuestionAnswer.checkAnswers.find(
+          (checkAnswer: { _id: any }) =>
+            checkAnswer._id.toString() === checkAnswerId
         );
-      }
-
-      evaluationTest.questionArr.forEach(
-        (question: {
-          _id: { toString: () => string | null };
-          openAnswers: string[];
-        }) => {
-          if (question._id.toString() === answerToAdd!.questionId) {
-            if (!question.openAnswers) {
-              question.openAnswers = [];
-            }
-            question.openAnswers.push(answerToAdd!.answer);
-          }
+        if (checkAnswer && correct === "correct") {
+          answerToAdd = checkAnswer;
         }
-      );
-
-      await evaluationTest.save();
+        break;
+      }
     }
 
-    // Guarda los cambios en EvaluationAssign
-    await evaluationAssign.save();
+    // Elimina el checkAnswer del array utilizando $pull
+    await EvaluationAssign.updateOne(
+      {
+        _id: evaluationAssignId,
+        "openQuestionAnswer.estudianteId": estudianteId,
+      },
+      { $pull: { "openQuestionAnswer.$.checkAnswers": { _id: checkAnswerId } } }
+    );
+
+    // Borra openQuestionAnswer si checkAnswers está vacío
+    await EvaluationAssign.updateOne(
+      { _id: evaluationAssignId },
+      {
+        $pull: {
+          openQuestionAnswer: {
+            estudianteId: estudianteId,
+            checkAnswers: { $size: 0 },
+          },
+        },
+      }
+    );
+
+    // Si la respuesta es correcta, agregarla a openAnswers de EvaluationTest utilizando $push
+    if (correct === "correct" && answerToAdd) {
+      await EvaluationTest.updateOne(
+        {
+          _id: evaluationAssign.evaluationId,
+          "questionArr._id": answerToAdd.questionId,
+        },
+        { $push: { "questionArr.$.openAnswers": answerToAdd.answer } }
+      );
+    }
+
     return NextResponse.json({
       message: "checkAnswer eliminado y respuesta añadida correctamente",
     });
-  } catch (error) {
+  } catch (error: any) {
+    // Convertimos el error a `any`
     console.error("Error eliminando checkAnswer:", error);
     return NextResponse.json(
       { message: "Error eliminando checkAnswer" },
