@@ -34,7 +34,7 @@ export async function GET(req: Request, { params }: any) {
       evaluationAssignId: evaluationAssign._id,
     }).populate([{ path: "estudianteId", model: User }]);
 
-  const newUsersResults: UserResult[] = [];
+  const newUsersResults = [];
   let generalScore = 0;
   let userIndex = 0;
   let questionsLabel: string[] = [];
@@ -43,6 +43,18 @@ export async function GET(req: Request, { params }: any) {
   let puntajePromedio = 0;
   let puntajeTotal = 0;
   let tiempoPromedio = 0;
+  const tableFrecuencia = [];
+  for (let i = 1; i <= 10; i++) {
+    const frecuenciaItem = {
+      acierto: i * 10,
+      frecuenciaAbsoluta: 0,
+      frecuenciaAbsolutaAcumulada: 0,
+      frecuenciaRelativa: 0,
+      frecuenciaRelativaAcumulada: 0,
+      frecuenciaRelativaPercentage: 0,
+    };
+    tableFrecuencia.push(frecuenciaItem);
+  }
   for (const evaluationOnCourse of evaluationsOnCourse) {
     const results = await getEvaluationsOnCourse(
       evaluationOnCourse.estudianteId._id,
@@ -51,8 +63,12 @@ export async function GET(req: Request, { params }: any) {
     );
 
     const newUserResult = {
-      user: evaluationOnCourse.estudianteId as UserModel,
-      results,
+      nombre: evaluationOnCourse.estudianteId.nombre,
+      apellido: evaluationOnCourse.estudianteId.apellido,
+      rut: evaluationOnCourse.estudianteId.dni,
+      aciertoPercentage: results.evaluationList[0].percentage,
+      acierto: results.evaluationList[0].answersCorrect,
+      score: results.evaluationList[0].score,
     };
     if (results.mainPercentage <= 49) {
       estudiantesLogro[2]++;
@@ -107,6 +123,7 @@ export async function GET(req: Request, { params }: any) {
         puntajeTotal,
         generalScore,
         tiempoPromedio,
+        newUsersResults,
       },
       { status: 200 }
     );

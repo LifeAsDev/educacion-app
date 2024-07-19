@@ -17,12 +17,12 @@ import styles2 from "@/components/management/styles.module.css";
 import EvaluationAssign from "@/models/evaluationAssign";
 
 interface EstudianteTable {
+  aciertoPercentage: any;
+  score: any;
   nombre: string;
   apellido: string;
   rut: string;
-  percentageAcierto: number;
   acierto: number;
-  puntaje: number;
   _id: string;
 }
 
@@ -64,17 +64,7 @@ export default function EvaluationCursoStats({
   });
   const [estudiantesLogro, setEstudiantesLogro] = useState<number[]>([0, 0, 0]);
   const [evaluationAssign, setEvaluationAssign] = useState<EvaluationAssign>();
-  const [estudiantesArr, setEstudiantesArr] = useState<EstudianteTable[]>([
-    {
-      nombre: "string",
-      apellido: "string",
-      rut: "string",
-      percentageAcierto: 2,
-      acierto: 2,
-      puntaje: 2,
-      _id: "string",
-    },
-  ]);
+  const [estudiantesArr, setEstudiantesArr] = useState<EstudianteTable[]>([]);
   const [puntaje, setPuntaje] = useState({
     puntajePromedio: 0,
     puntajeTotal: 0,
@@ -106,7 +96,7 @@ export default function EvaluationCursoStats({
           });
           setGeneralScore(resData.generalScore);
           setTimeGeneral(resData.tiempoPromedio);
-
+          setEstudiantesArr(resData.newUsersResults);
           return;
         } else {
           return;
@@ -286,13 +276,17 @@ export default function EvaluationCursoStats({
                         <td className={styles2.tableItem}>
                           <p
                             className={styles2.name}
-                          >{`%${user.percentageAcierto}`}</p>
+                          >{`%${user.aciertoPercentage}`}</p>
                         </td>
                         <td className={styles2.tableItem}>
-                          <p className={styles2.name}>{`${user.acierto}/12`}</p>
+                          <p
+                            className={styles2.name}
+                          >{`${user.acierto}/${evaluationAssign.evaluationId.questionArr.length}`}</p>
                         </td>
                         <td className={styles2.tableItem}>
-                          <p className={styles2.name}>{`${user.puntaje}/32`}</p>
+                          <p
+                            className={styles2.name}
+                          >{`${user.score}/${puntaje.puntajeTotal}`}</p>
                         </td>
                       </tr>
                     );

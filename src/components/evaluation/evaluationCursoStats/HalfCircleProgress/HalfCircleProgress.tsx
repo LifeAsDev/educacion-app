@@ -25,7 +25,7 @@ const SemiCircleProgress: React.FC<Props> = ({ progress, time }) => {
         <div className={styles.timeBox}>
           Acierto Promedio
           <span>{progress}%</span>
-          Tiempo Promedio
+          Tiempo Restante Promedio
           <span>{formatSecondsToMinutes(time)}</span>
         </div>
       </div>
