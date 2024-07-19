@@ -15,6 +15,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import styles2 from "@/components/management/styles.module.css";
 import EvaluationAssign from "@/models/evaluationAssign";
+import FrecuenciaItem from "@/models/frecuenciaItem";
 
 interface EstudianteTable {
   aciertoPercentage: any;
@@ -71,6 +72,8 @@ export default function EvaluationCursoStats({
   });
   const [generalScore, setGeneralScore] = useState(0);
   const [timeGeneral, setTimeGeneral] = useState(0);
+  const [tableFrecuencia, setTableFrecuencia] = useState<FrecuenciaItem[]>([]);
+
   useEffect(() => {
     const fetchEvaluationsStats = async () => {
       try {
@@ -97,6 +100,7 @@ export default function EvaluationCursoStats({
           setGeneralScore(resData.generalScore);
           setTimeGeneral(resData.tiempoPromedio);
           setEstudiantesArr(resData.newUsersResults);
+          setTableFrecuencia(resData.tableFrecuencia);
           return;
         } else {
           return;
@@ -276,7 +280,7 @@ export default function EvaluationCursoStats({
                         <td className={styles2.tableItem}>
                           <p
                             className={styles2.name}
-                          >{`%${user.aciertoPercentage}`}</p>
+                          >{`${user.aciertoPercentage}%`}</p>
                         </td>
                         <td className={styles2.tableItem}>
                           <p
@@ -316,126 +320,45 @@ export default function EvaluationCursoStats({
                 </tr>
               </thead>
               <tbody id="usersList" className={`${styles2.usersList}`}>
-                <tr className={`${styles2.userItem}`}>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>10%</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0%`}</p>
-                  </td>
-                </tr>{" "}
-                <tr className={`${styles2.userItem}`}>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>20%</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0%`}</p>
-                  </td>
-                </tr>{" "}
-                <tr className={`${styles2.userItem}`}>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>10%</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0%`}</p>
-                  </td>
-                </tr>{" "}
-                <tr className={`${styles2.userItem}`}>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>10%</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0%`}</p>
-                  </td>
-                </tr>{" "}
-                <tr className={`${styles2.userItem}`}>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>10%</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0%`}</p>
-                  </td>
-                </tr>{" "}
-                <tr className={`${styles2.userItem}`}>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>10%</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0`}</p>
-                  </td>
-                  <td className={styles2.tableItem}>
-                    <p className={styles2.name}>{`0%`}</p>
-                  </td>
-                </tr>
+                {tableFrecuencia &&
+                  tableFrecuencia.map((itemFrecuencia, index) => {
+                    return (
+                      <tr className={`${styles2.userItem}`}>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {itemFrecuencia.acierto === 0
+                              ? "Total"
+                              : `${itemFrecuencia.acierto}%`}
+                          </p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {itemFrecuencia.frecuenciaAbsoluta}
+                          </p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {itemFrecuencia.frecuenciaAbsolutaAcumulada}
+                          </p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {itemFrecuencia.frecuenciaRelativa}
+                          </p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {itemFrecuencia.frecuenciaRelativaAcumulada}
+                          </p>
+                        </td>
+                        <td className={styles2.tableItem}>
+                          <p className={styles2.name}>
+                            {itemFrecuencia.frecuenciaRelativaPercentage}%
+                          </p>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
