@@ -323,7 +323,7 @@ export default function EvaluationCursoStats({
                 {tableFrecuencia &&
                   tableFrecuencia.map((itemFrecuencia, index) => {
                     return (
-                      <tr className={`${styles2.userItem}`}>
+                      <tr key={index} className={`${styles2.userItem}`}>
                         <td className={styles2.tableItem}>
                           <p className={styles2.name}>
                             {itemFrecuencia.acierto === 0
