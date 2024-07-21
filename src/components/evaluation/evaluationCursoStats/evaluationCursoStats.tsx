@@ -110,7 +110,7 @@ export default function EvaluationCursoStats({
       }
     };
     fetchEvaluationsStats();
-  }, []);
+  }, [evaluationId]);
 
   const data1 = useMemo(() => {
     function removeHtmlTags(input: string): string {
