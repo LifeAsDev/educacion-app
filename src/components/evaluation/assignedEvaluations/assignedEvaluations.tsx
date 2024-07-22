@@ -6,7 +6,6 @@ import Asignatura from "@/models/asignatura";
 import { CursoWrap } from "@/components/management/management";
 import Link from "next/link";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import evaluationAssign from "@/schemas/evaluationAssign";
 
 export default function AssignedEvaluations({
   asignaturasArr,
@@ -105,13 +104,7 @@ export default function AssignedEvaluations({
   }, [filterAsignatura, cursoInput]);
 
   const finishAssignedEval = (evalAssignId: string) => {
-    const evalIndex = evaluationsAssign.findIndex(
-      (item) => item._id === evalAssignId
-    );
-    const newEvaluationsAssign = [...evaluationsAssign];
-    newEvaluationsAssign[evalIndex].state = "Completada";
-
-    setEvaluationsAssign(newEvaluationsAssign);
+    setFetchingAssigns(true);
     const fetchFinish = async () => {
       try {
         const searchParams = new URLSearchParams();
