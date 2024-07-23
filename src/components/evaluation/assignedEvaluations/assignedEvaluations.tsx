@@ -104,6 +104,7 @@ export default function AssignedEvaluations({
   }, [filterAsignatura, cursoInput]);
 
   const finishAssignedEval = (evalAssignId: string) => {
+    setFilterState("Corregir");
     setFetchingAssigns(true);
     const fetchFinish = async () => {
       try {
