@@ -10,6 +10,7 @@ import {
   formatSecondsToMinutes,
   calculateRemainingTime,
 } from "@/lib/calculationFunctions";
+import Instructions from "./instructions/instructions";
 
 function generateUniqueId(existingIds: Set<string>): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -364,6 +365,7 @@ export default function InEvaluation({ id }: { id?: string }) {
           <span>{asignatura}</span>
         </div>
       </div>
+      <Instructions timeLimit={evaluationTime} />
       <div className={styles.questionBox}>
         {!editFetch &&
           questionArr.map((question, i) =>

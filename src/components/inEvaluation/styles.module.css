@@ -8,6 +8,12 @@
   width: 80%;
   margin: auto;
   min-height: 100vh;
+  background-color: white;
+  padding-left: 5em;
+  padding-right: 5em;
+  margin-top: 10em;
+  padding-top: 3em;
+  margin-bottom: 4em;
 }
 
 .main h1 {
@@ -309,5 +315,18 @@
   background-color: white;
   color: black;
   padding: 0.2em 0.5em;
+  font-weight: 500;
+}
+
+.instructionsBox {
+  font-weight: 600;
+  margin-top: 2em;
+}
+.instructionsBox ol {
+  list-style-type: disc;
+  padding-left: 50px;
+}
+
+.instructionsBox li {
   font-weight: 500;
 }
