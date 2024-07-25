@@ -144,6 +144,7 @@
   width: 100%;
   min-height: 4em;
   padding: 8px;
+  outline: 1px solid grey;
 }
 
 .main textarea:focus {
@@ -293,10 +294,11 @@
   padding: 12px;
   transition: all 0.4s;
   -webkit-transition: all 0.4s;
-  display: block;
+  display: flex;
   cursor: pointer;
   background-color: #b3cefb;
   height: 100%;
+  gap: 0.5em;
 }
 
 .main input[type="radio"]:checked + span {

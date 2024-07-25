@@ -434,6 +434,7 @@ export default function InEvaluation({ id }: { id?: string }) {
                       index: number
                     ) => {
                       const id = answer.id;
+                      const letters = ["A", "B", "C", "D"];
                       return (
                         <li key={`${id}-${question._id}`}>
                           <label htmlFor={`${id}-${question._id}`}>
@@ -458,11 +459,14 @@ export default function InEvaluation({ id }: { id?: string }) {
                                 ].answer === answer.indexId
                               }
                             />
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: answer.answer,
-                              }}
-                            ></span>
+                            <span>
+                              {letters[index]}.{" "}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: answer.answer,
+                                }}
+                              ></span>
+                            </span>
                           </label>
                         </li>
                       );
