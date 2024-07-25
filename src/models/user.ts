@@ -12,5 +12,6 @@ interface User {
   _id: string;
   review?: boolean;
   asignatura?: Asignatura;
+  order: number;
 }
 export default User;

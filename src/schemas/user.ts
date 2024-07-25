@@ -37,6 +37,10 @@ const userSchema = new Schema<User>(
       type: Schema.Types.ObjectId,
       ref: "Asignatura",
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
