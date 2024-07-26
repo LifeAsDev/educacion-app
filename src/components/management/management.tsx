@@ -689,6 +689,7 @@ export default function Management() {
           setPasswordShowArr={setPasswordShowArr}
           fetchingUsers={fetchingUsers}
           usersArr={usersArr}
+          setUsersArr={setUsersArr}
           pageSelected={pageSelected}
           setUserDeleteIndex={setUserDeleteIndex}
           pageArr={pageArr}
@@ -696,6 +697,11 @@ export default function Management() {
           filterCursoInput={filterCursoInput}
           setFilterCursoInput={setFilterCursoInput}
           cursosArr={cursosArr}
+          disableDrag={
+            filterRolInput === "Estudiante" && filterCursoInput !== "Todos"
+              ? false
+              : true
+          }
         />
       ) : tabSelected === "cursos" ? (
         <CursoTable

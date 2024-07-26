@@ -46,10 +46,21 @@
 .userItem {
   height: 2.41em;
   width: 100%;
-  background-color: #8b93a7;
   transition: background-color 0.3s ease;
   position: relative;
   padding-right: 0.5em;
+  background-color: #8b93a7;
+  width: 100%;
+}
+
+.dragOverlay {
+  width: 100vw !important;
+  max-width: 1200px !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 3em;
+  align-items: center;
 }
 
 .userItem p {
@@ -60,7 +71,6 @@
 
 .userItem p:hover {
   overflow: visible;
-  background-color: #8b93a7;
   z-index: 3;
 }
 
@@ -586,11 +596,6 @@
 }
 .tableBox table {
   width: 100%;
-}
-.userItem {
-  width: 100%;
-  background-color: #8b93a7;
-  transition: background-color 0.3s ease;
 }
 
 .main thead tr th {
