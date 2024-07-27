@@ -192,93 +192,98 @@ export async function POST(req: Request) {
   const usersData = formData.getAll("users") as string[];
 
   try {
-    const createdUsersPromises = usersData.map(async (userData: string) => {
-      const user = JSON.parse(userData);
-      // Generar una contraseña aleatoria de longitud 4
-      const password = generateRandomString(4);
+    const createdUsersPromises = usersData.map(
+      async (userData: string, index) => {
+        const user = JSON.parse(userData);
+        // Generar una contraseña aleatoria de longitud 4
+        const password = generateRandomString(4);
 
-      const newUser: Omit<UserType, "_id"> = {
-        nombre: (user.nombre || "N/A").toString().trim(),
-        apellido: (user.apellido || "N/A").toString().trim(),
-        rol: (() => {
-          const providedRole = (user.rol || "N/A")
-            .toString()
-            .trim()
-            .toLowerCase();
-          switch (providedRole) {
-            case "estudiante":
-            case "profesor":
-            case "directivo":
-            case "admin":
-              return (
-                providedRole.charAt(0).toUpperCase() + providedRole.slice(1)
-              );
-            default:
-              return "N/A";
+        const newUser: Omit<UserType, "_id"> = {
+          nombre: (user.nombre || "N/A").toString().trim(),
+          apellido: (user.apellido || "N/A").toString().trim(),
+          rol: (() => {
+            const providedRole = (user.rol || "N/A")
+              .toString()
+              .trim()
+              .toLowerCase();
+            switch (providedRole) {
+              case "estudiante":
+              case "profesor":
+              case "directivo":
+              case "admin":
+                return (
+                  providedRole.charAt(0).toUpperCase() + providedRole.slice(1)
+                );
+              default:
+                return "N/A";
+            }
+          })(),
+          dni: (user.dni || "N/A").toString(),
+          curso: (user.curso || "N/A").toString().trim(),
+          asignatura: (user.asignatura || "N/A").toString().trim(),
+          password,
+          review: false, // Inicializar la propiedad review como false
+          order: index,
+        };
+
+        // Si alguna entrada es "N/A", establecer review como true
+        if (
+          Object.entries(newUser).some(
+            (value) =>
+              value[0] !== "curso" &&
+              value[0] !== "asignatura" &&
+              value[1] === "N/A"
+          )
+        ) {
+          newUser.review = true;
+        }
+
+        // Buscar cursos en la base de datos
+        const cursosName = newUser.curso as unknown as string;
+
+        const findAsignatura = await Asignatura.findOne({
+          name: newUser.asignatura,
+        });
+
+        if (findAsignatura) newUser.asignatura = findAsignatura._id;
+        else {
+          delete newUser.asignatura;
+        }
+        if (newUser.dni !== "N/A") {
+          const isDuplicated = await User.find({ dni: newUser.dni });
+          if (isDuplicated && isDuplicated.length > 0) {
+            newUser.review = true;
+            newUser.dni = `${newUser.dni}(duplicado)`;
           }
-        })(),
-        dni: (user.dni || "N/A").toString(),
-        curso: (user.curso || "N/A").toString().trim(),
-        asignatura: (user.asignatura || "N/A").toString().trim(),
-        password,
-        review: false, // Inicializar la propiedad review como false
-      };
-
-      // Si alguna entrada es "N/A", establecer review como true
-      if (
-        Object.entries(newUser).some(
-          (value) =>
-            value[0] !== "curso" &&
-            value[0] !== "asignatura" &&
-            value[1] === "N/A"
-        )
-      ) {
-        newUser.review = true;
-      }
-
-      // Buscar cursos en la base de datos
-      const cursosName = newUser.curso as unknown as string;
-
-      const findAsignatura = await Asignatura.findOne({
-        name: newUser.asignatura,
-      });
-
-      if (findAsignatura) newUser.asignatura = findAsignatura._id;
-      else {
-        delete newUser.asignatura;
-      }
-      if (newUser.dni !== "N/A") {
-        const isDuplicated = await User.find({ dni: newUser.dni });
-        if (isDuplicated && isDuplicated.length > 0) {
-          newUser.review = true;
-          newUser.dni = `${newUser.dni}(duplicado)`;
         }
-      }
 
-      const cursosArr = await Curso.find({
-        name: {
-          $in: cursosName.split(","),
-        },
-      });
+        const cursosArr = await Curso.find({
+          name: {
+            $in: cursosName.split(","),
+          },
+        });
 
-      if (newUser.rol === "Estudiante") {
-        cursosArr.splice(1, cursosArr.length);
-        if (cursosArr.length < 0) {
-          newUser.review = true;
+        if (newUser.rol === "Estudiante") {
+          cursosArr.splice(1, cursosArr.length);
+          if (cursosArr.length < 0) {
+            newUser.review = true;
+          }
         }
+
+        if (newUser.rol === "Directivo" || newUser.rol === "Admin") {
+          cursosArr.splice(0, cursosArr.length);
+        }
+        const cursoObjectsId: string[] = cursosArr.map(
+          (e: CursoType) => e._id!
+        );
+
+        // Asignar los cursos encontrados al usuario
+        newUser.curso = cursoObjectsId;
+
+        console.log({ newUser });
+        return newUser;
       }
-
-      if (newUser.rol === "Directivo" || newUser.rol === "Admin") {
-        cursosArr.splice(0, cursosArr.length);
-      }
-      const cursoObjectsId: string[] = cursosArr.map((e: CursoType) => e._id!);
-
-      // Asignar los cursos encontrados al usuario
-      newUser.curso = cursoObjectsId;
-
-      console.log({ newUser });
-      return newUser;
-    });
+    );
 
     const createdUsers = await Promise.all(createdUsersPromises);
 
