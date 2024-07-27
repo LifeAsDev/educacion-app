@@ -66,7 +66,19 @@ export async function GET(req: Request) {
   aggregatePipeline.push({
     $facet: {
       metadata: [{ $count: "totalCount" }],
-      data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
+      data: [
+        {
+          $addFields: {
+            sortOrder: {
+              $ifNull: ["$order", Infinity], // Asigna un valor muy alto (Infinity) a los campos null
+            },
+          },
+        },
+        ,
+        { $sort: { order: 1 } },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ],
     },
   });
 
@@ -334,6 +346,33 @@ export async function DELETE(req: Request) {
     console.error("Error deleting users:", error);
     return NextResponse.json(
       { message: "Error deleting users" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(req: Request) {
+  const formData = await req.formData();
+  const userIds = formData.getAll("users") as string[];
+
+  await connectMongoDB();
+
+  try {
+    // Actualizar la propiedad order de cada usuario basado en el array userIds
+    for (let i = 0; i < userIds.length; i++) {
+      await User.updateOne({ _id: userIds[i] }, { $set: { order: i } });
+    }
+
+    // Devolver respuesta indicando que la operación fue exitosa
+    return NextResponse.json(
+      { message: "User orders updated" },
+      { status: 200 }
+    );
+  } catch (error) {
+    // Manejar cualquier error que pueda ocurrir
+    console.error("Error updating user orders:", error);
+    return NextResponse.json(
+      { message: "Error updating user orders" },
       { status: 500 }
     );
   }
