@@ -307,15 +307,21 @@ export default function Management() {
   };
 
   useEffect(() => {
+    let itemsPerPageFinal = itemsPerPage;
+
+    if (filterRolInput === "Estudiante" && filterCursoInput !== "Todos") {
+      itemsPerPageFinal = 50;
+    }
+
     const newPageArr = Array.from(
       {
-        length: Math.ceil(itemCount / itemsPerPage),
+        length: Math.ceil(itemCount / itemsPerPageFinal),
       },
       (_, index) => index + 1
     );
 
     setPageArr(newPageArr);
-  }, [itemCount]);
+  }, [itemCount, filterRolInput, filterCursoInput]);
 
   useEffect(() => {
     setPageSelected(1);
@@ -342,6 +348,10 @@ export default function Management() {
           searchParams.append("filterRolInput", filterRolInput);
           searchParams.append("review", filterReviewInput.toString());
           searchParams.append("cursoId", filterCursoInput);
+
+          if (filterRolInput === "Estudiante" && filterCursoInput !== "Todos") {
+            searchParams.append("pageSize", "50");
+          }
 
           const res = await fetch(`/api/user?${searchParams.toString()}`, {
             method: "GET",

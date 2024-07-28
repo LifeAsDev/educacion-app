@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   const rol = searchParams.get("filterRolInput");
   const review = searchParams.get("review") === "true" ? true : false;
   const cursoId = searchParams.get("cursoId") as string;
-
+  console.log({ pageSize });
   await connectMongoDB();
 
   let aggregatePipeline: any[] = [];
@@ -74,7 +74,6 @@ export async function GET(req: Request) {
             },
           },
         },
-        ,
         { $sort: { order: 1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
@@ -83,6 +82,10 @@ export async function GET(req: Request) {
   });
 
   const allUsers = await User.aggregate(aggregatePipeline);
+
+  console.log({
+    order: allUsers[0].data.map((user: { order: any }) => user.order),
+  });
 
   const initialUsers = [...allUsers[0].data];
   if (allUsers.length === 0 || !allUsers[0].metadata[0]) {
@@ -360,7 +363,7 @@ export async function PATCH(req: Request) {
   try {
     // Actualizar la propiedad order de cada usuario basado en el array userIds
     for (let i = 0; i < userIds.length; i++) {
-      await User.updateOne({ _id: userIds[i] }, { $set: { order: i } });
+      await User.findByIdAndUpdate(userIds[i], { order: i });
     }
 
     // Devolver respuesta indicando que la operación fue exitosa

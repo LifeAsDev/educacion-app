@@ -97,13 +97,42 @@ export default function UsersTable({
     setUsersArr((users) => {
       const originalPos = getUserIndex(active.id);
       const newPos = getUserIndex(over.id);
+      const newUsersArr = arrayMove(users, originalPos, newPos);
+      setUsersOrder(
+        newUsersArr.map((user) => {
+          return user._id;
+        })
+      );
 
-      return arrayMove(users, originalPos, newPos);
+      return newUsersArr;
     });
   };
-  function handleDragStart(event: DragStartEvent) {
+
+  const handleDragStart = (event: DragStartEvent) => {
     setActiveUser(usersArr[getUserIndex(event.active.id as string)]);
-  }
+  };
+
+  const setUsersOrder = (users: string[]) => {
+    const fetchOrderUsers = async () => {
+      try {
+        const searchParams = new URLSearchParams();
+        const data = new FormData();
+        users?.forEach((user) => {
+          data.append("users", user);
+        });
+
+        const res = await fetch(`/api/user?${searchParams}`, {
+          method: "PATCH",
+          body: data,
+        });
+
+        const resData = await res.json();
+      } catch (error) {
+        // Handle error
+      }
+    };
+    fetchOrderUsers();
+  };
   return (
     <>
       <div className={styles.top}>
