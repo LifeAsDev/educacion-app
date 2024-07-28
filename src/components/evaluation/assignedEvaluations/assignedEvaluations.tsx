@@ -76,6 +76,7 @@ export default function AssignedEvaluations({
 
         setFetchingAssigns(false);
         if (res.ok) {
+          console.log(resData.evaluationAssigneds);
           setEvaluationsAssign(resData.evaluationAssigneds);
           return;
         } else {
@@ -262,7 +263,15 @@ export default function AssignedEvaluations({
                     </td>
                     <td className={styles.td}>
                       <div>
-                        <p>{item.evaluationId.name}</p>
+                        <p>
+                          {item.evaluationId ? (
+                            item.evaluationId.name
+                          ) : (
+                            <span className="text-red-700">
+                              Error obteniendo la evaluacion
+                            </span>
+                          )}
+                        </p>
                       </div>
                     </td>
                     <td className={styles.td}>
