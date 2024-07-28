@@ -70,6 +70,7 @@ export async function GET(req: Request, { params }: any) {
       aciertoPercentage: results.evaluationList[0].percentage,
       acierto: results.evaluationList[0].answersCorrect,
       score: results.evaluationList[0].score,
+      order: evaluationOnCourse.estudianteId.order,
     };
 
     const porcentaje = results.mainPercentage;
@@ -179,6 +180,12 @@ export async function GET(req: Request, { params }: any) {
 
   // Añadir la fila total al array
   tableFrecuencia.push(totalRow);
+  const sortedUsers = newUsersResults.sort((a, b) => {
+    // Manejar los valores null para que sean considerados mayores que cualquier número
+    if (a.order === null) return 1;
+    if (b.order === null) return -1;
+    return a.order - b.order;
+  });
 
   if (evaluationsOnCourse.length > 0) {
     return NextResponse.json(
@@ -194,7 +201,7 @@ export async function GET(req: Request, { params }: any) {
         puntajeTotal,
         generalScore,
         tiempoPromedio,
-        newUsersResults,
+        newUsersResults: sortedUsers,
         tableFrecuencia,
       },
       { status: 200 }
