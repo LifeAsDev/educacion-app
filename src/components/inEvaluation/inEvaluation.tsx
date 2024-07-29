@@ -87,7 +87,27 @@ const shuffleArray = (array: any) => {
   });
 };
 
+const useBeforeUnload = (message: string) => {
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = message;
+      return message;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [message]);
+};
+
 export default function InEvaluation({ id }: { id?: string }) {
+  useBeforeUnload(
+    "¿Estás seguro de que quieres salir? Tus respuestas seran guardadas"
+  );
+
   const { session } = useOnboardingContext();
   const router = useRouter();
   const [editFetch, setEditFetch] = useState(true);
