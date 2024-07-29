@@ -25,6 +25,10 @@ export default function AssignedEvaluations({
   const [cursoInput, setCursoInput] = useState("N/A");
   const [filterAsignatura, setFilterAsignatura] = useState("Todas");
   const [filterState, setFilterState] = useState("Asignadas");
+  const [evaluationDeleteId, setEvaluationDeleteId] = useState<null | string>(
+    null
+  );
+  const [waitFetch, setWaitFetch] = useState(false);
 
   useEffect(() => {
     setCursoInput(searchParams.get("cursoInput") ?? "N/A");
@@ -85,7 +89,7 @@ export default function AssignedEvaluations({
         return;
       }
     };
-    if (session && fetchingAssigns) fetchEvaluationsAssign();
+    if (session && fetchingAssigns && !waitFetch) fetchEvaluationsAssign();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, fetchingAssigns]);
 
@@ -131,8 +135,61 @@ export default function AssignedEvaluations({
     fetchFinish();
   };
 
+  const deleteAssignedEval = (evalAssignId: string) => {
+    setEvaluationDeleteId(null);
+    setFetchingAssigns(true);
+    setWaitFetch(true);
+    const fetchDelete = async () => {
+      try {
+        const searchParams = new URLSearchParams();
+
+        const res = await fetch(
+          `/api/evaluation-assign/${evalAssignId}?${searchParams.toString()}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        const resData = await res.json();
+        setWaitFetch(false);
+
+        if (res.ok) {
+          return;
+        } else {
+          return;
+        }
+      } catch (error) {
+        return;
+      }
+    };
+    fetchDelete();
+  };
+
   return (
     <>
+      {evaluationDeleteId !== null ? (
+        <div className={styles.deleteEvaluationBox}>
+          <div className={styles.deleteEvaluationModal}>
+            <p>¿Estás seguro que deseas eliminar esta evaluacion?</p>
+            <div className={styles.deleteModalOptionsBox}>
+              <div
+                onClick={() => setEvaluationDeleteId(null)}
+                className={styles.modalOption}
+              >
+                No
+              </div>
+              <div
+                onClick={() => deleteAssignedEval(evaluationDeleteId)}
+                className={styles.modalOption}
+              >
+                Si
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
       <div className={styles.top}>
         <div className={`${styles.cursoAssignBox}`}>
           <p>Estado:</p>
@@ -293,6 +350,14 @@ export default function AssignedEvaluations({
                         >
                           Monitorear
                         </Link>
+                        <div
+                          onClick={() => {
+                            setEvaluationDeleteId(item._id);
+                          }}
+                          className={`${styles.btn} ${styles.complete}`}
+                        >
+                          Borrar
+                        </div>
                         {item.state !== "Completada" ? (
                           <div
                             onClick={() => {

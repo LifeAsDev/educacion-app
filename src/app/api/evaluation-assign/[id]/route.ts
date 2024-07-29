@@ -6,7 +6,6 @@ import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 export async function DELETE(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
   const id = params.id;
-
   try {
     await connectMongoDB();
 
