@@ -184,13 +184,20 @@ export default function EvaluationsOnCourseTable({
                     >
                       Completar
                     </div>
-                  ) : (
+                  ) : evaluationAssign.openQuestionAnswer.length ? (
                     <Link
                       href={`/evaluation/answers/${evaluationAssign._id}`}
                       className={`${styles.btn} ${styles.corregir}`}
                     >
                       Corregir
                     </Link>
+                  ) : (
+                    <a
+                      className={`${styles.btn} ${styles.corregir}`}
+                      href={`/evaluation/stats/${evaluationAssign._id}`}
+                    >
+                      Estadisticas
+                    </a>
                   )}
                 </div>
               </td>
