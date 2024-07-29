@@ -76,7 +76,6 @@ export default function AssignedEvaluations({
 
         setFetchingAssigns(false);
         if (res.ok) {
-          console.log(resData.evaluationAssigneds);
           setEvaluationsAssign(resData.evaluationAssigneds);
           return;
         } else {
