@@ -9,6 +9,8 @@ import { Types } from "mongoose";
 import asignatura from "@/schemas/asignatura";
 import User from "@/schemas/user";
 import UserModel from "@/models/user";
+import EvaluationAssign from "@/schemas/evaluationAssign";
+import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;
@@ -17,12 +19,28 @@ export async function DELETE(req: Request, { params }: any) {
     await connectMongoDB();
     const fileDeleted = await deleteFile(id);
 
-    if (fileDeleted) await EvaluationTest.deleteOne({ _id: id });
+    if (fileDeleted) {
+      // Borra el EvaluationTest
+      await EvaluationTest.deleteOne({ _id: id });
+
+      // Borra los EvaluationAssign asociados
+      const evaluationAssigns = await EvaluationAssign.find({
+        evaluationId: id,
+      });
+      for (const evaluationAssign of evaluationAssigns) {
+        await EvaluationOnCourse.deleteMany({
+          evaluationAssignId: evaluationAssign._id,
+        });
+        await EvaluationAssign.deleteOne({ _id: evaluationAssign._id });
+      }
+    }
+
     return NextResponse.json(
       { message: "Delete successfully" },
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json({
       success: false,
       error: "error deleting evaluation test",
