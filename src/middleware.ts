@@ -68,7 +68,8 @@ export default async function middleware(req: NextRequest) {
       }
       if (
         currentUrl.startsWith("/evaluation/monitor") ||
-        currentUrl.startsWith("/evaluation/answers")
+        currentUrl.startsWith("/evaluation/answers") ||
+        currentUrl.startsWith("/evaluation/stats")
       ) {
         const urlParam = currentUrl.split("/");
         try {
