@@ -10,12 +10,14 @@ export default function UserSortableItem({
   deleteUsers,
   setDeleteUsers,
   invisible,
+  tableIndex,
 }: {
   children?: ReactNode;
   user: User;
   deleteUsers: string[] | null;
   setDeleteUsers: Dispatch<SetStateAction<string[] | null>>;
   invisible: boolean;
+  tableIndex: number;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -32,7 +34,6 @@ export default function UserSortableItem({
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
       onClick={() => {
         if (deleteUsers) {
           if (deleteUsers.includes(user._id)) {
@@ -53,6 +54,12 @@ export default function UserSortableItem({
       }`}
       key={user._id}
     >
+      <td {...listeners} className={styles.tableItem}>
+        <p className={styles.name}>
+          <span>{tableIndex}</span>
+          {`${user.nombre} ${user.apellido}`}
+        </p>
+      </td>
       {children}
     </tr>
   );

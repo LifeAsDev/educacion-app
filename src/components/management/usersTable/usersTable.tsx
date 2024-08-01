@@ -453,14 +453,9 @@ export default function UsersTable({
                         user={user}
                         key={user._id}
                         invisible={activeUser?._id === user._id}
+                        tableIndex={25 * (pageSelected - 1) + index + 1}
                       >
                         <>
-                          <td className={styles.tableItem}>
-                            <p className={styles.name}>
-                              <span>{25 * (pageSelected - 1) + index + 1}</span>
-                              {`${user.nombre} ${user.apellido}`}
-                            </p>
-                          </td>
                           <td className={styles.tableItem}>
                             <p className={styles.name}>{`${user.rol}`}</p>
                           </td>
