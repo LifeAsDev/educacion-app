@@ -36,6 +36,7 @@ export default function EvaluationTable({
         <thead>
           <tr>
             <th>Nombre</th>
+            <th>Nivel</th>
             <th>Dificultad</th>
             <th>Tipo de prueba</th>
             <th>Asignatura</th>
@@ -180,6 +181,11 @@ export default function EvaluationTable({
                         </span>
                       </p>
                     </Link>
+                  </div>
+                </td>
+                <td className={styles.td}>
+                  <div>
+                    <p>{item.nivel ?? "N/A"}</p>
                   </div>
                 </td>
                 <td className={styles.td}>
