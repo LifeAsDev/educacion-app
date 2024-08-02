@@ -15,6 +15,7 @@ export async function POST(req: Request) {
     const data = await req.formData();
     const name: string = data.get("name") as unknown as string;
     const type: string = data.get("type") as unknown as string;
+    const nivel: string = data.get("nivel") as unknown as string;
     const difficulty: string = data.get("difficulty") as unknown as string;
     let asignatura: string | undefined = data.get("asignatura")! as string;
     const creatorId: string = data.get("creatorId")! as string;
@@ -63,6 +64,7 @@ export async function POST(req: Request) {
       asignatura: asignatura ? new Types.ObjectId(asignatura) : undefined,
       creatorId: new Types.ObjectId(creatorId),
       tiempo,
+      nivel,
     });
 
     /*console.log("Old ", questionArrWithoutBuffer); */
