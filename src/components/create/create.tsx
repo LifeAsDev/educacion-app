@@ -161,6 +161,9 @@ export default function Create({ id }: { id?: string }) {
           setEditFetch(false);
           setAsignatura(data.evaluationTest.asignatura?._id ?? "N/A");
           setTiempo(data.evaluationTest.tiempo ?? 90);
+          if (data.evaluationTest.nivel) {
+            setNivel(data.evaluationTest.nivel);
+          }
 
           return data.evaluationTest;
         } catch (error) {
