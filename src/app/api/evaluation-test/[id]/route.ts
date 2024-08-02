@@ -88,7 +88,7 @@ export async function PATCH(req: Request, { params }: any) {
     const difficulty: string = data.get("difficulty") as unknown as string;
     let asignatura: string | undefined = data.get("asignatura")! as string;
     const tiempo = parseInt(data.get("time")! as string);
-    const nivel = parseInt(data.get("nivel")! as string);
+    const nivel = data.get("nivel")! as string;
 
     const questionArr: string[] = data.getAll(
       "questionArr"
