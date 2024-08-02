@@ -31,7 +31,7 @@ export default function Create({ id }: { id?: string }) {
   const [asignatura, setAsignatura] = useState<string>("N/A");
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
   const [tiempo, setTiempo] = useState<number>(90);
-
+  const [nivel, setNivel] = useState("1° Basico");
   const editQuestion = (
     property: keyof QuestionWithError,
     value: string | number,
@@ -503,6 +503,29 @@ export default function Create({ id }: { id?: string }) {
             <option value="Básico">Básico</option>
             <option value="Intermedio">Intermedio</option>
             <option value="Avanzado">Avanzado</option>
+          </select>
+        </div>
+        <div className={styles.inputBox}>
+          <label>Nivel</label>
+          <select
+            value={nivel}
+            onChange={(e) => setNivel(e.target.value)}
+            className={styles.dropdown}
+            name="nivel"
+            id="nivel"
+          >
+            <option value="1° Basico">1° Basico</option>
+            <option value="2° Básico">2° Básico</option>
+            <option value="3° Básico">3° Básico</option>
+            <option value="4° Básico">4° Básico</option>
+            <option value="5° Básico">5° Básico</option>
+            <option value="6° Básico">6° Básico</option>
+            <option value="7° Básico">7° Básico</option>
+            <option value="8° Básico">8° Básico</option>
+            <option value="1° Medio">1° Medio</option>
+            <option value="2° Medio">2° Medio</option>
+            <option value="3° Medio">3° Medio</option>
+            <option value="4° Medio">4° Medio</option>
           </select>
         </div>
         <div className={styles.inputBox}>
