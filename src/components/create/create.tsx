@@ -137,6 +137,7 @@ export default function Create({ id }: { id?: string }) {
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
       setAsignatura(parseCachedState.asignatura);
+      setNivel(parseCachedState.nivel);
       setTiempo(parseCachedState.tiempo);
     }
     if (id) {
@@ -183,12 +184,23 @@ export default function Create({ id }: { id?: string }) {
           difficulty,
           asignatura,
           tiempo,
+          nivel,
         })
       );
     } else if (submitting) {
       localStorage.removeItem("createState");
     }
-  }, [asignatura, difficulty, id, name, questionArr, submitting, type, tiempo]);
+  }, [
+    asignatura,
+    difficulty,
+    id,
+    name,
+    questionArr,
+    submitting,
+    type,
+    tiempo,
+    nivel,
+  ]);
 
   const submitEvaluationTest = () => {
     const newQuestionErrorArr: string[] = [];
