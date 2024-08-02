@@ -55,6 +55,7 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
       required: true,
     },
     tiempo: { type: Number, default: 90 },
+    nivel: String,
   },
   { timestamps: true }
 );

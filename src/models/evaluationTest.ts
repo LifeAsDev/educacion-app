@@ -11,5 +11,6 @@ interface EvaluationTest {
   asignatura?: Asignatura;
   creatorId: string | Types.ObjectId;
   tiempo: number; // minutes
+  nivel?: string;
 }
 export default EvaluationTest;
