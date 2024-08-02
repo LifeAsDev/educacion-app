@@ -25,12 +25,18 @@ export async function GET(req: Request) {
       },
     });
   }
-
-  aggregatePipeline.push({
-    $match: {
-      review: false,
+  aggregatePipeline.push(
+    {
+      $match: {
+        review: false,
+      },
     },
-  });
+    {
+      $sort: {
+        order: 1, // 1 para orden ascendente, -1 para orden descendente
+      },
+    }
+  );
 
   if (keyword !== "") {
     aggregatePipeline.push({
