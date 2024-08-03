@@ -137,6 +137,13 @@ export default function EvaluationCursoStats({
             data: questionsAciertos?.aciertos.map((acierto) => acierto),
             backgroundColor: "#5e76ff",
           },
+          {
+            label: "Incorrectas",
+            data: questionsAciertos?.aciertos.map(
+              (acierto, index) => estudiantesArr.length - acierto
+            ),
+            backgroundColor: "#FF0000",
+          },
         ],
       },
       options: {
@@ -151,14 +158,13 @@ export default function EvaluationCursoStats({
               // forces step size to be 50 units
               stepSize: 1,
             },
-            max: maxAxisValue, // Establece el máximo del eje X en 5
             beginAtZero: true,
           },
         },
         maintainAspectRatio: false, // Permite ajustar el ancho y alto del gráfico
       },
     };
-  }, [questionsAciertos]);
+  }, [questionsAciertos, evaluationAssign]);
 
   const data2 = useMemo(() => {
     const maxDataValue = estudiantesLogro ? Math.max(...estudiantesLogro) : 0;
