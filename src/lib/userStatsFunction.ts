@@ -6,6 +6,7 @@ import EvaluationOnCourseModel from "@/models/evaluationOnCourse";
 import { connectMongoDB } from "@/lib/mongodb";
 import EvaluationTestModel from "@/models/evaluationTest";
 import { getFinishTime } from "./calculationFunctions";
+import Asignatura from "@/schemas/asignatura";
 
 export default async function getEvaluationsOnCourse(
   userId: string,
@@ -32,6 +33,10 @@ export default async function getEvaluationsOnCourse(
       populate: {
         path: "evaluationId",
         model: EvaluationTest,
+        populate: {
+          path: "asignatura",
+          model: Asignatura,
+        },
       },
     });
   }
@@ -86,6 +91,9 @@ export default async function getEvaluationsOnCourse(
         evaluationOnCourse.endTime?.toString(),
         evaluationTestLoop.tiempo
       ),
+      asignatura:
+        evaluationOnCourse.evaluationAssignId.evaluationId.asignatura?.name ??
+        "N/A",
     });
   }
 

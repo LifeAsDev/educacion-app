@@ -3,15 +3,11 @@ import { NextResponse } from "next/server";
 import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
 import EvaluationTest from "@/schemas/evaluationTest";
 import EvaluationAssign from "@/schemas/evaluationAssign";
-import EvaluationResult from "@/models/evaluationResult";
 import User from "@/schemas/user";
 import Curso from "@/schemas/curso";
 import EvaluationOnCourseModel from "@/models/evaluationOnCourse";
-import UserResult from "@/models/userResult";
 import getEvaluationsOnCourse from "@/lib/userStatsFunction";
-import UserModel from "@/models/user";
 import Asignatura from "@/schemas/asignatura";
-import evaluationTest from "@/schemas/evaluationTest";
 import FrecuenciaItem from "@/models/frecuenciaItem";
 
 export async function GET(req: Request, { params }: any) {

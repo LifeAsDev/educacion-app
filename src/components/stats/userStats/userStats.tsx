@@ -141,6 +141,7 @@ export default function UserStats({
               <thead className={styles.thead}>
                 <tr className={styles.tableHead}>
                   <th className={styles.tableHeadName}>Evalucion</th>
+                  <th className={styles.tableHeadName}>Asignatura</th>
                   <th className={styles.tableHeadName}>Puntaje Total</th>
                   <th className={styles.tableHeadName}>Respuestas Correctas</th>
                   <th className={styles.tableHeadName}>% Acierto</th>
@@ -153,6 +154,7 @@ export default function UserStats({
                     className={styles.evaluationBox}
                   >
                     <td>{evaluation.name}</td>
+                    <td>{evaluation.asignatura}</td>
                     <td>
                       {evaluation.score}/{evaluation.totalScore}
                     </td>
