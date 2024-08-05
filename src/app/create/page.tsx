@@ -1,5 +1,5 @@
-import Create from "@/components/create/create";
+import CreateV2 from "@/components/create/createV2/createV2";
 
 export default function Page() {
-  return <Create />;
+  return <CreateV2 />;
 }
