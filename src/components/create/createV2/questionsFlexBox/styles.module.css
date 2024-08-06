@@ -69,3 +69,11 @@
   width: initial;
   padding: 0.75em 1em;
 }
+
+.choose {
+  background-color: var(--primary-green);
+}
+
+.choose:hover {
+  background-color: var(--primary-green);
+}

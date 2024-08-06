@@ -1,14 +1,36 @@
+import { Dispatch, SetStateAction } from "react";
 import styles from "./styles.module.css";
-export default function QuestionsFlexBox() {
+export default function QuestionsFlexBox({
+  tabSelected,
+  setTabSelected,
+}: {
+  tabSelected: string;
+  setTabSelected: Dispatch<SetStateAction<string>>;
+}) {
   return (
     <div className={styles.questionsBox}>
-      <div className={`${styles.generalBtn} ${styles.question}`}>
+      <div
+        onClick={() => {
+          setTabSelected("general");
+        }}
+        className={`${styles.generalBtn} ${styles.question} ${
+          tabSelected === "general" ? styles.choose : ""
+        }`}
+      >
         Informacion General
       </div>
       <h2>Preguntas</h2>
       <ul className={styles.questionsList}>
         {[...Array(10)].map((_, i) => (
-          <li key={i} className={styles.question}>
+          <li
+            onClick={() => {
+              setTabSelected(i.toString());
+            }}
+            key={i}
+            className={`${styles.question} ${
+              tabSelected === i.toString() ? styles.choose : ""
+            }`}
+          >
             {i}
           </li>
         ))}
@@ -50,7 +72,7 @@ export default function QuestionsFlexBox() {
         </li>
       </ul>
       {/*       <p className={styles.info}>Click derecho para borrar pregunta</p>
-       */}{" "}
+       */}
     </div>
   );
 }
