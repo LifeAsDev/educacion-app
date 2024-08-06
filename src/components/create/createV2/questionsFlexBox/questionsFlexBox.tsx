@@ -2,6 +2,9 @@ import styles from "./styles.module.css";
 export default function QuestionsFlexBox() {
   return (
     <div className={styles.questionsBox}>
+      <div className={`${styles.generalBtn} ${styles.question}`}>
+        Informacion General
+      </div>
       <h2>Preguntas</h2>
       <ul className={styles.questionsList}>
         {[...Array(10)].map((_, i) => (
