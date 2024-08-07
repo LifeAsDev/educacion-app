@@ -8,7 +8,7 @@ export default function QuestionsFlexBox({
   setTabSelected: Dispatch<SetStateAction<string>>;
 }) {
   return (
-    <div className={styles.questionsBox}>
+    <aside className={styles.questionsBox}>
       <div
         onClick={() => {
           setTabSelected("general");
@@ -73,6 +73,6 @@ export default function QuestionsFlexBox({
       </ul>
       {/*       <p className={styles.info}>Click derecho para borrar pregunta</p>
        */}
-    </div>
+    </aside>
   );
 }
