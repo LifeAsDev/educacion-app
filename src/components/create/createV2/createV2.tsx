@@ -73,9 +73,17 @@ export default function CreateV2({ id }: { id?: string }) {
     }
 
     setQuestionArr((prev) => [...prev, newQuestion]);
+    setTabSelected(questionArr.length.toString());
   };
 
   const deleteQuestion = (questionIndex: number) => {
+    console.log({ questionIndex, qarrlength: questionArr.length - 1 });
+    if (questionIndex === 0 && questionArr.length === 1) {
+      setTabSelected("general");
+    } else if (questionIndex >= questionArr.length - 1) {
+      console.log((questionArr.length - 1).toString());
+      setTabSelected((questionIndex - 1).toString());
+    }
     const newQuestionArr = [...questionArr];
     newQuestionArr.splice(questionIndex, 1);
     setQuestionArr(newQuestionArr);
@@ -344,9 +352,9 @@ export default function CreateV2({ id }: { id?: string }) {
     let errorsNow = "";
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     const file = e.target.files?.[0];
-    const maxSizeMB = 1;
-    const maxWidth = 1024;
-    const maxHeight = 600;
+    const maxSizeMB = 3;
+    const maxWidth = 1600;
+    const maxHeight = 1024;
     refreshImageErrors();
 
     if (!file || !file.type.startsWith("image/")) {

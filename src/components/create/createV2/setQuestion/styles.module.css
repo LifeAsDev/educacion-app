@@ -1,0 +1,147 @@
+.questionBox {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  overflow: auto;
+  padding-bottom: 1em;
+}
+.multipleQuestionBox,
+.openQuestionBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  padding: 1em;
+  width: 100%;
+  position: relative;
+}
+.dropdown {
+  padding: 0.5em;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.dropdown option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+.labelEventImage {
+  border: 2px dotted var(--grey-disabled);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  min-height: 200px;
+  align-items: center;
+  flex-direction: column;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+.error {
+  color: red;
+  font-weight: 600;
+  margin-right: auto;
+}
+.inputBox .error {
+  font-size: 0.9em;
+  padding-left: 6px;
+  padding-top: 4px;
+}
+
+.inputEventPhoto {
+  display: none;
+}
+
+.inputBox {
+  display: flex;
+  flex-direction: column;
+  width: 14em;
+}
+
+.inputBox label {
+  font-weight: 600;
+  padding-left: 8px;
+}
+
+.inputBox .error {
+  font-size: 0.9em;
+  padding-left: 6px;
+  padding-top: 4px;
+}
+.questionInput {
+  width: 100%;
+  min-height: 9.5em;
+  background-color: white;
+}
+.multipleQuestionAnswerBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  row-gap: 0.25em;
+  column-gap: 0.25em;
+}
+
+.answerInput {
+  width: 100%;
+  min-height: 3em;
+  background-color: white;
+}
+.createQuestionBox {
+  height: 12em;
+  border: 2px dashed var(--grey-disabled);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+.questionBox input {
+  outline: none;
+  border-radius: 4px;
+  padding: 6.5px 8px;
+  font-weight: 500;
+}
+
+.questionBox [class~="ql-editor"] {
+  height: 100%;
+  flex-grow: 1;
+}
+.questionBox [class~="quill"] {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 9.5em;
+}
+.questionBox [class~="ql-container"] {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.typeOfQuestionInput {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.deleteBtn {
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--primary-red);
+  height: min-content;
+  margin-top: auto;
+}
+
+.deleteBtn:hover {
+  background-color: var(--secondary-red);
+}
