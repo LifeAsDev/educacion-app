@@ -77,3 +77,18 @@
 .choose:hover {
   background-color: var(--primary-green);
 }
+.btn {
+  background-color: var(--primary-green);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  font-weight: 500;
+  padding: 0.5em;
+  cursor: pointer;
+  font-size: 1em;
+  width: fit-content;
+}
+.btn:hover {
+  background-color: var(--secondary-green);
+}

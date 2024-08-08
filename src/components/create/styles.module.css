@@ -271,3 +271,12 @@
   font-weight: 600;
   margin-bottom: 1em;
 }
+
+.gestionGeneral .error {
+  position: absolute;
+  bottom: -25px;
+}
+
+.gestionGeneral .inputBox {
+  position: relative;
+}

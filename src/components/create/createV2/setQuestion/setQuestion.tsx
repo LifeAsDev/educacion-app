@@ -105,7 +105,6 @@ export default function SetQuestion({
             id={question._id || question.id}
             onChange={uploadImage}
           />
-
           <div className={styles.typeOfQuestionInput}>
             <div className={`${styles.inputBox} ${styles.points}`}>
               <label>Puntos</label>
@@ -152,6 +151,11 @@ export default function SetQuestion({
               </svg>
             </div>
           </div>
+          {questionErrorArr[i] === "error" ? (
+            <p className={styles.error}>Campo obligatorio</p>
+          ) : (
+            ""
+          )}
           <div
             id={`error${question._id || question.id}`}
             className={styles.questionInput}
@@ -162,11 +166,6 @@ export default function SetQuestion({
               setValue={(value) => editQuestion("pregunta", value, i)}
             />
           </div>
-          {questionErrorArr[i] === "error" ? (
-            <p className={styles.error}>Campo obligatorio</p>
-          ) : (
-            ""
-          )}
         </div>
       ) : (
         <div
@@ -283,6 +282,11 @@ export default function SetQuestion({
               </svg>
             </div>
           </div>
+          {questionErrorArr[i] === "error" ? (
+            <p className={styles.error}>Campo obligatorio</p>
+          ) : (
+            ""
+          )}
           <div
             id={`error${question._id || question.id}`}
             className={styles.questionInput}
@@ -323,11 +327,6 @@ export default function SetQuestion({
               />
             </div>
           </div>
-          {questionErrorArr[i] === "error" ? (
-            <p className={styles.error}>Campo obligatorio</p>
-          ) : (
-            ""
-          )}
         </div>
       )}
     </div>

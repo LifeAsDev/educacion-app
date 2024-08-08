@@ -18,7 +18,6 @@ export default function CreateV2({ id }: { id?: string }) {
   const [tabSelected, setTabSelected] = useState("general");
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
     useState("multiple");
-
   const { session } = useOnboardingContext();
   const router = useRouter();
   const [editFetch, setEditFetch] = useState(true);
@@ -257,16 +256,12 @@ export default function CreateV2({ id }: { id?: string }) {
         const errorIndex = newQuestionErrorArr.findIndex(
           (question) => question === "error"
         );
-        const errorId =
-          questionArr[errorIndex]._id || questionArr[errorIndex].id;
-        const element = document.getElementById(`error${errorId}`);
-        if (element) {
-          const elementTop =
-            element.getBoundingClientRect().top + window.scrollY - 100;
-          window.scrollTo(0, elementTop); // Hace scroll hacia arriba 100px adicionales
+
+        if (errorIndex !== -1) {
+          setTabSelected(errorIndex.toString());
         }
       } else {
-        window.scrollTo(0, 0);
+        setTabSelected("general");
       }
       return;
     } else {
@@ -292,7 +287,7 @@ export default function CreateV2({ id }: { id?: string }) {
             body: data,
           });
           const resData = await res.json();
-          router.push(`/evaluation`);
+          setSubmitting(false);
 
           if (res.ok) {
             return true;
@@ -324,7 +319,7 @@ export default function CreateV2({ id }: { id?: string }) {
             body: data,
           });
           const resData = await res.json();
-          router.push(`/evaluation`);
+          setSubmitting(false);
 
           if (res.ok) {
             return true;
@@ -435,11 +430,25 @@ export default function CreateV2({ id }: { id?: string }) {
   };
   return (
     <main className={styles.main}>
+      {submitting || editFetch ? (
+        <div className={styles.submitting}>
+          <div className={styles.loader}></div>
+          {editFetch
+            ? "Obteniendo Datos..."
+            : id
+            ? "Guardando Evaluación..."
+            : "Creando Evaluación..."}
+        </div>
+      ) : (
+        ""
+      )}
       <QuestionsFlexBox
         tabSelected={tabSelected}
         setTabSelected={setTabSelected}
         questionLength={questionArr.length}
         createQuestion={createQuestion}
+        submitting={submitting}
+        submitEvaluationTest={submitEvaluationTest}
       />
       {tabSelected === "general" ? (
         <SetEvaluationGeneral

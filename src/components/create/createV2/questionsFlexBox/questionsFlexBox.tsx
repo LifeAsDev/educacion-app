@@ -5,11 +5,15 @@ export default function QuestionsFlexBox({
   setTabSelected,
   questionLength,
   createQuestion,
+  submitting,
+  submitEvaluationTest,
 }: {
   tabSelected: string;
   setTabSelected: Dispatch<SetStateAction<string>>;
   questionLength: number;
   createQuestion: () => void;
+  submitting: boolean;
+  submitEvaluationTest: () => void;
 }) {
   return (
     <aside className={styles.questionsBox}>
@@ -77,7 +81,15 @@ export default function QuestionsFlexBox({
             </g>
           </svg>
         </li>
-      </ul>
+      </ul>{" "}
+      <button
+        onClick={submitting ? undefined : submitEvaluationTest}
+        className={`${styles.createQuestionBtn} ${styles.btn} ${
+          submitting ? "cursor-default" : "submitEvaluationTest"
+        }`}
+      >
+        Guardar Evaluación
+      </button>
       {/*       <p className={styles.info}>Click derecho para borrar pregunta</p>
        */}
     </aside>
