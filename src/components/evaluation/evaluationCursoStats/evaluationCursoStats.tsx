@@ -164,7 +164,7 @@ export default function EvaluationCursoStats({
         maintainAspectRatio: false, // Permite ajustar el ancho y alto del gráfico
       },
     };
-  }, [questionsAciertos, evaluationAssign]);
+  }, [questionsAciertos, estudiantesArr.length]);
 
   const data2 = useMemo(() => {
     const maxDataValue = estudiantesLogro ? Math.max(...estudiantesLogro) : 0;
