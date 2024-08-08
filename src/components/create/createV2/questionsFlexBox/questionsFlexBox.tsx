@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import styles from "./styles.module.css";
+
 export default function QuestionsFlexBox({
   tabSelected,
   setTabSelected,

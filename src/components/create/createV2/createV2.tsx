@@ -2,13 +2,13 @@
 import QuestionsFlexBox from "@/components/create/createV2/questionsFlexBox/questionsFlexBox";
 import styles from "./styles.module.css";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import SetEvaluationGeneral from "@/components/create/createV2/setEvaluationGeneral/setEvaluationGeneral";
 import Question from "@/models/question";
 import { v4 as uuidv4 } from "uuid"; // Importa la función uuidv4
 import { useRouter } from "next/navigation";
 import { useOnboardingContext } from "@/lib/context";
 import Asignatura from "@/models/asignatura";
 import SetQuestion from "@/components/create/createV2/setQuestion/setQuestion";
+import SetEvaluationGeneral from "@/components/create/createV2/setEvaluationGeneral/setEvaluationGeneral";
 
 export interface QuestionWithError extends Question {
   error?: string;
