@@ -471,19 +471,29 @@ export default function CreateV2({ id }: { id?: string }) {
           title={id ? "Editar" : "Crear"}
         />
       ) : (
-        <SetQuestion
-          question={questionArr[parseInt(tabSelected, 10)]}
-          i={parseInt(tabSelected, 10)}
-          removeSelectedImage={removeSelectedImage}
-          uploadImage={uploadImage}
-          deleteQuestion={deleteQuestion}
-          setErrors={setErrors}
-          setQuestionErrorArr={setQuestionErrorArr}
-          editQuestion={editQuestion}
-          questionErrorArr={questionErrorArr}
-          typeOfQuestionSelected={typeOfQuestionSelected}
-          setTypeOfQuestionSelected={setTypeOfQuestionSelected}
-        />
+        <>
+          <iframe
+            className={styles.iframe}
+            id="inlineFrameExample"
+            title="Inline Frame Example"
+            width="300"
+            height="200"
+            src="https://www.elmundo.es/deportes/mas-deporte/2019/03/21/5c9285c2fdddff95b98b4746.html"
+          ></iframe>
+          <SetQuestion
+            question={questionArr[parseInt(tabSelected, 10)]}
+            i={parseInt(tabSelected, 10)}
+            removeSelectedImage={removeSelectedImage}
+            uploadImage={uploadImage}
+            deleteQuestion={deleteQuestion}
+            setErrors={setErrors}
+            setQuestionErrorArr={setQuestionErrorArr}
+            editQuestion={editQuestion}
+            questionErrorArr={questionErrorArr}
+            typeOfQuestionSelected={typeOfQuestionSelected}
+            setTypeOfQuestionSelected={setTypeOfQuestionSelected}
+          />
+        </>
       )}
     </main>
   );

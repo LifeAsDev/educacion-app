@@ -42,3 +42,8 @@
     transform: rotate(1turn);
   }
 }
+
+.iframe {
+  width: calc(50% - 9.5em);
+  height: 100%;
+}
