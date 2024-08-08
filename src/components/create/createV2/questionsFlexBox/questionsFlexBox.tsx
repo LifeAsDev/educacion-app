@@ -3,9 +3,13 @@ import styles from "./styles.module.css";
 export default function QuestionsFlexBox({
   tabSelected,
   setTabSelected,
+  questionLength,
+  createQuestion,
 }: {
   tabSelected: string;
   setTabSelected: Dispatch<SetStateAction<string>>;
+  questionLength: number;
+  createQuestion: () => void;
 }) {
   return (
     <aside className={styles.questionsBox}>
@@ -21,7 +25,7 @@ export default function QuestionsFlexBox({
       </div>
       <h2>Preguntas</h2>
       <ul className={styles.questionsList}>
-        {[...Array(10)].map((_, i) => (
+        {[...Array(questionLength)].map((_, i) => (
           <li
             onClick={() => {
               setTabSelected(i.toString());
@@ -31,10 +35,13 @@ export default function QuestionsFlexBox({
               tabSelected === i.toString() ? styles.choose : ""
             }`}
           >
-            {i}
+            {i + 1}
           </li>
         ))}
-        <li className={`${styles.question} ${styles.add}`}>
+        <li
+          onClick={createQuestion}
+          className={`${styles.question} ${styles.add}`}
+        >
           <svg
             viewBox="0 0 32 32"
             version="1.1"

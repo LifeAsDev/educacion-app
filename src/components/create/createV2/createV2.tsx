@@ -2,15 +2,18 @@
 import QuestionsFlexBox from "@/components/create/createV2/questionsFlexBox/questionsFlexBox";
 import styles from "./styles.module.css";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import SetEvaluationGeneral from "@/components/create/createV2/SetEvaluationGeneral/SetEvaluationGeneral";
+import SetEvaluationGeneral from "@/components/create/createV2/setEvaluationGeneral/setEvaluationGeneral";
 import Question from "@/models/question";
 import { v4 as uuidv4 } from "uuid"; // Importa la función uuidv4
 import { useRouter } from "next/navigation";
 import { useOnboardingContext } from "@/lib/context";
 import Asignatura from "@/models/asignatura";
-interface QuestionWithError extends Question {
+import SetQuestion from "@/components/create/createV2/setQuestion/setQuestion";
+
+export interface QuestionWithError extends Question {
   error?: string;
 }
+
 export default function CreateV2({ id }: { id?: string }) {
   const [tabSelected, setTabSelected] = useState("general");
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
@@ -427,8 +430,10 @@ export default function CreateV2({ id }: { id?: string }) {
       <QuestionsFlexBox
         tabSelected={tabSelected}
         setTabSelected={setTabSelected}
+        questionLength={questionArr.length}
+        createQuestion={createQuestion}
       />
-      {tabSelected === "general" && (
+      {tabSelected === "general" ? (
         <SetEvaluationGeneral
           setErrors={setErrors}
           setQuestionErrorArr={setQuestionErrorArr}
@@ -447,6 +452,20 @@ export default function CreateV2({ id }: { id?: string }) {
           setAsignatura={setAsignatura}
           asignaturasArr={asignaturasArr}
           title={id ? "Editar" : "Crear"}
+        />
+      ) : (
+        <SetQuestion
+          question={questionArr[parseInt(tabSelected, 10)]}
+          i={parseInt(tabSelected, 10)}
+          removeSelectedImage={removeSelectedImage}
+          uploadImage={uploadImage}
+          deleteQuestion={deleteQuestion}
+          setErrors={setErrors}
+          setQuestionErrorArr={setQuestionErrorArr}
+          editQuestion={editQuestion}
+          questionErrorArr={questionErrorArr}
+          typeOfQuestionSelected={typeOfQuestionSelected}
+          setTypeOfQuestionSelected={setTypeOfQuestionSelected}
         />
       )}
     </main>
