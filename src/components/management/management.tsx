@@ -670,7 +670,7 @@ export default function Management() {
         </div>
         <a
           className={styles.downloadExcel}
-          href="/plantilla de excel.xlsx"
+          href="/public/plantilla excel/plantilla de excel.xlsx"
           download="plantilla de excel.xlsx"
         >
           <p>Descargar plantilla de Excel</p>

@@ -9,6 +9,7 @@ import { useOnboardingContext } from "@/lib/context";
 import Asignatura from "@/models/asignatura";
 import SetQuestion from "@/components/create/createV2/setQuestion/setQuestion";
 import SetEvaluationGeneral from "@/components/create/createV2/setEvaluationGeneral/setEvaluationGeneral";
+import EvaluationInfoViewer from "@/components/create/createV2/evaluationInfoViewer/evaluationInfoViewer";
 
 export interface QuestionWithError extends Question {
   error?: string;
@@ -472,14 +473,7 @@ export default function CreateV2({ id }: { id?: string }) {
         />
       ) : (
         <>
-          <iframe
-            className={styles.iframe}
-            id="inlineFrameExample"
-            title="Inline Frame Example"
-            width="300"
-            height="200"
-            src="https://www.elmundo.es/deportes/mas-deporte/2019/03/21/5c9285c2fdddff95b98b4746.html"
-          ></iframe>
+          <EvaluationInfoViewer />
           <SetQuestion
             question={questionArr[parseInt(tabSelected, 10)]}
             i={parseInt(tabSelected, 10)}
