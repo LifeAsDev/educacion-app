@@ -47,7 +47,6 @@ export default function CreateV2({ id }: { id?: string }) {
     const newQuestion: any[] = [...questionArr];
     if (property !== "image") newQuestion[index][property] = value;
 
-    console.log({ newQuestion });
     setQuestionArr(newQuestion);
     setQuestionErrorArr([]);
     setErrors([]);

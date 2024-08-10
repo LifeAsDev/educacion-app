@@ -148,7 +148,7 @@ export default function QuestionsFlexBox({
               id={`file${i}`}
               name={`filePDF`}
               value={i}
-              disabled={tabSelected === "general" ? true : false}
+              disabled={tabSelected === "general"}
               checked={tabSelected === "general" ? false : fileSelected === i}
               onChange={(e) =>
                 editQuestion(
