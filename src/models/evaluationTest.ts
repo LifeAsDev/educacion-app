@@ -12,5 +12,6 @@ interface EvaluationTest {
   creatorId: string | Types.ObjectId;
   tiempo: number; // minutes
   nivel?: string;
+  files: string[];
 }
 export default EvaluationTest;

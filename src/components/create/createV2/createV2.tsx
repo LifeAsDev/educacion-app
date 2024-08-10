@@ -14,7 +14,10 @@ import EvaluationInfoViewer from "@/components/create/createV2/evaluationInfoVie
 export interface QuestionWithError extends Question {
   error?: string;
 }
-
+export interface FilePDF {
+  file: Buffer | string | null | { data: [number]; type: string };
+  name: string;
+}
 export default function CreateV2({ id }: { id?: string }) {
   const [tabSelected, setTabSelected] = useState("general");
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
@@ -33,6 +36,9 @@ export default function CreateV2({ id }: { id?: string }) {
   const [asignaturasArr, setAsignaturasArr] = useState<Asignatura[]>([]);
   const [tiempo, setTiempo] = useState<number>(90);
   const [nivel, setNivel] = useState("1° Basico");
+  const [uploadFileGuideError, setUploadFileGuideError] = useState("");
+  const [filesArr, setFilesArr] = useState<FilePDF[]>([]);
+
   const editQuestion = (
     property: keyof QuestionWithError,
     value: string | number,
@@ -41,6 +47,7 @@ export default function CreateV2({ id }: { id?: string }) {
     const newQuestion: any[] = [...questionArr];
     if (property !== "image") newQuestion[index][property] = value;
 
+    console.log({ newQuestion });
     setQuestionArr(newQuestion);
     setQuestionErrorArr([]);
     setErrors([]);
@@ -212,6 +219,7 @@ export default function CreateV2({ id }: { id?: string }) {
     type,
     tiempo,
     nivel,
+    filesArr,
   ]);
 
   const submitEvaluationTest = () => {
@@ -420,15 +428,43 @@ export default function CreateV2({ id }: { id?: string }) {
       fileInput.value = "";
       fileInput.dispatchEvent(new Event("change"));
     }
+
     const newQuestionArr = [...questionArr];
-    newQuestionArr[
-      newQuestionArr.findIndex(
-        (question) => question._id === id || question.id === id
-      )
-    ].image = null;
+    const questionIndex = newQuestionArr.findIndex(
+      (question) => question._id === id || question.id === id
+    );
+    if (questionIndex !== -1) newQuestionArr[questionIndex].image = null;
 
     setQuestionArr(newQuestionArr);
   };
+
+  const uploadPdf = async (e: ChangeEvent<HTMLInputElement>) => {
+    let errorsNow = "";
+    const allowedType = "application/pdf";
+    const file = e.target.files?.[0];
+    const maxSizeMB = 10; // Cambia el tamaño máximo si es necesario
+    setUploadFileGuideError("");
+    if (!file || file.type !== allowedType) {
+      errorsNow = "Por favor selecciona un archivo PDF.";
+    } else {
+      if (file.size / 1024 / 1024 > maxSizeMB) {
+        errorsNow = `El archivo debe ser más pequeño que ${maxSizeMB}MB.`;
+      }
+    }
+
+    if (errorsNow === "") {
+      const bytes = await file!.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      setFilesArr((prev) => [
+        ...prev,
+        { file: buffer, name: file?.name ?? "Sin Nombre" },
+      ]);
+    } else {
+      setUploadFileGuideError(errorsNow);
+    }
+    removeSelectedImage(e.target.id, false);
+  };
+
   return (
     <main className={styles.main}>
       {submitting || editFetch ? (
@@ -450,6 +486,11 @@ export default function CreateV2({ id }: { id?: string }) {
         createQuestion={createQuestion}
         submitting={submitting}
         submitEvaluationTest={submitEvaluationTest}
+        uploadPdf={uploadPdf}
+        uploadFileGuideError={uploadFileGuideError}
+        filesArr={filesArr}
+        fileSelected={questionArr[parseInt(tabSelected, 10)].fileSelected ?? -1}
+        editQuestion={editQuestion}
       />
       {tabSelected === "general" ? (
         <SetEvaluationGeneral
@@ -473,7 +514,12 @@ export default function CreateV2({ id }: { id?: string }) {
         />
       ) : (
         <>
-          <EvaluationInfoViewer />
+          <EvaluationInfoViewer
+            filesArr={filesArr}
+            fileSelected={
+              questionArr[parseInt(tabSelected, 10)].fileSelected ?? -1
+            }
+          />
           <SetQuestion
             question={questionArr[parseInt(tabSelected, 10)]}
             i={parseInt(tabSelected, 10)}

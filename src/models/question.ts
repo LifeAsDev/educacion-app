@@ -10,5 +10,6 @@ interface Question {
   _id?: string;
   puntos: number;
   openAnswers: string[];
+  fileSelected?: null | number;
 }
 export default Question;

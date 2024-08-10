@@ -23,6 +23,7 @@ const questionSchema = new Schema<Question>({
   image: { type: String, default: null },
   puntos: { type: Number, default: 0 },
   openAnswers: { type: [String], default: [] },
+  fileSelected: Number,
 });
 
 const evaluationTestSchema = new Schema<EvaluationTest>(
@@ -56,6 +57,7 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
     },
     tiempo: { type: Number, default: 90 },
     nivel: String,
+    files: [String],
   },
   { timestamps: true }
 );

@@ -219,8 +219,8 @@ export default function SetQuestion({
                 htmlFor={question._id || question.id}
               >
                 <p>Haga clic aquí para agregar imagen a la pregunta</p>
-                <p>PNG, JPG or GIF(MAX. 1024x600px)</p>
-                <p>Tamaño máximo de archivo: 1 MB</p>
+                <p>PNG, JPG or GIF(MAX. 1600x1000px)</p>
+                <p>Tamaño máximo de archivo: 3MB</p>
               </label>
 
               <p className={styles.error}>

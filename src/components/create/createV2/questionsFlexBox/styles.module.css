@@ -1,7 +1,8 @@
 .questionsBox {
   background-color: var(--third-color-light-black);
   height: 100%;
-  width: 19em;
+  min-width: 288px;
+  width: 288px;
   color: white;
   display: flex;
   justify-content: flex-start;
@@ -10,6 +11,8 @@
   align-items: center;
   gap: 1.5em;
   padding-bottom: 2em;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .questionsBox h2 {
   font-weight: 500;
@@ -20,7 +23,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-  width: 17.5em;
 }
 
 .question {
@@ -91,4 +93,50 @@
 }
 .btn:hover {
   background-color: var(--secondary-green);
+}
+
+.inputEventPDF {
+  display: none;
+}
+
+.btnEventPDF {
+  background-color: var(--primary-light-blue);
+}
+
+.btnEventPDF:hover {
+  background-color: var(--third-light-blue);
+}
+
+.error {
+  text-align: center;
+  color: red;
+  font-weight: 400;
+}
+
+.filesList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.fileItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.fileItem svg {
+  min-width: 32px;
+  height: auto;
+  cursor: pointer;
+}
+
+.fileItem svg:hover {
+  transform: scale(1.1);
+}
+
+.fileItem label {
+  cursor: pointer;
+  text-wrap: nowrap;
+  margin-left: 0.25em;
 }
