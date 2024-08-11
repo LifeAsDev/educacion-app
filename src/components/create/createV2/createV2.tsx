@@ -488,7 +488,9 @@ export default function CreateV2({ id }: { id?: string }) {
         uploadPdf={uploadPdf}
         uploadFileGuideError={uploadFileGuideError}
         filesArr={filesArr}
-        fileSelected={questionArr[parseInt(tabSelected, 10)].fileSelected ?? -1}
+        fileSelected={
+          questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
+        }
         editQuestion={editQuestion}
       />
       {tabSelected === "general" ? (
@@ -516,7 +518,7 @@ export default function CreateV2({ id }: { id?: string }) {
           <EvaluationInfoViewer
             filesArr={filesArr}
             fileSelected={
-              questionArr[parseInt(tabSelected, 10)].fileSelected ?? -1
+              questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
             }
           />
           <SetQuestion
