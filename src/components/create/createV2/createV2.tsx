@@ -147,7 +147,26 @@ export default function CreateV2({ id }: { id?: string }) {
         );
 
         setQuestionArr(questionsWithBuffer);
-      }
+      } // Convert filesArr if necessary
+      const filesWithBuffer = parseCachedState.filesArr.map(
+        (fileObj: FilePDF) => {
+          if (
+            fileObj.file !== null &&
+            typeof fileObj.file !== "string" &&
+            "type" in fileObj.file &&
+            fileObj.file.type === "Buffer"
+          ) {
+            return {
+              ...fileObj,
+              file: Buffer.from(fileObj.file.data),
+            };
+          }
+          return fileObj;
+        }
+      );
+
+      setFilesArr(filesWithBuffer);
+
       setName(parseCachedState.name);
       setType(parseCachedState.type);
       setDifficulty(parseCachedState.difficulty);
@@ -203,6 +222,7 @@ export default function CreateV2({ id }: { id?: string }) {
           asignatura,
           tiempo,
           nivel,
+          filesArr,
         })
       );
     } else if (submitting) {

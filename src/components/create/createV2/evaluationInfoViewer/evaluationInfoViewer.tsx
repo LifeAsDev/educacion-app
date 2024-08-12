@@ -29,7 +29,7 @@ const EvaluationInfoViewer = React.memo(function EvaluationInfoViewer({
               const url = URL.createObjectURL(blob);
               return url;
             })()
-          : "/evaluation files/ejemplo pruebas.pdf"
+          : ""
       }
     />
   );
