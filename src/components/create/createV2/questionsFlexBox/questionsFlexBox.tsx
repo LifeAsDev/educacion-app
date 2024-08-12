@@ -129,11 +129,49 @@ export default function QuestionsFlexBox({
         onChange={uploadPdf}
       />
       <ul className={styles.filesList}>
+        <li className={styles.fileItem}>
+          <div className={styles.fileInfo}>
+            <input
+              type="radio"
+              id={`fileNone`}
+              name={`filePDF`}
+              value={-1}
+              disabled={tabSelected === "general"}
+              checked={tabSelected === "general" ? false : fileSelected === -1}
+              onChange={(e) =>
+                editQuestion(
+                  "fileSelected",
+                  parseInt(e.target.value, 10),
+                  parseInt(tabSelected, 10)
+                )
+              }
+            />
+            <label htmlFor={`fileNone`}>Ninguno</label>
+          </div>
+        </li>
         {filesArr.map((file, i) => (
           <li className={styles.fileItem} key={i}>
+            <div className={styles.fileInfo}>
+              <input
+                type="radio"
+                id={`file${i}`}
+                name={`filePDF`}
+                value={i}
+                disabled={tabSelected === "general"}
+                checked={tabSelected === "general" ? false : fileSelected === i}
+                onChange={(e) =>
+                  editQuestion(
+                    "fileSelected",
+                    parseInt(e.target.value, 10),
+                    parseInt(tabSelected, 10)
+                  )
+                }
+              />
+              <label htmlFor={`file${i}`}> {file.name}</label>
+            </div>
             <svg
-              width="40px"
-              height="40px"
+              width="28px"
+              height="28px"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -143,22 +181,6 @@ export default function QuestionsFlexBox({
                 fill="var(--primary-red)"
               />
             </svg>
-            <input
-              type="radio"
-              id={`file${i}`}
-              name={`filePDF`}
-              value={i}
-              disabled={tabSelected === "general"}
-              checked={tabSelected === "general" ? false : fileSelected === i}
-              onChange={(e) =>
-                editQuestion(
-                  "fileSelected",
-                  parseInt(e.target.value, 10),
-                  parseInt(tabSelected, 10)
-                )
-              }
-            />
-            <label htmlFor={`file${i}`}> {file.name}</label>
           </li>
         ))}
       </ul>

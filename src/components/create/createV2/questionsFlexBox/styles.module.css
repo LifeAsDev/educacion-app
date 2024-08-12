@@ -124,10 +124,14 @@
   flex-direction: row;
   align-items: center;
   overflow: hidden;
+  justify-content: space-between;
+  height: 32px;
+  cursor: pointer;
+  width: 100%;
 }
 
 .fileItem svg {
-  min-width: 24px;
+  min-width: 28px;
   height: auto;
   cursor: pointer;
 }
@@ -140,4 +144,12 @@
   cursor: pointer;
   text-wrap: nowrap;
   margin-left: 0.25em;
+  width: 100%;
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  width: 100%;
 }
