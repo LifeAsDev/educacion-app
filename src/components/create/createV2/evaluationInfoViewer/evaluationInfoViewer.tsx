@@ -1,4 +1,4 @@
-import { FilePDF } from "@/components/create/createV2/createV2";
+import { FilePDF } from "@/models/evaluationTest";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 
 import React from "react";

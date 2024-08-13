@@ -1,6 +1,7 @@
 import EvaluationTest from "@/models/evaluationTest";
 import mongoose, { Schema, models } from "mongoose";
 import Question from "@/models/question";
+import { FilePDF } from "@/models/evaluationTest";
 
 const questionSchema = new Schema<Question>({
   type: {
@@ -25,6 +26,10 @@ const questionSchema = new Schema<Question>({
   openAnswers: { type: [String], default: [] },
   fileSelected: Number,
 });
+const filePDFSchema = new Schema<FilePDF>(
+  { file: String, name: String },
+  { timestamps: true }
+);
 
 const evaluationTestSchema = new Schema<EvaluationTest>(
   {
@@ -57,7 +62,7 @@ const evaluationTestSchema = new Schema<EvaluationTest>(
     },
     tiempo: { type: Number, default: 90 },
     nivel: String,
-    files: [String],
+    files: [filePDFSchema],
   },
   { timestamps: true }
 );

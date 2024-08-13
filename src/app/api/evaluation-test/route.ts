@@ -9,6 +9,7 @@ import mongoose, { Types } from "mongoose";
 export const dynamic = "force-dynamic";
 import Asignatura from "@/schemas/asignatura";
 import user from "@/schemas/user";
+import { FilePDF } from "@/models/evaluationTest";
 
 export async function POST(req: Request) {
   try {
@@ -24,6 +25,34 @@ export async function POST(req: Request) {
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
+
+    const filesArr: string[] = data.getAll("files") as unknown as string[];
+
+    const parseFilesArr: FilePDF[] = filesArr.map((file) => {
+      const newFile: FilePDF = JSON.parse(file);
+      if (
+        typeof newFile.file !== "string" &&
+        newFile.file !== null &&
+        typeof newFile.file !== "undefined" &&
+        "type" in newFile.file &&
+        newFile.file.type === "Buffer"
+      ) {
+        return {
+          ...newFile,
+          file: Buffer.from(newFile.file.data),
+        };
+      }
+
+      return newFile;
+    });
+
+    const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
+      const clonedFile = { ...file }; // Clonar el objeto
+      if (file.file && typeof file.file !== "string") {
+        clonedFile.file = null;
+      } // Modificar el clon
+      return clonedFile; // Devolver el clon modificado
+    });
 
     const parseQuestionArr: Question[] = questionArr.map((question) => {
       const newQuestion: Question = JSON.parse(question);
@@ -65,6 +94,7 @@ export async function POST(req: Request) {
       creatorId: new Types.ObjectId(creatorId),
       tiempo,
       nivel,
+      files: filesArrWithoutBuffer,
     });
 
     /*console.log("Old ", questionArrWithoutBuffer); */
@@ -79,14 +109,28 @@ export async function POST(req: Request) {
           const extension = await getFileTypeFromBuffer(
             question.image as Buffer
           );
-
+          if (id && evaluationIndex) {
+            const { imagePath } = await uploadFile(
+              question.image as Buffer,
+              `${id}.${extension}`,
+              newEvaluationTest._id
+            );
+            newEvaluationTest.questionArr[evaluationIndex].image = imagePath!;
+          }
+        }
+      }
+      let fileIndex = 0;
+      for (const file of parseFilesArr) {
+        const id = newEvaluationTest.files[fileIndex]._id;
+        if (id) {
           const { imagePath } = await uploadFile(
-            question.image as Buffer,
-            `${id}.${extension}`,
+            file.file as Buffer,
+            `${id}.${"pdf"}`,
             newEvaluationTest._id
           );
-          newEvaluationTest.questionArr[evaluationIndex].image = imagePath!;
+          if (imagePath) newEvaluationTest.files[fileIndex].file = imagePath;
         }
+        fileIndex++;
       }
     }
     const updatedEvaluationTest = await EvaluationTest.findByIdAndUpdate(

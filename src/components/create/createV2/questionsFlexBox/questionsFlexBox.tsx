@@ -1,9 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import styles from "./styles.module.css";
-import {
-  FilePDF,
-  QuestionWithError,
-} from "@/components/create/createV2/createV2";
+import { QuestionWithError } from "@/components/create/createV2/createV2";
+import { FilePDF } from "@/models/evaluationTest";
 
 export default function QuestionsFlexBox({
   tabSelected,

@@ -2,6 +2,12 @@ import Question from "@/models/question";
 import { Types } from "mongoose";
 import Asignatura from "@/models/asignatura";
 
+export interface FilePDF {
+  file: Buffer | string | null | { data: [number]; type: string };
+  name: string;
+  _id?: string;
+}
+
 interface EvaluationTest {
   name: string;
   type: string;
@@ -12,6 +18,6 @@ interface EvaluationTest {
   creatorId: string | Types.ObjectId;
   tiempo: number; // minutes
   nivel?: string;
-  files: string[];
+  files: FilePDF[];
 }
 export default EvaluationTest;

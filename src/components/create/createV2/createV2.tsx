@@ -10,14 +10,12 @@ import Asignatura from "@/models/asignatura";
 import SetQuestion from "@/components/create/createV2/setQuestion/setQuestion";
 import SetEvaluationGeneral from "@/components/create/createV2/setEvaluationGeneral/setEvaluationGeneral";
 import EvaluationInfoViewer from "@/components/create/createV2/evaluationInfoViewer/evaluationInfoViewer";
+import { FilePDF } from "@/models/evaluationTest";
 
 export interface QuestionWithError extends Question {
   error?: string;
 }
-export interface FilePDF {
-  file: Buffer | string | null | { data: [number]; type: string };
-  name: string;
-}
+
 export default function CreateV2({ id }: { id?: string }) {
   const [tabSelected, setTabSelected] = useState("general");
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
@@ -310,6 +308,11 @@ export default function CreateV2({ id }: { id?: string }) {
             data.append("questionArr", questionString);
           });
 
+          filesArr.forEach((file) => {
+            const fileString = JSON.stringify(file);
+            data.append("files", fileString);
+          });
+
           const res = await fetch("/api/evaluation-test", {
             method: "POST",
             body: data,
@@ -318,6 +321,7 @@ export default function CreateV2({ id }: { id?: string }) {
           setSubmitting(false);
 
           if (res.ok) {
+            router.push(`/edit/${resData.id}`);
             return true;
           } else {
             return;
