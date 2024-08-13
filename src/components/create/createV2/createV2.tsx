@@ -188,6 +188,7 @@ export default function CreateV2({ id }: { id?: string }) {
           }
           setName(data.evaluationTest.name);
           setQuestionArr(data.evaluationTest.questionArr);
+          setFilesArr(data.evaluationTest.files);
           setType(data.evaluationTest.type);
           setDifficulty(data.evaluationTest.difficulty);
           setEditFetch(false);
@@ -540,6 +541,7 @@ export default function CreateV2({ id }: { id?: string }) {
       ) : (
         <>
           <EvaluationInfoViewer
+            evaluationId={id}
             filesArr={filesArr}
             fileSelected={
               questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1

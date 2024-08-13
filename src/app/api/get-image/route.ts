@@ -6,6 +6,7 @@ export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
 
   const photoName = searchParams.get("photoName");
+  const type = searchParams.get("type");
 
   const filePath = path.join(
     `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`,
@@ -25,8 +26,7 @@ export async function GET(req: Request, { params }: any) {
     const fileBuffer = fs.readFileSync(filePath);
 
     const headers = new Headers();
-
-    headers.set("Content-Type", "image/*");
+    headers.set("Content-Type", type ?? "image/*");
 
     // or just use new Response ❗️
     return new NextResponse(fileBuffer, {

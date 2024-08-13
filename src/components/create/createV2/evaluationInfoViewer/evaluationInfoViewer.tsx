@@ -6,9 +6,11 @@ import React from "react";
 const EvaluationInfoViewer = React.memo(function EvaluationInfoViewer({
   filesArr,
   fileSelected,
+  evaluationId,
 }: {
   filesArr: FilePDF[];
   fileSelected: number;
+  evaluationId?: string;
 }) {
   const docs = [
     {
@@ -22,13 +24,17 @@ const EvaluationInfoViewer = React.memo(function EvaluationInfoViewer({
     <iframe
       src={
         filesArr.length && fileSelected >= 0
-          ? (() => {
-              const blob = new Blob([filesArr[fileSelected].file as Buffer], {
-                type: "application/pdf",
-              });
-              const url = URL.createObjectURL(blob);
-              return url;
-            })()
+          ? typeof filesArr[fileSelected].file === "string"
+            ? `/api/get-image?photoName=${evaluationId}/${
+                filesArr[fileSelected]._id
+              }.pdf&type=${"application/pdf"}`
+            : (() => {
+                const blob = new Blob([filesArr[fileSelected].file as Buffer], {
+                  type: "application/pdf",
+                });
+                const url = URL.createObjectURL(blob);
+                return url;
+              })()
           : ""
       }
     />
