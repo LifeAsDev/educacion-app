@@ -16,6 +16,7 @@ export default function QuestionsFlexBox({
   fileSelected,
   editQuestion,
   removeFilePDF,
+  id,
 }: {
   tabSelected: string;
   setTabSelected: Dispatch<SetStateAction<string>>;
@@ -33,6 +34,7 @@ export default function QuestionsFlexBox({
     index: number
   ) => void;
   removeFilePDF: (fileIndex: number) => void;
+  id?: string;
 }) {
   return (
     <aside className={styles.questionsBox}>
@@ -167,7 +169,10 @@ export default function QuestionsFlexBox({
                   )
                 }
               />
-              <label htmlFor={`file${i}`}> {file.name}</label>
+              <label htmlFor={`file${i}`}>
+                {file.name}
+                {/*{file._id}*/}
+              </label>
             </div>
             <svg
               onClick={() => {

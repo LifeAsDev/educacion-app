@@ -11,6 +11,7 @@ import User from "@/schemas/user";
 import UserModel from "@/models/user";
 import EvaluationAssign from "@/schemas/evaluationAssign";
 import EvaluationOnCourse from "@/schemas/evaluationOnCourse";
+import { FilePDF } from "@/models/evaluationTest";
 
 export async function DELETE(req: Request, { params }: any) {
   const id = params.id;
@@ -93,7 +94,30 @@ export async function PATCH(req: Request, { params }: any) {
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
+    const filesArr: string[] = data.getAll("files") as unknown as string[];
+    const parseFilesArr: FilePDF[] = filesArr.map((file) => {
+      const newFile: FilePDF = JSON.parse(file);
+      if (
+        newFile.file &&
+        typeof newFile.file !== "string" &&
+        "type" in newFile.file &&
+        newFile.file.type === "Buffer"
+      ) {
+        return {
+          ...newFile,
+          file: Buffer.from(newFile.file.data),
+        };
+      }
+      return newFile;
+    });
 
+    const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
+      const clonedFile = { ...file };
+      if (file.file && typeof file.file !== "string") {
+        clonedFile.file = null;
+      }
+      return clonedFile;
+    });
     const parseQuestionArr: Question[] = questionArr.map((question) => {
       const newQuestion: Question = JSON.parse(question);
       if (
@@ -133,6 +157,7 @@ export async function PATCH(req: Request, { params }: any) {
       asignatura: asignatura ? new Types.ObjectId(asignatura) : null,
       tiempo,
       nivel,
+      files: filesArrWithoutBuffer,
     });
     const deleteImageNull = newEvaluationTest.questionArr.filter(
       (questionFilter: Question) =>
@@ -197,6 +222,23 @@ export async function PATCH(req: Request, { params }: any) {
           newEvaluationTest2.questionArr[evaluationIndex].image = imagePath;
         }
       }
+      let fileIndex = 0;
+      for (const file of parseFilesArr) {
+        if (file.file && typeof file.file !== "string") {
+          const id = newEvaluationTest2.files[fileIndex]._id;
+
+          if (id) {
+            const { imagePath } = await uploadFile(
+              file.file as Buffer,
+              `${id}.${"pdf"}`,
+              newEvaluationTest._id
+            );
+            if (imagePath) newEvaluationTest2.files[fileIndex].file = imagePath;
+          }
+        }
+
+        fileIndex++;
+      }
     }
 
     const deleteQuestion = newEvaluationTest.questionArr.filter(
@@ -215,10 +257,29 @@ export async function PATCH(req: Request, { params }: any) {
         );
       }
     }
+    const deleteFiles = newEvaluationTest.files.filter(
+      (fileFilter: FilePDF) =>
+        parseFilesArr.length === 0 ||
+        parseFilesArr.every((fileNew) => {
+          if (fileNew._id?.toString() !== fileFilter._id!.toString()) {
+            return true;
+          }
+        })
+    );
+
+    for (const deletedFile of deleteFiles) {
+      if (deletedFile.file) {
+        const file = deletedFile.file.split("/");
+        const fileDeleted = await deleteFile(file[0], file[1]);
+      }
+    }
 
     const updatedEvaluationTest = await EvaluationTest.findByIdAndUpdate(
       newEvaluationTest._id,
-      { questionArr: newEvaluationTest2.questionArr },
+      {
+        questionArr: newEvaluationTest2.questionArr,
+        files: newEvaluationTest2.files,
+      },
       { new: true }
     );
 
@@ -226,7 +287,7 @@ export async function PATCH(req: Request, { params }: any) {
       return NextResponse.json(
         {
           message: "the id is " + updatedEvaluationTest.id,
-          id: updatedEvaluationTest.id,
+          updatedEvaluationTest,
         },
         { status: 201 }
       );

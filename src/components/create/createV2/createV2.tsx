@@ -347,6 +347,11 @@ export default function CreateV2({ id }: { id?: string }) {
             data.append("questionArr", questionString);
           });
 
+          filesArr.forEach((file) => {
+            const fileString = JSON.stringify(file);
+            data.append("files", fileString);
+          });
+
           const res = await fetch(`/api/evaluation-test/${id}`, {
             method: "PATCH",
             body: data,
@@ -355,6 +360,18 @@ export default function CreateV2({ id }: { id?: string }) {
           setSubmitting(false);
 
           if (res.ok) {
+            setName(resData.updatedEvaluationTest.name);
+            setQuestionArr(resData.updatedEvaluationTest.questionArr);
+            setFilesArr(resData.updatedEvaluationTest.files);
+            setType(resData.updatedEvaluationTest.type);
+            setDifficulty(resData.updatedEvaluationTest.difficulty);
+            setAsignatura(
+              resData.updatedEvaluationTest.asignatura?._id ?? "N/A"
+            );
+            setTiempo(resData.updatedEvaluationTest.tiempo ?? 90);
+            if (resData.updatedEvaluationTest.nivel) {
+              setNivel(resData.updatedEvaluationTest.nivel);
+            }
             return true;
           } else {
             return;
@@ -541,6 +558,7 @@ export default function CreateV2({ id }: { id?: string }) {
         }
         editQuestion={editQuestion}
         removeFilePDF={removeFilePDF}
+        id={id}
       />
       {tabSelected === "general" ? (
         <SetEvaluationGeneral
