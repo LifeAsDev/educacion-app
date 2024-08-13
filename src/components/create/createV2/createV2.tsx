@@ -489,6 +489,29 @@ export default function CreateV2({ id }: { id?: string }) {
     removeSelectedImage(e.target.id, false);
   };
 
+  const removeFilePDF = (fileIndex: number) => {
+    setFilesArr((prevFiles) => {
+      const newFiles = prevFiles.filter((_, index) => index !== fileIndex);
+
+      setQuestionArr((prevQuestions) =>
+        prevQuestions.map((question) => {
+          if (question.fileSelected === fileIndex) {
+            return { ...question, fileSelected: null };
+          } else if (
+            question.fileSelected !== null &&
+            question.fileSelected !== undefined &&
+            question.fileSelected > fileIndex
+          ) {
+            return { ...question, fileSelected: question.fileSelected - 1 };
+          }
+          return question;
+        })
+      );
+
+      return newFiles;
+    });
+  };
+
   return (
     <main className={styles.main}>
       {submitting || editFetch ? (
@@ -517,6 +540,7 @@ export default function CreateV2({ id }: { id?: string }) {
           questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
         }
         editQuestion={editQuestion}
+        removeFilePDF={removeFilePDF}
       />
       {tabSelected === "general" ? (
         <SetEvaluationGeneral

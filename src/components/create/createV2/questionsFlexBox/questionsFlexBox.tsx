@@ -15,6 +15,7 @@ export default function QuestionsFlexBox({
   filesArr,
   fileSelected,
   editQuestion,
+  removeFilePDF,
 }: {
   tabSelected: string;
   setTabSelected: Dispatch<SetStateAction<string>>;
@@ -31,6 +32,7 @@ export default function QuestionsFlexBox({
     value: string | number,
     index: number
   ) => void;
+  removeFilePDF: (fileIndex: number) => void;
 }) {
   return (
     <aside className={styles.questionsBox}>
@@ -168,6 +170,9 @@ export default function QuestionsFlexBox({
               <label htmlFor={`file${i}`}> {file.name}</label>
             </div>
             <svg
+              onClick={() => {
+                removeFilePDF(i);
+              }}
               width="28px"
               height="28px"
               viewBox="0 0 24 24"
