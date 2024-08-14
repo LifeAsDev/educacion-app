@@ -1,5 +1,5 @@
-import InEvaluation from "@/components/inEvaluation/inEvaluation";
+import InEvaluationV2 from "@/components/inEvaluation/inEvaluationV2/inEvaluationV2";
 
 export default function Page({ params }: { params: any }) {
-  return <InEvaluation id={params.id} />;
+  return <InEvaluationV2 id={params.id} />;
 }

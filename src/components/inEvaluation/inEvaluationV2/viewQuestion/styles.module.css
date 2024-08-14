@@ -1,0 +1,40 @@
+.viewQuestion {
+  width: calc(50% - 9em);
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fullWidth {
+  width: calc(100% - 18em);
+  padding: 5em;
+}
+.multipleQuestionBox,
+.openQuestionBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75em;
+  text-align: left;
+  overflow: auto;
+  padding: 1em;
+  width: 100%;
+}
+.pregunta {
+  text-align: left;
+  width: 100%;
+  padding: 8px;
+}
+.error {
+  color: red;
+  font-weight: 600;
+  margin-right: auto;
+  margin-left: 8px;
+}
+.multipleQuestionAnswerBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  row-gap: 0.25em;
+  column-gap: 0.25em;
+}

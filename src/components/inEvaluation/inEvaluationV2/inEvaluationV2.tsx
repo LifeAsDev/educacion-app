@@ -10,7 +10,10 @@ import {
   formatSecondsToMinutes,
   calculateRemainingTime,
 } from "@/lib/calculationFunctions";
-import Instructions from "./instructions/instructions";
+import QuestionsFlexBox from "@/components/create/createV2/questionsFlexBox/questionsFlexBox";
+import EvaluationInfoViewer from "@/components/create/createV2/evaluationInfoViewer/evaluationInfoViewer";
+import ViewQuestion from "@/components/inEvaluation/inEvaluationV2/viewQuestion/viewQuestion";
+import { FilePDF } from "@/models/evaluationTest";
 
 function generateUniqueId(existingIds: Set<string>): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -28,12 +31,12 @@ function generateUniqueId(existingIds: Set<string>): string {
   return result;
 }
 
-interface QuestionWithError extends Question {
+export interface QuestionWithError extends Question {
   answerArr: { answer: string; id: string; indexId: string }[];
   error?: boolean;
 }
 
-interface Answers {
+export interface Answers {
   questionId: string;
   answer: string;
 }
@@ -50,7 +53,7 @@ const shuffleArray = (array: any) => {
     }
     return newArray;
   };
-  const newArray = shuffleArray(array);
+  const newArray = array;
 
   // Función para mezclar un subarreglo
   const shuffleSubArray = (subArray: any) => {
@@ -103,7 +106,7 @@ const useBeforeUnload = (message: string) => {
   }, [message]);
 };
 
-export default function InEvaluation({ id }: { id?: string }) {
+export default function InEvaluationV2({ id }: { id?: string }) {
   useBeforeUnload(
     "¿Estás seguro de que quieres salir? Tus respuestas seran guardadas"
   );
@@ -123,7 +126,9 @@ export default function InEvaluation({ id }: { id?: string }) {
   const [evaluationTime, setEvaluationTime] = useState(90);
   const [startTime, setStartTime] = useState<undefined | string>();
   const [evalOnCourse, setEvalOnCourse] = useState<any>();
-  1;
+  const [tabSelected, setTabSelected] = useState("0");
+  const [filesArr, setFilesArr] = useState<FilePDF[]>([]);
+
   useEffect(() => {
     const fetchAsignaturas = async () => {
       try {
@@ -231,6 +236,8 @@ export default function InEvaluation({ id }: { id?: string }) {
             setDifficulty(data.evaluationTest.difficulty);
             setAsignatura(data.evaluationTest.asignatura?.name ?? "N/A");
             setEvaluationTime(data.evaluationTest.tiempo ?? 90);
+            setFilesArr(data.evaluationTest.files);
+            console.log(data.evaluationTest.files);
             if (session.rol === "Estudiante") {
               setEvalOnCourse(data.evalOnCourse);
             }
@@ -248,7 +255,7 @@ export default function InEvaluation({ id }: { id?: string }) {
       };
       fetchEvaluationTest(id);
     }
-  }, [id, router, session, asignatura]);
+  }, [id, router, session, asignatura, tabSelected]);
 
   const handleAnswer = (
     answer: string,
@@ -349,6 +356,23 @@ export default function InEvaluation({ id }: { id?: string }) {
 
     setQuestionArr(newQuestionArr);
   };
+
+  const goForward = () => {
+    setTabSelected((prevTab) => {
+      const maxIndex = questionArr.length - 1;
+      const nextTab = Math.min(parseInt(prevTab, 10) + 1, maxIndex);
+      return nextTab.toString();
+    });
+  };
+
+  const goBackward = () => {
+    setTabSelected((prevTab) => {
+      const prevTabNumber = parseInt(prevTab, 10);
+      const nextTab = Math.max(prevTabNumber - 1, 0);
+      return nextTab.toString();
+    });
+  };
+
   return (
     <main className={styles.main}>
       {submitting || editFetch ? (
@@ -362,7 +386,7 @@ export default function InEvaluation({ id }: { id?: string }) {
         </div>
       ) : (
         ""
-      )}
+      )}{" "}
       {time === -1 ? (
         ""
       ) : (
@@ -370,144 +394,61 @@ export default function InEvaluation({ id }: { id?: string }) {
           {formatSecondsToMinutes(time)}
         </div>
       )}
-      <h1>{name}</h1>
-      <div className={styles.mainTestOptionsBox}>
-        <div className={styles.inputBox}>
-          <label>Tipo de prueba:</label>
-          <span>{type}</span>
-        </div>
-        <div className={styles.inputBox}>
-          <label>Nivel de dificultad:</label>
-          <span>{difficulty}</span>
-        </div>
-        <div className={styles.inputBox}>
-          <label>Asignatura: </label>
-          <span>{asignatura}</span>
-        </div>
-      </div>
-      {/*       <Instructions timeLimit={evaluationTime} />
-       */}{" "}
-      <div className={styles.questionBox}>
-        {!editFetch &&
-          questionArr.map((question, i) =>
-            question.type === "open" ? (
-              <div
-                key={question._id || question.id}
-                className={styles.openQuestionBox}
-              >
-                {typeof question.image === "string" && (
-                  <NextImage
-                    className="h-full object-contain"
-                    src={`/api/get-image?photoName=${question.image}`}
-                    alt={`Image of question ${i}`}
-                    width={1200} // Agrega el ancho de la imagen
-                    height={400} // Agrega la altura de la imagen
-                  />
-                )}
-                <div
-                  id={question._id}
-                  className={styles.pregunta}
-                  dangerouslySetInnerHTML={{ __html: question.pregunta }}
-                ></div>
-                {question.error && (
-                  <p className={styles.error}>Campo obligatorio</p>
-                )}
-                <textarea
-                  spellCheck="false"
-                  onBlur={(e) => fetchAnswer(e.target.value, question._id!)}
-                  onChange={(e) => handleAnswer(e.target.value, question._id!)}
-                  placeholder="Respuesta"
-                  defaultValue={
-                    answers[
-                      answers.findIndex(
-                        (answer) => answer.questionId === question._id!
-                      )
-                    ].answer
-                  }
-                ></textarea>
-              </div>
-            ) : (
-              <div
-                key={question._id || question.id}
-                className={styles.multipleQuestionBox}
-              >
-                {typeof question.image === "string" && (
-                  <NextImage
-                    className="h-full object-contain"
-                    src={`/api/get-image?photoName=${question.image}`}
-                    alt={`Image of question ${i}`}
-                    width={1200} // Agrega el ancho de la imagen
-                    height={400} // Agrega la altura de la imagen
-                  />
-                )}
-                <div
-                  id={question._id}
-                  className={styles.pregunta}
-                  dangerouslySetInnerHTML={{ __html: question.pregunta }}
-                ></div>
-                {question.error && (
-                  <p className={styles.error}>Campo obligatorio</p>
-                )}
-                <ul className={styles.multipleQuestionAnswerBox}>
-                  {question.answerArr.map(
-                    (
-                      answer: { answer: string; id: string; indexId: string },
-                      index: number
-                    ) => {
-                      const id = answer.id;
-                      const letters = ["A", "B", "C", "D"];
-                      return (
-                        <li key={`${id}-${question._id}`}>
-                          <label htmlFor={`${id}-${question._id}`}>
-                            <input
-                              type="radio"
-                              name={`question-${question._id}`}
-                              id={`${id}-${question._id}`}
-                              value={id}
-                              onChange={(e) =>
-                                handleAnswer(
-                                  answer.indexId,
-                                  question._id!,
-                                  "multiple"
-                                )
-                              }
-                              defaultChecked={
-                                answers[
-                                  answers.findIndex(
-                                    (answer) =>
-                                      answer.questionId === question._id!
-                                  )
-                                ].answer === answer.indexId
-                              }
-                            />
-                            <span>
-                              {letters[index]}.{" "}
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: answer.answer,
-                                }}
-                              ></span>
-                            </span>
-                          </label>
-                        </li>
-                      );
-                    }
-                  )}
-                </ul>
-              </div>
-            )
+      <QuestionsFlexBox
+        questionLength={questionArr.length}
+        submitting={submitting}
+        submitEvaluationTest={submitEvaluationTest}
+        id={id}
+        setTabSelected={setTabSelected}
+        tabSelected={tabSelected}
+      />
+      {!editFetch && (
+        <>
+          {(questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1) >=
+            0 && (
+            <EvaluationInfoViewer
+              evaluationId={id}
+              filesArr={filesArr}
+              fileSelected={
+                questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
+              }
+            />
           )}
-      </div>
-      {session && session.rol === "Estudiante" && (
-        <div
-          onClick={() => submitEvaluationTest()}
-          className={`${styles.createQuestionBtn} ${styles.btn} ${
-            submitting ? "cursor-default" : "submitEvaluationTest"
-          }`}
-        >
-          Terminar Evaluación
-        </div>
+
+          <ViewQuestion
+            question={questionArr[parseInt(tabSelected, 10)]}
+            fetchAnswer={fetchAnswer}
+            handleAnswer={handleAnswer}
+            answers={answers}
+            fileSelected={
+              questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
+            }
+          />
+        </>
       )}
+      <div className={styles.btnBox}>
+        <div onClick={goBackward} className={styles.btn}>
+          Anterior
+        </div>
+        {questionArr.length > parseInt(tabSelected, 10) + 1 ? (
+          <div onClick={goForward} className={styles.btn}>
+            Siguiente
+          </div>
+        ) : (
+          <>
+            {session && session.rol === "Estudiante" && (
+              <div
+                onClick={() => submitEvaluationTest()}
+                className={`${styles.createQuestionBtn} ${styles.btn} ${
+                  submitting ? "cursor-default" : "submitEvaluationTest"
+                }`}
+              >
+                Terminar Evaluación
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </main>
   );
 }

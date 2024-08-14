@@ -163,7 +163,7 @@ export default function EvaluationTable({
 
                     <Link
                       className={styles.evaluationName}
-                      href={`/evaluation/${item._id}`}
+                      href={`/evaluation/${item._id}/instructions`}
                     >
                       <p className={styles.name}>
                         {`${item.name}`}
