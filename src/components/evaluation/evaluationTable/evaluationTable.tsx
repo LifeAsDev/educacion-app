@@ -30,6 +30,7 @@ export default function EvaluationTable({
       id="evaluationList"
       className={`${fetchingEvaluations ? styles.hidden : ""} ${
         styles.tableBox
+      } ${session && session.rol === "Estudiante" && styles.topBorderRadius}
       }`}
     >
       <table>

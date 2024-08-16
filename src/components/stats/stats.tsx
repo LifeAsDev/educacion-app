@@ -114,7 +114,7 @@ export default function Stats() {
           mainPercentage={userSelected.results.mainPercentage}
         />
       )}
-      <div className={styles.top}>
+      <div className={`${styles.top} rounded-tl-[10px]`}>
         <div className={styles.filterBox}>
           <SearchInput
             setInput={setInputSearch}

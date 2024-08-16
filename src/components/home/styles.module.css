@@ -15,6 +15,7 @@
   gap: 1.25em;
   transition: 0.1s;
   cursor: pointer;
+  border-radius: var(--border-radius-main);
 }
 .homeOption:hover {
   background-color: rgba(150, 104, 202, 0.3);

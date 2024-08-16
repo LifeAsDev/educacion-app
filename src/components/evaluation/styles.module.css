@@ -19,6 +19,7 @@
   padding-top: 1em;
   padding-bottom: 2px;
   gap: 0.5em;
+  border-top-right-radius: var(--border-radius-main);
 }
 
 .testList {
@@ -78,6 +79,7 @@
   width: 100%;
   max-width: max-content;
   margin-bottom: auto;
+  border-radius: var(--border-radius-main);
 }
 .createBtn svg {
   width: 32px;
@@ -179,6 +181,8 @@
   position: relative;
   background-color: var(--third-color-light-black);
   min-width: 768px;
+  border-bottom-left-radius: var(--border-radius-main);
+  border-bottom-right-radius: var(--border-radius-main);
 }
 .testItem {
   width: 100%;
@@ -359,11 +363,13 @@
 
 .btn {
   width: 8em;
-  padding: 0.5em 0;
+  padding: 0.25em 0;
   text-align: center;
   font-weight: 500;
   color: white;
   cursor: pointer;
+  border-radius: var(--border-radius-main);
+  margin: 0.5em 0;
 }
 
 .btn.cancel {
@@ -679,4 +685,10 @@
   display: flex;
   flex-direction: row;
   gap: 0.5em;
+}
+
+.topBorderRadius {
+  border-top-left-radius: var(--border-radius-main);
+  border-top-right-radius: var(--border-radius-main);
+  overflow: hidden;
 }

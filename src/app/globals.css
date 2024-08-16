@@ -27,6 +27,7 @@
   --third-light-blue: #0068d8;
   --primary-yellow: #ffab3e;
   --secondary-yellow: #fd9916;
+  --border-radius-main: 10px;
 }
 main {
   min-height: 100vh;

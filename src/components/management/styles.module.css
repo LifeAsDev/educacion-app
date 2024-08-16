@@ -24,6 +24,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 0.5em 1em;
+  border-top-right-radius: var(--border-radius-main);
 }
 
 .usersList.hidden {
@@ -367,6 +368,8 @@
   column-gap: 0.5em;
   row-gap: 1.5em;
   position: relative;
+  border-bottom-left-radius: var(--border-radius-main);
+  border-bottom-right-radius: var(--border-radius-main);
 }
 .wrapItem {
   background-color: white;
@@ -381,6 +384,7 @@
   margin: 0 auto;
   position: relative;
   user-select: none;
+  border-radius: var(--border-radius-main);
 }
 
 .wrapItem svg {
@@ -447,6 +451,7 @@
   gap: 0.5em;
   margin-left: auto;
   height: 2.25em;
+  border-radius: var(--border-radius-main);
 }
 
 .upload {
@@ -590,6 +595,8 @@
   overflow: auto;
   position: relative;
   background-color: var(--third-color-light-black);
+  border-bottom-left-radius: var(--border-radius-main);
+  border-bottom-right-radius: var(--border-radius-main);
 }
 .hidden {
   overflow: hidden;

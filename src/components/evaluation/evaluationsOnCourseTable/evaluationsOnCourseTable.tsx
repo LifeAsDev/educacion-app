@@ -143,7 +143,7 @@ export default function EvaluationsOnCourseTable({
   return (
     <main className={styles.main}>
       {!fetchingMonitor && evaluationAssign && (
-        <table>
+        <table className={styles.topBorderRadius}>
           <thead>
             <tr>
               <th>Curso</th>
