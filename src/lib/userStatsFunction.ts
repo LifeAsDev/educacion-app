@@ -71,7 +71,9 @@ export default async function getEvaluationsOnCourse(
     }
     const points = progress.reduce((acc, val) => acc + val, 0);
     const percentage = Math.round((points / totalPoints) * 100) || 0;
-
+    const asignatura =
+      evaluationOnCourse.evaluationAssignId.evaluationId?.asignatura?.name ??
+      "N/A";
     evaluationList.push({
       progress,
       name: evaluationTestLoop.name,
@@ -91,12 +93,9 @@ export default async function getEvaluationsOnCourse(
         evaluationOnCourse.endTime?.toString(),
         evaluationTestLoop.tiempo
       ),
-      asignatura:
-        evaluationOnCourse.evaluationAssignId.evaluationId.asignatura?.name ??
-        "N/A",
+      asignatura,
     });
   }
-
   const mainPercentage = Math.round(
     evaluationList.reduce((acc, curr) => acc + curr.percentage, 0) /
       evaluationList.length

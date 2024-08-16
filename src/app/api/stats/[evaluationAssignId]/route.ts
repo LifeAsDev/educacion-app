@@ -20,10 +20,16 @@ export async function GET(req: Request, { params }: any) {
   const evaluationAssign = await EvaluationAssign.findById(
     evaluationAssignId
   ).populate([
-    { path: "evaluationId", model: EvaluationTest },
+    {
+      path: "evaluationId",
+      model: EvaluationTest,
+      populate: {
+        path: "asignatura",
+        model: Asignatura,
+      },
+    },
     { path: "profesorId", model: User },
     { path: "curso", model: Curso },
-    { path: "asignatura", model: Asignatura },
   ]);
 
   const evaluationsOnCourse: EvaluationOnCourseModel[] =
@@ -40,6 +46,7 @@ export async function GET(req: Request, { params }: any) {
   let puntajePromedio = 0;
   let puntajeTotal = 0;
   let tiempoPromedio = 0;
+
   const tableFrecuencia: FrecuenciaItem[] = [];
   for (let i = 1; i <= 10; i++) {
     const frecuenciaItem = {
@@ -52,6 +59,7 @@ export async function GET(req: Request, { params }: any) {
     };
     tableFrecuencia.push(frecuenciaItem);
   }
+
   for (const evaluationOnCourse of evaluationsOnCourse) {
     const results = await getEvaluationsOnCourse(
       evaluationOnCourse.estudianteId._id,
@@ -113,6 +121,7 @@ export async function GET(req: Request, { params }: any) {
       }
     }
   }
+
   generalScore = Math.round(generalScore / newUsersResults.length) || 0;
   puntajePromedio = Math.round(puntajePromedio / newUsersResults.length) || 0;
 
