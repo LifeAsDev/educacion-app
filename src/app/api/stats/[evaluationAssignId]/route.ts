@@ -30,6 +30,10 @@ export async function GET(req: Request, { params }: any) {
     },
     { path: "profesorId", model: User },
     { path: "curso", model: Curso },
+    {
+      path: "asignatura",
+      model: Asignatura,
+    },
   ]);
 
   const evaluationsOnCourse: EvaluationOnCourseModel[] =
