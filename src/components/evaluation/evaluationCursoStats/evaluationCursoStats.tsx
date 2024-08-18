@@ -16,6 +16,7 @@ import { Bar } from "react-chartjs-2";
 import styles2 from "@/components/management/styles.module.css";
 import EvaluationAssign from "@/models/evaluationAssign";
 import FrecuenciaItem from "@/models/frecuenciaItem";
+import { calcularNotaEspecifica } from "@/lib/calculationFunctions";
 
 interface EstudianteTable {
   aciertoPercentage: any;
@@ -25,6 +26,8 @@ interface EstudianteTable {
   rut: string;
   acierto: number;
   _id: string;
+  notaEspecifica?: number;
+  order: number;
 }
 
 // Register the necessary components and scales with ChartJS
@@ -73,7 +76,8 @@ export default function EvaluationCursoStats({
   const [generalScore, setGeneralScore] = useState(0);
   const [timeGeneral, setTimeGeneral] = useState(0);
   const [tableFrecuencia, setTableFrecuencia] = useState<FrecuenciaItem[]>([]);
-
+  const [sortEstudiantesByRank, setSortEstudiantesByRank] = useState(false);
+  const [exigencia, setExigencia] = useState(50);
   useEffect(() => {
     const fetchEvaluationsStats = async () => {
       try {
@@ -99,7 +103,15 @@ export default function EvaluationCursoStats({
           });
           setGeneralScore(resData.generalScore);
           setTimeGeneral(resData.tiempoPromedio);
-          setEstudiantesArr(resData.newUsersResults);
+
+          setEstudiantesArr(
+            resData.newUsersResults.map((item: EstudianteTable) => {
+              return {
+                ...item,
+                notaEspecifica: calcularNotaEspecifica(item.aciertoPercentage),
+              };
+            })
+          );
           setTableFrecuencia(resData.tableFrecuencia);
           return;
         } else {
@@ -112,6 +124,19 @@ export default function EvaluationCursoStats({
     fetchEvaluationsStats();
   }, [evaluationId]);
 
+  useEffect(() => {
+    setEstudiantesArr((prev) => {
+      return prev.map((item) => {
+        return {
+          ...item,
+          notaEspecifica: calcularNotaEspecifica(
+            item.aciertoPercentage,
+            exigencia / 100
+          ),
+        };
+      });
+    });
+  }, [exigencia]);
   const data1 = useMemo(() => {
     function removeHtmlTags(input: string): string {
       // Crear un elemento temporal en el DOM
@@ -258,8 +283,54 @@ export default function EvaluationCursoStats({
           <Bar data={data2.data} options={data2.options} />
         </div>
         <div>
-          <h3>Tabla de clasificacion</h3>
-          <div className={`${styles2.tableBox}`}>
+          <div className={styles.topRankedBox}>
+            <h3>Tabla de clasificacion</h3>
+            <div className={styles.rankedBox}>
+              <div className={styles.rankOptionsBox}>
+                <p>Ordenar:</p>
+                <div className={styles.sortOptions}>
+                  <div
+                    onClick={() => setSortEstudiantesByRank(true)}
+                    className={`${styles.sortOption} ${
+                      sortEstudiantesByRank && styles.select
+                    }`}
+                  >
+                    Puntaje
+                  </div>
+                  <div
+                    onClick={() => setSortEstudiantesByRank(false)}
+                    className={`${styles.sortOption} ${
+                      !sortEstudiantesByRank && styles.select
+                    }`}
+                  >
+                    Estandar
+                  </div>
+                </div>
+              </div>
+              <div className={styles.rankOptionsBox}>
+                <p>Exigencia:</p>
+                <div className={styles.sortOptions}>
+                  <div
+                    onClick={() => setExigencia(50)}
+                    className={`${styles.sortOption} ${
+                      exigencia === 50 && styles.select
+                    }`}
+                  >
+                    50%
+                  </div>
+                  <div
+                    onClick={() => setExigencia(60)}
+                    className={`${styles.sortOption} ${
+                      exigencia === 60 && styles.select
+                    }`}
+                  >
+                    60%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={`${styles2.tableBox} ${styles.borderRadius}`}>
             <table>
               <thead>
                 <tr className={styles2.tableHead}>
@@ -268,46 +339,59 @@ export default function EvaluationCursoStats({
                   <th className={styles2.tableHeadName}>% Acierto</th>
                   <th className={styles2.tableHeadName}>Acierto</th>
                   <th className={styles2.tableHeadName}>Puntaje</th>
+                  <th className={styles2.tableHeadName}>Nota</th>
                 </tr>
               </thead>
               <tbody id="usersList" className={`${styles2.usersList}`}>
                 {estudiantesArr &&
-                  estudiantesArr.map((user, index) => {
-                    return (
-                      <tr className={`${styles2.userItem}`} key={user._id}>
-                        <td className={styles2.tableItem}>
-                          <p className={styles2.name}>
-                            {`${index + 1}. ${user.nombre} ${user.apellido}`}
-                          </p>
-                        </td>
-                        <td className={styles2.tableItem}>
-                          <p className={styles2.name}>{`${user.rut}`}</p>
-                        </td>
-                        <td className={styles2.tableItem}>
-                          <p
-                            className={styles2.name}
-                          >{`${user.aciertoPercentage}%`}</p>
-                        </td>
-                        <td className={styles2.tableItem}>
-                          <p
-                            className={styles2.name}
-                          >{`${user.acierto}/${evaluationAssign.evaluationId.questionArr.length}`}</p>
-                        </td>
-                        <td className={styles2.tableItem}>
-                          <p
-                            className={styles2.name}
-                          >{`${user.score}/${puntaje.puntajeTotal}`}</p>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  estudiantesArr
+                    .slice()
+                    .sort((a, b) =>
+                      sortEstudiantesByRank
+                        ? b.notaEspecifica! - a.notaEspecifica!
+                        : a.order - b.order
+                    )
+                    .map((user, index) => {
+                      return (
+                        <tr className={`${styles2.userItem}`} key={user.rut}>
+                          <td className={styles2.tableItem}>
+                            <p className={styles2.name}>
+                              {`${index + 1}. ${user.nombre} ${user.apellido}`}
+                            </p>
+                          </td>
+                          <td className={styles2.tableItem}>
+                            <p className={styles2.name}>{`${user.rut}`}</p>
+                          </td>
+                          <td className={styles2.tableItem}>
+                            <p
+                              className={styles2.name}
+                            >{`${user.aciertoPercentage}%`}</p>
+                          </td>
+                          <td className={styles2.tableItem}>
+                            <p
+                              className={styles2.name}
+                            >{`${user.acierto}/${evaluationAssign.evaluationId.questionArr.length}`}</p>
+                          </td>
+                          <td className={styles2.tableItem}>
+                            <p
+                              className={styles2.name}
+                            >{`${user.score}/${puntaje.puntajeTotal}`}</p>
+                          </td>
+                          <td className={styles2.tableItem}>
+                            <p
+                              className={styles2.name}
+                            >{`${user.notaEspecifica}/10`}</p>
+                          </td>
+                        </tr>
+                      );
+                    })}
               </tbody>
             </table>
           </div>
         </div>
         <div>
           <h3>Tabla de frecuencia</h3>
-          <div className={`${styles2.tableBox}`}>
+          <div className={`${styles2.tableBox} ${styles.borderRadius}`}>
             <table>
               <thead>
                 <tr className={styles2.tableHead}>

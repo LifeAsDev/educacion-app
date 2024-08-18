@@ -56,9 +56,28 @@ function getFinishTime(
   return Math.floor(limitedDifferenceMs / 1000); // Convertir milisegundos a segundos y devolver
 }
 
+function calcularNotaEspecifica(
+  aciertoPercentage: number,
+  e: number = 0.6
+): number {
+  const nMax = 7.0;
+  const nMin = 1.0;
+  const nApr = 4.0;
+  const pMax = 100.0;
+
+  if (aciertoPercentage < e * pMax) {
+    return (nApr - nMin) * (aciertoPercentage / (e * pMax)) + nMin;
+  } else {
+    return (
+      (nMax - nApr) * ((aciertoPercentage - e * pMax) / (pMax * (1 - e))) + nApr
+    );
+  }
+}
+
 export {
   calculateRemainingTime,
   formatSecondsToMinutes,
   getFinishTime,
   formatMinutesBeautiful,
+  calcularNotaEspecifica,
 };

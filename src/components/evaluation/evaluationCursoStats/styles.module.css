@@ -82,3 +82,43 @@
   align-items: center;
   height: 100vh;
 }
+
+.topRankedBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.rankedBox {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.rankOptionsBox {
+  display: flex;
+  flex-direction: column;
+  color: rgb(29, 29, 29);
+  font-weight: 600;
+  justify-content: center;
+}
+
+.sortOptions {
+  display: flex;
+  flex-direction: row;
+}
+.sortOption {
+  background-color: var(--grey-disabled);
+  padding: 0.25em 1em;
+}
+
+.sortOption:hover,
+.sortOption.select {
+  cursor: pointer;
+  color: white;
+  background-color: var(--primary-light-blue);
+}
+
+.borderRadius {
+  border-radius: var(--border-radius-main);
+  overflow: hidden;
+}
