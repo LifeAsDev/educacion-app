@@ -380,7 +380,7 @@ export default function EvaluationCursoStats({
                           <td className={styles2.tableItem}>
                             <p
                               className={styles2.name}
-                            >{`${user.notaEspecifica}/10`}</p>
+                            >{`${user.notaEspecifica}/7`}</p>
                           </td>
                         </tr>
                       );

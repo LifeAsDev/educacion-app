@@ -15,7 +15,6 @@ export async function GET(req: Request) {
   const rol = searchParams.get("filterRolInput");
   const review = searchParams.get("review") === "true" ? true : false;
   const cursoId = searchParams.get("cursoId") as string;
-  console.log({ pageSize });
   await connectMongoDB();
 
   let aggregatePipeline: any[] = [];
