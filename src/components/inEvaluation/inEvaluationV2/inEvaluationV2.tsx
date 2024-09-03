@@ -153,6 +153,7 @@ export default function InEvaluationV2({ id }: { id?: string }) {
   }, []);
 
   useEffect(() => {
+    console.log({ evalOnCourse });
     if (session && asignatura !== "") {
       if (answers.length === 0) {
         if (
@@ -182,8 +183,9 @@ export default function InEvaluationV2({ id }: { id?: string }) {
             return { ...answer, answer: newAnswer };
           });
           setAnswers(newAnswers);
+        } else {
+          setAnswers(blankAnswers);
         }
-        setAnswers(blankAnswers);
 
         setEditFetch(false);
       }
