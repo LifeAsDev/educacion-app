@@ -79,6 +79,13 @@
 .choose:hover {
   background-color: var(--primary-green);
 }
+.answered {
+  background-color: var(--dark-green);
+}
+
+.answered:hover {
+  background-color: var(--dark-green-hover);
+}
 .btn {
   background-color: var(--primary-green);
   display: flex;

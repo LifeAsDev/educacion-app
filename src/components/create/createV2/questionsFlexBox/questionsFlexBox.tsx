@@ -2,6 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import styles from "./styles.module.css";
 import { QuestionWithError } from "@/components/create/createV2/createV2";
 import { FilePDF } from "@/models/evaluationTest";
+import { Answers } from "@/components/inEvaluation/inEvaluationV2/inEvaluationV2";
 
 export default function QuestionsFlexBox({
   tabSelected,
@@ -17,6 +18,7 @@ export default function QuestionsFlexBox({
   editQuestion,
   removeFilePDF,
   id,
+  answers,
 }: {
   tabSelected: string;
   setTabSelected: Dispatch<SetStateAction<string>>;
@@ -35,6 +37,7 @@ export default function QuestionsFlexBox({
   ) => void;
   removeFilePDF?: (fileIndex: number) => void;
   id?: string;
+  answers?: boolean[];
 }) {
   return (
     <aside className={styles.questionsBox}>
@@ -61,7 +64,9 @@ export default function QuestionsFlexBox({
             }}
             key={i}
             className={`${styles.question} ${
-              tabSelected === i.toString() ? styles.choose : ""
+              tabSelected === i.toString()
+                ? styles.choose
+                : answers && answers[i] && styles.answered
             }`}
           >
             {i + 1}

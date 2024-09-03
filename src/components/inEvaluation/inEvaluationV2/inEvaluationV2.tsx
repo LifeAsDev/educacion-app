@@ -128,7 +128,7 @@ export default function InEvaluationV2({ id }: { id?: string }) {
   const [evalOnCourse, setEvalOnCourse] = useState<any>();
   const [tabSelected, setTabSelected] = useState("0");
   const [filesArr, setFilesArr] = useState<FilePDF[]>([]);
-
+  const [evaluationId, setEvaluationId] = useState("");
   useEffect(() => {
     const fetchAsignaturas = async () => {
       try {
@@ -234,10 +234,10 @@ export default function InEvaluationV2({ id }: { id?: string }) {
             setQuestionArr(shuffleQuestionArr);
             setType(data.evaluationTest.type);
             setDifficulty(data.evaluationTest.difficulty);
+            setEvaluationId(data.evaluationTest._id);
             setAsignatura(data.evaluationTest.asignatura?.name ?? "N/A");
             setEvaluationTime(data.evaluationTest.tiempo ?? 90);
             setFilesArr(data.evaluationTest.files);
-            console.log(data.evaluationTest.files);
             if (session.rol === "Estudiante") {
               setEvalOnCourse(data.evalOnCourse);
             }
@@ -272,30 +272,31 @@ export default function InEvaluationV2({ id }: { id?: string }) {
   };
 
   const fetchAnswer = async (answer: string, questionId: string) => {
-    try {
-      const data = new FormData();
-      data.append("answer", answer);
-      data.append("evaluationAssignId", id!);
-      data.append("questionId", questionId);
-      data.append("userId", session._id);
+    if (session && session.rol === "Estudiante")
+      try {
+        const data = new FormData();
+        data.append("answer", answer);
+        data.append("evaluationAssignId", id!);
+        data.append("questionId", questionId);
+        data.append("userId", session._id);
 
-      const response = await fetch(`/api/user/evaluations-on-course/answer`, {
-        method: "POST",
-        body: data,
-      });
+        const response = await fetch(`/api/user/evaluations-on-course/answer`, {
+          method: "POST",
+          body: data,
+        });
 
-      const resdata = await response.json();
-      if (!response.ok) {
-        console.log(resdata.message);
-        throw new Error("Failed to fetch evaluation test");
-      } else if (resdata.message === "Evaluation done") {
-        router.push(`/evaluation`);
+        const resdata = await response.json();
+        if (!response.ok) {
+          console.log(resdata.message);
+          throw new Error("Failed to fetch evaluation test");
+        } else if (resdata.message === "Evaluation done") {
+          router.push(`/evaluation`);
+        }
+        return;
+      } catch (error) {
+        console.error("Error fetching evaluation test:", error);
+        return null;
       }
-      return;
-    } catch (error) {
-      console.error("Error fetching evaluation test:", error);
-      return null;
-    }
   };
 
   const submitEvaluationTest = (finish: boolean = false) => {
@@ -401,13 +402,22 @@ export default function InEvaluationV2({ id }: { id?: string }) {
         id={id}
         setTabSelected={setTabSelected}
         tabSelected={tabSelected}
+        answers={questionArr.map((item) => {
+          const answerIndex = answers.findIndex(
+            (answer) => answer.questionId === item._id
+          );
+          if (answerIndex != -1 && answers[answerIndex].answer === "") {
+            return false;
+          }
+          return true;
+        })}
       />
       {!editFetch && (
         <>
           {(questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1) >=
             0 && (
             <EvaluationInfoViewer
-              evaluationId={id}
+              evaluationId={evaluationId}
               filesArr={filesArr}
               fileSelected={
                 questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1

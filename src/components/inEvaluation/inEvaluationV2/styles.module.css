@@ -103,7 +103,7 @@
   font-weight: 600;
   padding: 0.75em 1em;
   cursor: pointer;
-  width: 9em;
+  min-width: 9em;
   justify-content: center;
   user-select: none;
 }
@@ -118,4 +118,15 @@
   display: flex;
   right: 1em;
   gap: 2em;
+}
+
+.remainingTime {
+  position: fixed;
+  right: 1em;
+  font-size: 1.3em;
+  background-color: white;
+  color: black;
+  padding: 0.2em 0.5em;
+  font-weight: 500;
+  top: 4.5em;
 }
