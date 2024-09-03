@@ -310,12 +310,7 @@ export default function InEvaluationV2({ id }: { id?: string }) {
 
         if (questionIndex !== -1) {
           newQuestionArr[questionIndex].error = true;
-          const element = document.getElementById(`${answer.questionId}`);
-          if (element) {
-            const elementTop =
-              element.getBoundingClientRect().top + window.scrollY - 100;
-            window.scrollTo(0, elementTop);
-          }
+          setTabSelected(questionIndex.toString());
         }
         setQuestionArr(newQuestionArr);
         if (!finish) return;
