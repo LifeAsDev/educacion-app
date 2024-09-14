@@ -19,10 +19,9 @@ export default function Login() {
         dni: inputEmail,
         redirect: false,
       });
-      console.log(res);
 
       if (res?.ok) {
-        // window.location.reload();
+        window.location.reload();
       } else {
         setErrorSignIn(true);
         setLoadingSignIn(false);
