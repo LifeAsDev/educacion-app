@@ -62,7 +62,6 @@ const handler = NextAuth({
       },
 
       async authorize(credentials) {
-        console.log({ credentials });
         await connectMongoDB();
         const user = await User.findOne({
           dni: credentials?.dni,

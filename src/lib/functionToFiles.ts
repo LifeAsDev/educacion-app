@@ -23,7 +23,6 @@ async function uploadFile(
     const uploadPath = path.join(uploadDir, fileName); // Ruta de destino para guardar el archivo
 
     if (oldFileName && oldFileName !== "") {
-      console.log(oldFileName);
       const deletePath = path.join(uploadDir, oldFileName);
       await fs.promises.unlink(deletePath);
     }

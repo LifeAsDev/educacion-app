@@ -235,12 +235,10 @@ export default function InEvaluation({ id }: { id?: string }) {
               setEvalOnCourse(data.evalOnCourse);
             }
           } else {
-            console.log("yo1");
             router.push(`/evaluation`);
           }
           return data.evaluationTest;
         } catch (error) {
-          console.log("yo2");
           router.push(`/evaluation`);
           console.error("Error fetching evaluation test:", error);
           return null;
@@ -279,7 +277,6 @@ export default function InEvaluation({ id }: { id?: string }) {
 
       const resdata = await response.json();
       if (!response.ok) {
-        console.log(resdata.message);
         throw new Error("Failed to fetch evaluation test");
       } else if (resdata.message === "Evaluation done") {
         router.push(`/evaluation`);

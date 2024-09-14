@@ -81,11 +81,9 @@ export default function CreateV2({ id }: { id?: string }) {
   };
 
   const deleteQuestion = (questionIndex: number) => {
-    console.log({ questionIndex, qarrlength: questionArr.length - 1 });
     if (questionIndex === 0 && questionArr.length === 1) {
       setTabSelected("general");
     } else if (questionIndex >= questionArr.length - 1) {
-      console.log((questionArr.length - 1).toString());
       setTabSelected((questionIndex - 1).toString());
     }
     const newQuestionArr = [...questionArr];

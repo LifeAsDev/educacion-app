@@ -20,7 +20,6 @@ export default async function middleware(req: NextRequest) {
     secureCookie: !(process.env.SECURE_COOKIE === "false"),
   });
 
-  console.log(session);
   const auth = req.nextUrl.clone();
   auth.pathname = "/";
   const afterAuth = req.nextUrl.clone();

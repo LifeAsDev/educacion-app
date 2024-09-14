@@ -82,10 +82,6 @@ export async function GET(req: Request) {
 
   const allUsers = await User.aggregate(aggregatePipeline);
 
-  console.log({
-    order: allUsers[0].data.map((user: { order: any }) => user.order),
-  });
-
   const initialUsers = [...allUsers[0].data];
   if (allUsers.length === 0 || !allUsers[0].metadata[0]) {
     // Si no hay eventos o no se encontró metadata, significa que no hay eventos que coincidan con la búsqueda
@@ -294,7 +290,6 @@ export async function POST(req: Request) {
         // Asignar los cursos encontrados al usuario
         newUser.curso = cursoObjectsId;
 
-        console.log({ newUser });
         return newUser;
       }
     );
@@ -302,9 +297,7 @@ export async function POST(req: Request) {
     const createdUsers = await Promise.all(createdUsersPromises);
 
     // Crear usuarios en la base de datos
-    console.log({ createdUsers });
     const users = await User.create(createdUsers);
-    console.log({ users });
 
     return NextResponse.json({
       users,

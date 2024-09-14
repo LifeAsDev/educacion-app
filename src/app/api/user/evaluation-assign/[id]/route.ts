@@ -174,7 +174,6 @@ export async function PATCH(req: Request, { params }: any) {
       for (const answer of evaluationOnCourse.answers) {
         const question = questions.find(
           (item: { _id: string; type: string }) => {
-            //  console.log({ questionId: item._id });
             return (
               item._id.toString() === answer.questionId.toString() &&
               item.type === "open"

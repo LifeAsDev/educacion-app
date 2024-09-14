@@ -31,6 +31,7 @@ export default function UserSortableItem({
 
   return (
     <tr
+      key={user._id}
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -52,7 +53,6 @@ export default function UserSortableItem({
       }  ${styles.userItem} ${deleteUsers ? "cursor-pointer" : ""} ${
         invisible ? "invisible" : ""
       }`}
-      key={user._id}
     >
       <td {...listeners} className={styles.tableItem}>
         <p className={styles.name}>

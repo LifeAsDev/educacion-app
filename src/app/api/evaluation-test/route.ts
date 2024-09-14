@@ -97,7 +97,6 @@ export async function POST(req: Request) {
       files: filesArrWithoutBuffer,
     });
 
-    /*console.log("Old ", questionArrWithoutBuffer); */
     if (newEvaluationTest) {
       for (const question of parseQuestionArr) {
         // Llamar a una función asíncrona por cada elemento
