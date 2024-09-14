@@ -30,6 +30,8 @@ export default async function middleware(req: NextRequest) {
   evaluation.pathname = "/evaluation";
 
   const currentUrl = req.nextUrl.pathname;
+  if (currentUrl.startsWith("/api/auth")) return NextResponse.next();
+
   if (!session && currentUrl !== "/") {
     return NextResponse.redirect(auth);
   } else if (session) {
