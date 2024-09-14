@@ -38,13 +38,15 @@ export default function ViewQuestion({
             className={styles.openQuestionBox}
           >
             {typeof question.image === "string" && (
-              <NextImage
-                className="h-full object-contain"
-                src={`/api/get-image?photoName=${question.image}`}
-                alt={`Image of question`}
-                width={1200} // Agrega el ancho de la imagen
-                height={400} // Agrega la altura de la imagen
-              />
+              <div className={styles.imageBox}>
+                <NextImage
+                  src={`/api/get-image?photoName=${question.image}`}
+                  alt={`Image of question`}
+                  layout="fill" // Ajusta la imagen al tamaño del contenedor
+                  objectFit="contain"
+                  className="object-cover"
+                />
+              </div>
             )}
             <div
               id={question._id}
@@ -74,13 +76,15 @@ export default function ViewQuestion({
             className={styles.multipleQuestionBox}
           >
             {typeof question.image === "string" && (
-              <NextImage
-                className="h-full object-contain"
-                src={`/api/get-image?photoName=${question.image}`}
-                alt={`Image of question}`}
-                width={1200} // Agrega el ancho de la imagen
-                height={400} // Agrega la altura de la imagen
-              />
+              <div className={styles.imageBox}>
+                <NextImage
+                  src={`/api/get-image?photoName=${question.image}`}
+                  alt={`Image of question`}
+                  layout="fill" // Ajusta la imagen al tamaño del contenedor
+                  objectFit="contain"
+                  className="object-cover"
+                />
+              </div>
             )}
             <div
               id={question._id}
