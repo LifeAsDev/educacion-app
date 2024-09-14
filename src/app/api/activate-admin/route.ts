@@ -18,7 +18,7 @@ async function generateUniqueDNI(): Promise<string> {
   let isUnique = false;
 
   while (!isUnique) {
-    dni = `admin_${Math.floor(Math.random() * 1000000)}`;
+    dni = `admin${Math.floor(Math.random() * 1000000)}`;
     const existingUser = await User.findOne({ dni });
 
     if (!existingUser) {
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
 
   // Retornar un mensaje indicando que se ha creado el administrador
   return NextResponse.json(
-    { message: "Admin created", dni, password },
+    { message: "Admin created", RUT: dni, password },
     { status: 201 }
   );
 }
