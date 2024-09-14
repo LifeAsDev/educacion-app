@@ -14,7 +14,7 @@ function generateRandomPassword(length: number = 12): string {
 }
 
 async function generateUniqueDNI(): Promise<string> {
-  let dni;
+  let dni: string = "";
   let isUnique = false;
 
   while (!isUnique) {
