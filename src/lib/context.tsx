@@ -17,37 +17,35 @@ export const OnboardingProvider = ({
   }, [session]);
 
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      signOut({ redirect: false });
+    const TOKEN_KEY = "sessionExpirationToken";
+    const EXPIRATION_INTERVAL = 15000; // 15 segundos
+
+    const updateToken = () => {
+      const expirationTime = Date.now() + EXPIRATION_INTERVAL;
+      localStorage.setItem(TOKEN_KEY, expirationTime.toString());
     };
 
-    const handleStorageChange = (event: StorageEvent) => {
-      console.log({ key: event.key, value: event.newValue });
+    const checkToken = () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        const expirationTime = parseInt(token, 10);
 
-      if (event.key === "windowClosing") {
-        console.log("yoo????");
+        if (Date.now() > expirationTime) {
+          localStorage.removeItem(TOKEN_KEY);
+          signOut();
+        }
       }
     };
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "a" || event.key === "A") {
-        console.log('La tecla "A" fue presionada');
-        sessionStorage.setItem("windowClosing", "false");
-      }
-      if (event.key === "d" || event.key === "D") {
-        console.log('La tecla "D" fue presionada');
-        sessionStorage.setItem("windowClosing", "true");
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("keydown", handleKeyPress);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    if (session) {
+      checkToken();
+      const interval = setInterval(updateToken, 7000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [session]);
 
   return (
     <OnboardingContext.Provider
