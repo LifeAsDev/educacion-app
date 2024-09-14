@@ -2,29 +2,60 @@ import { connectMongoDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import User from "@/schemas/user";
 
+function generateRandomPassword(length: number = 12): string {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
+
+async function generateUniqueDNI(): Promise<string> {
+  let dni;
+  let isUnique = false;
+
+  while (!isUnique) {
+    dni = `admin_${Math.floor(Math.random() * 1000000)}`;
+    const existingUser = await User.findOne({ dni });
+
+    if (!existingUser) {
+      isUnique = true;
+    }
+  }
+
+  return dni;
+}
+
 export async function GET(req: Request) {
   await connectMongoDB();
 
-  // Verificar si ya existe un usuario con el nombre de usuario "admin"
-  const existingAdmin = await User.findOne({ dni: "admin" });
-  console.log({ existingAdmin });
-  if (existingAdmin) {
-    // Si ya existe un usuario con ese nombre de usuario, retornar un mensaje indicando que ya está activado
-    return NextResponse.json(
-      { message: "Admin already activated" },
-      { status: 200 }
-    );
-  } else {
-    // Si no existe un usuario con ese nombre de usuario, crear el usuario "admin"
-    const admin = await User.create({
-      nombre: "Admin",
-      apellido: "User",
-      password: "admin",
-      rol: "Admin",
-      dni: "admin",
-    });
+  const { searchParams } = new URL(req.url);
+  const secret = searchParams.get("secret");
 
-    // Retornar un mensaje indicando que se ha activado el administrador
-    return NextResponse.json({ message: "Admin activated" }, { status: 200 });
+  // Comparar el secret con NEXTAUTH_SECRET
+  if (secret !== process.env.NEXTAUTH_SECRET) {
+    return NextResponse.json({ message: "Invalid secret" }, { status: 403 });
   }
+
+  // Generar una contraseña y DNI únicos
+  const password = generateRandomPassword();
+  const dni = await generateUniqueDNI();
+
+  // Crear un nuevo administrador con la contraseña y DNI generados
+  const admin = await User.create({
+    nombre: "Admin",
+    apellido: "User",
+    password: password,
+    rol: "Admin",
+    dni: dni,
+  });
+
+  // Retornar un mensaje indicando que se ha creado el administrador
+  return NextResponse.json(
+    { message: "Admin created", dni, password },
+    { status: 201 }
+  );
 }
