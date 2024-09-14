@@ -23,22 +23,19 @@ export const OnboardingProvider = ({
     const updateToken = () => {
       const expirationTime = Date.now() + EXPIRATION_INTERVAL;
       localStorage.setItem(TOKEN_KEY, expirationTime.toString());
-      console.log(expirationTime);
     };
 
     const checkToken = () => {
       const token = localStorage.getItem(TOKEN_KEY);
       if (token) {
         const expirationTime = parseInt(token, 10);
-        console.log(Date.now() > expirationTime);
-        console.log({ dateNow: Date.now(), expirationTime });
+
         if (Date.now() > expirationTime) {
           localStorage.removeItem(TOKEN_KEY);
           signOut();
         }
       }
     };
-    console.log(session);
     if (session) {
       checkToken();
       const interval = setInterval(updateToken, 7000);
