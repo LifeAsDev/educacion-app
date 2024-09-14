@@ -37,7 +37,7 @@ export const OnboardingProvider = ({
         }
       }
     };
-
+    console.log(session);
     if (session) {
       checkToken();
       const interval = setInterval(updateToken, 7000);
