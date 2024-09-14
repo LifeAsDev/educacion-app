@@ -7,7 +7,7 @@ export async function GET(req: Request) {
 
   // Verificar si ya existe un usuario con el nombre de usuario "admin"
   const existingAdmin = await User.findOne({ dni: "admin" });
-
+  console.log({ existingAdmin });
   if (existingAdmin) {
     // Si ya existe un usuario con ese nombre de usuario, retornar un mensaje indicando que ya está activado
     return NextResponse.json(
