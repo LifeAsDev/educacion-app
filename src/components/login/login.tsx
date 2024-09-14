@@ -21,8 +21,9 @@ export default function Login() {
       });
       console.log(res);
 
-      if (res?.ok) window.location.reload();
-      else {
+      if (res?.ok) {
+        // window.location.reload();
+      } else {
         setErrorSignIn(true);
         setLoadingSignIn(false);
       }
