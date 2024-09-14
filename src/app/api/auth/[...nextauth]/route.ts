@@ -10,16 +10,7 @@ const handler = NextAuth({
     async signIn({ user, account }) {
       return true;
     },
-    /* jwt= json web token, this is a way to save the user session when logged on the cache, 
-    Nextauth manage it for default,
-    you can save data of the user here, this callback run before of session callback,
-    this callback is called on getSession(), getServerSession(), useSession().
 
-    The arguments user, account, profile and isNewUser are only passed the first time this callback 
-    is called on a new session, after the user signs in. In subsequent calls, only token will be available. 
-    
-    The token data it only visible on backend so the data we set here is not visible on the session object 
-    we get from useSession(), to get data to that object we use the callback session below*/
     async jwt({ token }) {
       try {
         const fetchUrl = `${process.env.NEXTAUTH_URL}/api/user/${token.sub}`;
