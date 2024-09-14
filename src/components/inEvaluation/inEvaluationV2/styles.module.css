@@ -106,6 +106,7 @@
   min-width: 9em;
   justify-content: center;
   user-select: none;
+  border-radius: var(--border-radius-main);
 }
 
 .btn:hover {
@@ -116,7 +117,7 @@
   position: absolute;
   bottom: 1em;
   display: flex;
-  right: 1em;
+  right: 1.5em;
   gap: 2em;
 }
 
