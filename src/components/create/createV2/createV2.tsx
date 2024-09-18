@@ -169,6 +169,8 @@ export default function CreateV2({ id }: { id?: string }) {
       setAsignatura(parseCachedState.asignatura);
       setNivel(parseCachedState.nivel);
       setTiempo(parseCachedState.tiempo);
+    } else if (!cache.current) {
+      setEditFetch(false);
     }
     if (id) {
       cache.current = true;
@@ -320,6 +322,7 @@ export default function CreateV2({ id }: { id?: string }) {
           setSubmitting(false);
 
           if (res.ok) {
+            localStorage.removeItem("createState");
             router.push(`/edit/${resData.id}`);
             return true;
           } else {
