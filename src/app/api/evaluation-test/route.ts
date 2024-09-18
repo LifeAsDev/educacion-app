@@ -12,6 +12,8 @@ import user from "@/schemas/user";
 import { FilePDF } from "@/models/evaluationTest";
 
 export async function POST(req: Request) {
+  await connectMongoDB();
+
   try {
     const data = await req.formData();
     const name: string = data.get("name") as unknown as string;
@@ -20,7 +22,7 @@ export async function POST(req: Request) {
     const difficulty: string = data.get("difficulty") as unknown as string;
     let asignatura: string | undefined = data.get("asignatura")! as string;
     const creatorId: string = data.get("creatorId")! as string;
-
+    console.log("check1");
     const tiempo = parseInt(data.get("time")! as string);
     const questionArr: string[] = data.getAll(
       "questionArr"
@@ -45,6 +47,7 @@ export async function POST(req: Request) {
 
       return newFile;
     });
+    console.log("check2");
 
     const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
       const clonedFile = { ...file }; // Clonar el objeto
@@ -53,6 +56,7 @@ export async function POST(req: Request) {
       } // Modificar el clon
       return clonedFile; // Devolver el clon modificado
     });
+    console.log("check3");
 
     const parseQuestionArr: Question[] = questionArr.map((question) => {
       const newQuestion: Question = JSON.parse(question);
@@ -70,6 +74,7 @@ export async function POST(req: Request) {
       }
       return newQuestion;
     });
+    console.log("check4");
 
     const questionArrWithoutBuffer: Question[] = parseQuestionArr.map(
       (question) => {
@@ -80,11 +85,13 @@ export async function POST(req: Request) {
         return clonedQuestion; // Devolver el clon modificado
       }
     );
+    console.log("check5");
 
-    await connectMongoDB();
     if (asignatura === "N/A") {
       asignatura = undefined;
     }
+    console.log("check6");
+
     const newEvaluationTest = await EvaluationTest.create({
       name,
       type,
@@ -96,6 +103,7 @@ export async function POST(req: Request) {
       nivel,
       files: filesArrWithoutBuffer,
     });
+    console.log("check7");
 
     if (newEvaluationTest) {
       for (const question of parseQuestionArr) {
@@ -132,11 +140,16 @@ export async function POST(req: Request) {
         fileIndex++;
       }
     }
+    console.log("check8");
+
     const updatedEvaluationTest = await EvaluationTest.findByIdAndUpdate(
       newEvaluationTest._id,
       newEvaluationTest,
       { new: true }
     );
+    console.log("check9");
+
+    console.log({ updatedEvaluationTest });
     if (updatedEvaluationTest) {
       return NextResponse.json(
         {

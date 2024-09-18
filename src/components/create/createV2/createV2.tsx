@@ -319,7 +319,6 @@ export default function CreateV2({ id }: { id?: string }) {
             body: data,
           });
           const resData = await res.json();
-          setSubmitting(false);
 
           if (res.ok) {
             localStorage.removeItem("createState");
