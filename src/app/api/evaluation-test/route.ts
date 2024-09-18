@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
       return newFile;
     });
-    console.log({ check2: parseFilesArr });
+    console.log({ check2: true });
 
     const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
       const clonedFile = { ...file }; // Clonar el objeto
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       }
       return newQuestion;
     });
-    console.log("check4");
+    console.log({ check4: parseQuestionArr });
 
     const questionArrWithoutBuffer: Question[] = parseQuestionArr.map(
       (question) => {
