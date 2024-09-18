@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
       return newFile;
     });
-    console.log("check2");
+    console.log({ check2: parseFilesArr });
 
     const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
       const clonedFile = { ...file }; // Clonar el objeto
@@ -117,11 +117,12 @@ export async function POST(req: Request) {
             question.image as Buffer
           );
           if (id && evaluationIndex) {
-            const { imagePath } = await uploadFile(
+            const { imagePath, success } = await uploadFile(
               question.image as Buffer,
               `${id}.${extension}`,
               newEvaluationTest._id
             );
+            console.log({ success });
             newEvaluationTest.questionArr[evaluationIndex].image = imagePath!;
           }
         }
@@ -130,7 +131,7 @@ export async function POST(req: Request) {
       for (const file of parseFilesArr) {
         const id = newEvaluationTest.files[fileIndex]._id;
         if (id) {
-          const { imagePath } = await uploadFile(
+          const { imagePath, success } = await uploadFile(
             file.file as Buffer,
             `${id}.${"pdf"}`,
             newEvaluationTest._id
