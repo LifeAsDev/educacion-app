@@ -151,6 +151,7 @@ export async function POST(req: Request) {
 
     console.log({ updatedEvaluationTest });
     if (updatedEvaluationTest) {
+      console.log({ questionArr: updatedEvaluationTest.questionArr });
       return NextResponse.json(
         {
           message: "the id is " + updatedEvaluationTest.id,
