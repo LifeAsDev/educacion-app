@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       }
       return newQuestion;
     });
-    console.log({ check4: parseQuestionArr });
+    console.log({ check4: true });
 
     const questionArrWithoutBuffer: Question[] = parseQuestionArr.map(
       (question) => {
@@ -103,26 +103,35 @@ export async function POST(req: Request) {
       nivel,
       files: filesArrWithoutBuffer,
     });
-    console.log("check7");
 
     if (newEvaluationTest) {
+      console.log({ check7: parseQuestionArr });
+
       for (const question of parseQuestionArr) {
+        console.log({ question });
         // Llamar a una función asíncrona por cada elemento
         const evaluationIndex = newEvaluationTest?.questionArr?.findIndex(
           (questionId: Question) => questionId.id == question.id
         );
         const id = newEvaluationTest.questionArr[evaluationIndex]._id;
+        console.log({
+          id,
+          evaluationIndex,
+        });
         if (question.image && typeof question.image !== "string") {
+          console.log({ if1: true });
           const extension = await getFileTypeFromBuffer(
             question.image as Buffer
           );
-          if (id && evaluationIndex) {
-            const { imagePath, success } = await uploadFile(
+          console.log({ extension });
+          if (id && evaluationIndex !== -1) {
+            console.log({ if2: true });
+            const { imagePath, success, message, error } = await uploadFile(
               question.image as Buffer,
               `${id}.${extension}`,
               newEvaluationTest._id
             );
-            console.log({ success });
+            console.log({ success, message, error });
             newEvaluationTest.questionArr[evaluationIndex].image = imagePath!;
           }
         }
