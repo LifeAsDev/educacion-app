@@ -206,6 +206,13 @@ export default function Evaluation() {
       evaluationDeleteIndex as number,
       1
     );
+    const divElement = document.getElementById("evaluationList");
+    if (divElement) {
+      divElement.scrollTop = 0;
+    }
+
+    setFetchingEvaluations(true);
+
     const deleteFetch = async () => {
       try {
         const res = await fetch(
