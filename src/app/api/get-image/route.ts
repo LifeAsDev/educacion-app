@@ -6,13 +6,13 @@ export async function GET(req: Request, { params }: any) {
   const { searchParams } = new URL(req.url);
 
   const photoName = searchParams.get("photoName");
-  const type = searchParams.get("type");
-
+  let type = searchParams.get("type");
+  const returnWithLink = searchParams.get("link") === "true";
   const filePath = path.join(
     `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`,
     photoName as string
   ); // Ruta del archivo solicitado
-
+  console.log(`filePath${photoName}`);
   try {
     // Verificar si el archivo existe
     if (!fs.existsSync(filePath)) {
@@ -26,10 +26,18 @@ export async function GET(req: Request, { params }: any) {
     const fileBuffer = fs.readFileSync(filePath);
 
     const headers = new Headers();
-    headers.set("Content-Type", type ?? "image/*");
+    if (!type && photoName) {
+      const ext = path.extname(photoName).toLowerCase();
+      type = ext;
+    }
+
+    headers.set("Content-Type", type!);
+
+    const blob = new Blob([fileBuffer as Buffer]);
+    const fileGet = URL.createObjectURL(blob);
 
     // or just use new Response ❗️
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(blob, {
       status: 200,
       statusText: "OK",
       headers,
@@ -72,3 +80,5 @@ export async function DELETE(req: Request, { params }: any) {
     );
   }
 }
+
+export const dynamic = "force-dynamic";

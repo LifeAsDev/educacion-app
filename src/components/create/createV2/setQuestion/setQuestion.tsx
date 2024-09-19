@@ -35,6 +35,17 @@ export default function SetQuestion({
   typeOfQuestionSelected: string;
   setTypeOfQuestionSelected: Dispatch<SetStateAction<string>>;
 }) {
+  const imageUrl =
+    typeof question.image === "string"
+      ? `/api/get-image?photoName=${
+          question.image
+        }&cacheBuster=${new Date().getTime()}`
+      : (() => {
+          const blob = new Blob([question.image as Buffer]);
+
+          return URL.createObjectURL(blob);
+        })();
+
   return (
     <div className={styles.questionBox}>
       {question.type === "open" ? (
@@ -46,15 +57,7 @@ export default function SetQuestion({
             <div className="relative h-[400px] w-full">
               <NextImage
                 className="m-auto h-[400px] w-auto object-cover"
-                src={
-                  typeof question.image === "string"
-                    ? `/api/get-image?photoName=${question.image}`
-                    : (() => {
-                        const blob = new Blob([question.image as Buffer]);
-
-                        return URL.createObjectURL(blob);
-                      })()
-                }
+                src={imageUrl}
                 alt={`Image of question ${question._id}`}
                 width={1200} // Agrega el ancho de la imagen
                 height={400} // Agrega la altura de la imagen
@@ -176,15 +179,7 @@ export default function SetQuestion({
             <div className="relative h-[400px] w-full">
               <NextImage
                 className="h-full object-contain"
-                src={
-                  typeof question.image === "string"
-                    ? `/api/get-image?photoName=${question.image}`
-                    : (() => {
-                        const blob = new Blob([question.image as Buffer]);
-
-                        return URL.createObjectURL(blob);
-                      })()
-                }
+                src={imageUrl}
                 alt={`Image of question ${i}`}
                 width={1200} // Agrega el ancho de la imagen
                 height={400} // Agrega la altura de la imagen

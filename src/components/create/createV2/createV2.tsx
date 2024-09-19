@@ -160,7 +160,7 @@ export default function CreateV2({ id }: { id?: string }) {
           return fileObj;
         }
       );
-
+      console.log("yo?");
       setFilesArr(filesWithBuffer);
 
       setName(parseCachedState.name);
