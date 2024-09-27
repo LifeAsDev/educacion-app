@@ -19,8 +19,10 @@ export default async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
     secureCookie: !(process.env.SECURE_COOKIE === "false"),
   });
-
+  const domain = process.env.DOMAIN || "http://localhost:3000"; // Usa tu dominio
   const auth = req.nextUrl.clone();
+  auth.host = domain; // Asigna el dominio a la URL de redirección
+
   auth.pathname = "/";
   const afterAuth = req.nextUrl.clone();
   const home = req.nextUrl.clone();
