@@ -34,7 +34,14 @@ export default function Header() {
               <p className={styles.name}>
                 {`${session.nombre} ${session.apellido}`}
               </p>
-              <p onClick={() => signOut()} className={styles.red}>
+              <p
+                onClick={() => {
+                  const TOKEN_KEY = "sessionExpirationToken";
+                  localStorage.removeItem(TOKEN_KEY);
+                  signOut();
+                }}
+                className={styles.red}
+              >
                 Cerrar sesión
               </p>
             </>
