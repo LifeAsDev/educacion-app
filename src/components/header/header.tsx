@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useOnboardingContext } from "@/lib/context";
-
+import Image from "next/image";
 export default function Header() {
   const { session } = useOnboardingContext();
 
@@ -16,7 +16,14 @@ export default function Header() {
         <nav>
           <ul className={styles.navLinks}>
             <li className={styles.navLink}>
-              <Link href={"/home"}>Tablero</Link>
+              <Link href={"/home"}>
+                <Image
+                  alt="logo"
+                  width={100}
+                  height={26}
+                  src={"/logo.png"}
+                ></Image>
+              </Link>
             </li>
           </ul>
         </nav>{" "}
