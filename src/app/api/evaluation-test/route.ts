@@ -14,6 +14,13 @@ import { FilePDF } from "@/models/evaluationTest";
 export async function POST(req: Request) {
   await connectMongoDB();
 
+  const contentLength = req.headers.get("content-length");
+
+  if (contentLength) {
+    console.log(`Request size: ${contentLength} bytes`);
+  } else {
+    console.log("Content-Length header is missing");
+  }
   try {
     const data = await req.formData();
     const name: string = data.get("name") as unknown as string;
