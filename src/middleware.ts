@@ -24,6 +24,7 @@ export default async function middleware(req: NextRequest) {
   const auth = req.nextUrl.clone();
   auth.pathname = "/";
   auth.host = domain; // Asigna el dominio a la URL de redirección
+  auth.port = "";
   const afterAuth = req.nextUrl.clone();
   const home = req.nextUrl.clone();
   const evaluation = req.nextUrl.clone();
