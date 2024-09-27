@@ -36,6 +36,7 @@ export default async function middleware(req: NextRequest) {
   if (currentUrl.startsWith("/api/auth")) return NextResponse.next();
 
   if (!session && currentUrl !== "/") {
+    console.log({ auth });
     return NextResponse.redirect(auth);
   } else if (session) {
     if (currentUrl === "/") {
