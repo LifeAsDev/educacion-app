@@ -8,7 +8,7 @@ import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import mongoose, { Types } from "mongoose";
 export const dynamic = "force-dynamic";
 import Asignatura from "@/schemas/asignatura";
-import user from "@/schemas/user";
+import User from "@/schemas/user";
 import { FilePDF } from "@/models/evaluationTest";
 
 export async function POST(req: Request) {
@@ -280,7 +280,7 @@ export async function GET(req: Request) {
       {
         path: "creatorId",
         select: "nombre apellido",
-        model: user,
+        model: User,
       }
     );
     return NextResponse.json(

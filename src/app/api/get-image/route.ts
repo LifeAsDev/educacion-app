@@ -12,7 +12,6 @@ export async function GET(req: Request, { params }: any) {
     `${process.env.NEXT_PUBLIC_UPLOAD_FILE_PATH}`,
     photoName as string
   ); // Ruta del archivo solicitado
-  console.log(`filePath${photoName}`);
   try {
     // Verificar si el archivo existe
     if (!fs.existsSync(filePath)) {
