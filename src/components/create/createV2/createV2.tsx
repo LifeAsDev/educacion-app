@@ -25,8 +25,8 @@ export default function CreateV2({ id }: { id?: string }) {
   const [editFetch, setEditFetch] = useState(true);
   const [questionArr, setQuestionArr] = useState<QuestionWithError[]>([]);
   const [name, setName] = useState("");
-  const [type, setType] = useState("formativa");
-  const [difficulty, setDifficulty] = useState("basico");
+  const [type, setType] = useState("Formativa");
+  const [difficulty, setDifficulty] = useState("Básico");
   const [submitting, setSubmitting] = useState(false);
   const [questionErrorArr, setQuestionErrorArr] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
@@ -160,7 +160,6 @@ export default function CreateV2({ id }: { id?: string }) {
           return fileObj;
         }
       );
-      console.log("yo?");
       setFilesArr(filesWithBuffer);
 
       setName(parseCachedState.name);

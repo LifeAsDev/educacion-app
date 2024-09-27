@@ -105,6 +105,7 @@ export async function GET(req: Request, { params }: any) {
         difficulty: item.evaluationAssignId.evaluationId.difficulty,
         tiempo: item.evaluationAssignId.evaluationId.tiempo,
         asignatura: item.evaluationAssignId.evaluationId.asignatura,
+        nivel: item.evaluationAssignId.evaluationId.nivel,
       };
     });
 

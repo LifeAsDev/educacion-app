@@ -188,6 +188,7 @@ export default function Evaluation() {
         return;
       }
     };
+
     if (pageSelected > 0 && session) {
       if (session.rol !== "Estudiante") {
         fetchEvaluationsTest();

@@ -6,7 +6,7 @@ import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import Question from "@/models/question";
 import { deleteFile } from "@/lib/functionToFiles";
 import { Types } from "mongoose";
-import asignatura from "@/schemas/asignatura";
+import Asignatura from "@/schemas/asignatura";
 import User from "@/schemas/user";
 import UserModel from "@/models/user";
 import EvaluationAssign from "@/schemas/evaluationAssign";
@@ -60,7 +60,7 @@ export async function GET(req: Request, { params }: any) {
   try {
     const evaluationTest = await EvaluationTest.findById(id).populate({
       path: "asignatura",
-      model: asignatura,
+      model: Asignatura,
     });
 
     if (!evaluationTest) {
@@ -284,6 +284,10 @@ export async function PATCH(req: Request, { params }: any) {
     );
 
     if (updatedEvaluationTest) {
+      await EvaluationTest.populate(updatedEvaluationTest, {
+        path: "asignatura",
+        model: Asignatura,
+      });
       return NextResponse.json(
         {
           message: "the id is " + updatedEvaluationTest.id,

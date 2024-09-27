@@ -220,10 +220,14 @@ export async function GET(req: Request) {
     if (keyword !== "") {
       aggregatePipeline.push({
         $match: {
-          name: { $regex: keyword, $options: "i" },
+          $or: [
+            { name: { $regex: keyword, $options: "i" } },
+            { nivel: { $regex: keyword, $options: "i" } },
+          ],
         },
       });
     }
+
     if (asignatura !== "Todas") {
       aggregatePipeline.push({
         $match: {

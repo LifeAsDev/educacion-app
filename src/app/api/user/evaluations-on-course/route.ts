@@ -10,7 +10,7 @@ import EvaluationTest from "@/schemas/evaluationTest";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
-  const curso = formData.getAll("curso");
+  const curso: string[] = JSON.parse(formData.get("cursoArr") as string);
   const evaluationId = formData.get("evaluationId") as string;
   const profesorId = formData.get("profesorId") as string;
   const asignatura = formData.get("asignatura") as string;
