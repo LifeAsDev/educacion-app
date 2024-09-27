@@ -23,8 +23,7 @@ export default async function middleware(req: NextRequest) {
     process.env.NEXT_PUBLIC_DOMAIN_CONFIG_BASE_URL || "http://localhost:3000"; // Usa tu dominio
   const auth = req.nextUrl.clone();
   auth.pathname = "/";
-  auth.host = domain; // Asigna el dominio a la URL de redirección
-  auth.port = "";
+
   const afterAuth = req.nextUrl.clone();
   const home = req.nextUrl.clone();
   const evaluation = req.nextUrl.clone();
@@ -38,6 +37,10 @@ export default async function middleware(req: NextRequest) {
   if (!session && currentUrl !== "/") {
     console.log({ domain });
     console.log({ auth });
+    if (auth.protocol === "https:") {
+      auth.host = domain; // Asigna el dominio a la URL de redirección
+      auth.port = "";
+    }
     return NextResponse.redirect(auth);
   } else if (session) {
     if (currentUrl === "/") {

@@ -25,8 +25,6 @@ export async function POST(req: Request) {
   console.log("check0.1");
 
   const data = await req.formData();
-  console.log("Form data fetched:", Object.fromEntries(data));
-  data.forEach((value, key) => console.log(`Key: ${key}, Value: ${value}`));
 
   const name: string = data.get("name") as unknown as string;
   console.log("Name:", name);
