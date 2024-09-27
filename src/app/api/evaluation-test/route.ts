@@ -22,17 +22,16 @@ export async function POST(req: Request) {
     console.log("Content-Length header is missing");
   }
   console.log("check0");
+  console.log("check0.1");
+
+  const data = await req.formData();
+  console.log("Form data fetched:", Object.fromEntries(data));
+  data.forEach((value, key) => console.log(`Key: ${key}, Value: ${value}`));
+
+  const name: string = data.get("name") as unknown as string;
+  console.log("Name:", name);
 
   try {
-    console.log("check0.1");
-
-    const data = await req.formData();
-    console.log("Form data fetched:", Object.fromEntries(data));
-    data.forEach((value, key) => console.log(`Key: ${key}, Value: ${value}`));
-
-    const name: string = data.get("name") as unknown as string;
-    console.log("Name:", name);
-
     const type: string = data.get("type") as unknown as string;
     const nivel: string = data.get("nivel") as unknown as string;
     const difficulty: string = data.get("difficulty") as unknown as string;
@@ -45,12 +44,9 @@ export async function POST(req: Request) {
     ) as unknown as string[];
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
-    console.log("Files array:", filesArr);
-    console.log("Question array:", questionArr);
 
     const parseFilesArr: FilePDF[] = filesArr.map((file) => {
       const newFile: FilePDF = JSON.parse(file);
-      console.log("Parsed file:", newFile); // Log parsed file
       if (
         typeof newFile.file !== "string" &&
         newFile.file !== null &&
@@ -110,7 +106,6 @@ export async function POST(req: Request) {
       asignatura = undefined;
     }
     console.log("check6");
-    console.log("Creating new evaluation test...");
 
     const newEvaluationTest = await EvaluationTest.create({
       name,
@@ -123,7 +118,6 @@ export async function POST(req: Request) {
       nivel,
       files: filesArrWithoutBuffer,
     });
-    console.log("New evaluation test created:", newEvaluationTest);
 
     if (newEvaluationTest) {
       console.log({ check7: parseQuestionArr });
