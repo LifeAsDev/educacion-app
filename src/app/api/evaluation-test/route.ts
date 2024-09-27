@@ -21,7 +21,11 @@ export async function POST(req: Request) {
   } else {
     console.log("Content-Length header is missing");
   }
+  console.log("check0");
+
   try {
+    console.log("check0.1");
+
     const data = await req.formData();
     const name: string = data.get("name") as unknown as string;
     const type: string = data.get("type") as unknown as string;
