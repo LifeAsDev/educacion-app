@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     const questionArr = JSON.parse(data.get("questionArr") as string);
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
-    const updatedQuestionArr = await Promise.all(
+    const updatedQuestionArr: Question[] = await Promise.all(
       questionArr.map(async (question: any, index: number) => {
         const imageKey = `image-${index}`;
         let image = data.get(imageKey);
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
     console.log({ check4: true });
 
     const questionArrWithoutBuffer: Question[] = updatedQuestionArr.map(
-      (question: { image: any }) => {
+      (question) => {
         const clonedQuestion = { ...question }; // Clonar el objeto question
         if (question.image && typeof question.image !== "string") {
           clonedQuestion.image = null;
