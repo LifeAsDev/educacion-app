@@ -84,7 +84,7 @@ export async function POST(req: Request) {
       } // Modificar el clon
       return clonedFile; // Devolver el clon modificado
     });
-    console.log("check3");
+    console.log("check3", updatedQuestionArr);
 
     console.log({ questionArr });
     console.log({ check4: true });
