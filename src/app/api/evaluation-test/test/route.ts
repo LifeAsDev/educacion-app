@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       success: false,
       error: "error retrieving evaluation tests",
     },
-    { status: 400 }
+    { status: 200 }
   );
 }
 
