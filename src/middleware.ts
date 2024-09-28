@@ -35,8 +35,8 @@ export default async function middleware(req: NextRequest) {
   if (currentUrl.startsWith("/api/auth")) return NextResponse.next();
 
   if (!session && currentUrl !== "/") {
-    console.log({ domain });
-    console.log({ auth });
+    /*     console.log({ domain });
+    console.log({ auth }); */
     if (auth.protocol === "https:") {
       auth.host = domain; // Asigna el dominio a la URL de redirección
       auth.port = "";

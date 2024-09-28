@@ -13,15 +13,14 @@ import { FilePDF } from "@/models/evaluationTest";
 export async function POST(req: Request) {
   await connectMongoDB();
 
-  const contentLength = req.headers.get("content-length");
+  /*   const contentLength = req.headers.get("content-length");
 
   if (contentLength) {
     console.log(`Request size: ${contentLength} bytes`);
   } else {
     console.log("Content-Length header is missing");
-  }
+  } */
   console.log("check0");
-  console.log("check0.1");
 
   const data = await req.formData();
 
@@ -61,19 +60,18 @@ export async function POST(req: Request) {
 
     const updatedFilesArr: FilePDF[] = await Promise.all(
       filesArr.map(async (question, index: number) => {
-        const imageKey = `file-${index}`;
-        let image: null | File | string = data.get(imageKey);
+        const fileKey = `file-${index}`;
+        let file: null | File | string = data.get(fileKey);
         let buffer: Buffer | null | string = null;
-
-        if (typeof image !== "string" && image !== null) {
-          const bytes = await (image as File).arrayBuffer();
+        if (typeof file !== "string" && file !== null) {
+          const bytes = await (file as File).arrayBuffer();
           buffer = Buffer.from(bytes);
-        } else if (image) {
-          buffer = image;
+        } else if (file) {
+          buffer = file;
         }
         return {
           ...question,
-          image: buffer,
+          file: buffer,
         };
       })
     );
@@ -89,9 +87,8 @@ export async function POST(req: Request) {
       } // Modificar el clon
       return clonedFile; // Devolver el clon modificado
     });
-    console.log("check3", updatedQuestionArr);
+    console.log("check3");
 
-    console.log({ questionArr });
     console.log({ check4: true });
 
     const questionArrWithoutBuffer: Question[] = updatedQuestionArr.map(
@@ -124,37 +121,30 @@ export async function POST(req: Request) {
     });
 
     if (newEvaluationTest) {
-      console.log({ check7: questionArr });
+      console.log({ check7: true });
 
       for (const question of questionArr) {
-        console.log({ question });
         // Llamar a una función asíncrona por cada elemento
         const evaluationIndex = newEvaluationTest?.questionArr?.findIndex(
           (questionId: Question) => questionId.id == question.id
         );
         const id = newEvaluationTest.questionArr[evaluationIndex]._id;
-        console.log({
-          id,
-          evaluationIndex,
-        });
+
         if (question.image && typeof question.image !== "string") {
-          console.log({ if1: true });
           const extension = await getFileTypeFromBuffer(
             question.image as Buffer
           );
-          console.log({ extension });
           if (id && evaluationIndex !== -1) {
-            console.log({ if2: true });
             const { imagePath, success, message, error } = await uploadFile(
               question.image as Buffer,
               `${id}.${extension}`,
               newEvaluationTest._id
             );
-            console.log({ success, message, error });
             newEvaluationTest.questionArr[evaluationIndex].image = imagePath!;
           }
         }
       }
+      console.log("check7.1", filesArr);
       let fileIndex = 0;
       for (const file of filesArr) {
         const id = newEvaluationTest.files[fileIndex]._id;
@@ -178,9 +168,7 @@ export async function POST(req: Request) {
     );
     console.log("check9");
 
-    console.log({ updatedEvaluationTest });
     if (updatedEvaluationTest) {
-      console.log({ questionArr: updatedEvaluationTest.questionArr });
       return NextResponse.json(
         {
           message: "the id is " + updatedEvaluationTest.id,

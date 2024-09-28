@@ -374,7 +374,7 @@ export default function CreateV2({ id }: { id?: string }) {
 
           filesArr.forEach((item, index) => {
             if (item.file instanceof Buffer) {
-              const file = bufferToFile(item.file, `question-pdf-${index}`);
+              const file = bufferToFile(item.file, item.name);
               data.append(`file-${index}`, file);
             } else if (typeof item.file === "string") {
               data.append(`file-${index}`, item.file);

@@ -196,7 +196,6 @@ export default function Evaluation() {
         fetchEvaluationsAssigned();
       }
     } else {
-      setFetchingEvaluations(false);
       setPageSelected(1);
     }
   };
