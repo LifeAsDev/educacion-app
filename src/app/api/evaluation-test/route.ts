@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     const creatorId: string = data.get("creatorId")! as string;
     console.log("check1");
     const tiempo = parseInt(data.get("time")! as string);
-    const questionArr = JSON.parse(data.get("questionArr") as string);
+    let questionArr = JSON.parse(data.get("questionArr") as string);
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
     const updatedQuestionArr: Question[] = await Promise.all(
@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       })
     );
 
+    questionArr = updatedQuestionArr;
     const parseFilesArr: FilePDF[] = filesArr.map((file) => {
       const newFile: FilePDF = JSON.parse(file);
       if (
