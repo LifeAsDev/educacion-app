@@ -35,11 +35,11 @@ export async function POST(req: Request) {
     const creatorId: string = data.get("creatorId")! as string;
     console.log("check1");
     const tiempo = parseInt(data.get("time")! as string);
-    const questionArr = JSON.parse(
-      data.get("questionArr") as unknown as string
-    );
+    const questionArr = JSON.parse(data.get("questionArr") as string);
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
+    console.log(data.get("image-0"));
+
     const updatedQuestionArr = questionArr.map(
       (question: any, index: number) => {
         const imageKey = `image-${index}`;
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
         return {
           ...question,
-          image: image instanceof File ? image.name : image,
+          image: image,
         };
       }
     );
