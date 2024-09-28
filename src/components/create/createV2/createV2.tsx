@@ -368,7 +368,7 @@ export default function CreateV2({ id }: { id?: string }) {
             data.append("files", fileString);
           });
 
-          const res = await fetch("/api/evaluation-test/test", {
+          const res = await fetch("/api/evaluation-test", {
             method: "POST",
             body: data,
           });

@@ -26,7 +26,6 @@ export async function POST(req: Request) {
   const data = await req.formData();
 
   const name: string = data.get("name") as unknown as string;
-  console.log("Name:", name);
 
   try {
     const type: string = data.get("type") as unknown as string;
@@ -41,7 +40,23 @@ export async function POST(req: Request) {
     );
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
+    const updatedQuestionArr = questionArr.map(
+      (question: any, index: number) => {
+        const imageKey = `image-${index}`;
+        const image = data.get(imageKey); // Puede ser un File o una URL (string)
 
+        if (image instanceof File) {
+          console.log(`Recibido archivo para pregunta ${index}:`, image.name);
+        } else if (typeof image === "string") {
+          console.log(`Recibida URL de imagen para pregunta ${index}:`, image);
+        }
+
+        return {
+          ...question,
+          image: image instanceof File ? image.name : image,
+        };
+      }
+    );
     const parseFilesArr: FilePDF[] = filesArr.map((file) => {
       const newFile: FilePDF = JSON.parse(file);
       if (
@@ -59,6 +74,7 @@ export async function POST(req: Request) {
 
       return newFile;
     });
+
     console.log({ check2: true });
 
     const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
@@ -73,7 +89,7 @@ export async function POST(req: Request) {
     console.log({ questionArr });
     console.log({ check4: true });
 
-    const questionArrWithoutBuffer: Question[] = questionArr.map(
+    const questionArrWithoutBuffer: Question[] = updatedQuestionArr.map(
       (question: { image: any }) => {
         const clonedQuestion = { ...question }; // Clonar el objeto question
         if (question.image && typeof question.image !== "string") {
