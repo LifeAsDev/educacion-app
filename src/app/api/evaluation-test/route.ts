@@ -6,7 +6,6 @@ import Question from "@/models/question";
 import { uploadFile } from "@/lib/functionToFiles";
 import { getFileTypeFromBuffer } from "@/lib/functionToFiles";
 import mongoose, { Types } from "mongoose";
-export const dynamic = "force-dynamic";
 import Asignatura from "@/schemas/asignatura";
 import User from "@/schemas/user";
 import { FilePDF } from "@/models/evaluationTest";
@@ -37,9 +36,9 @@ export async function POST(req: Request) {
     const creatorId: string = data.get("creatorId")! as string;
     console.log("check1");
     const tiempo = parseInt(data.get("time")! as string);
-    const questionArr: string[] = data.getAll(
-      "questionArr"
-    ) as unknown as string[];
+    const questionArr = JSON.parse(
+      data.get("questionArr") as unknown as string
+    );
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
 
@@ -71,7 +70,7 @@ export async function POST(req: Request) {
     });
     console.log("check3");
 
-    const parseQuestionArr: Question[] = questionArr.map((question) => {
+    const parseQuestionArr: Question[] = questionArr.map((question: string) => {
       const newQuestion: Question = JSON.parse(question);
       if (
         typeof newQuestion.image !== "string" &&
@@ -318,3 +317,9 @@ export async function GET(req: Request) {
     );
   }
 }
+export const revalidate = 0;
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};
