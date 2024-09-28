@@ -324,11 +324,7 @@ export default function CreateV2({ id }: { id?: string }) {
           data.set("creatorId", session._id as string);
           data.set("time", tiempo.toString());
           data.set("nivel", nivel as string);
-
-          questionArr.forEach((question) => {
-            const questionString = JSON.stringify(question);
-            data.append("questionArr", questionString);
-          });
+          data.set("questionArr", JSON.stringify(questionArr));
 
           filesArr.forEach((file) => {
             const fileString = JSON.stringify(file);
@@ -362,8 +358,7 @@ export default function CreateV2({ id }: { id?: string }) {
           data.set("creatorId", session._id as string);
           data.set("time", tiempo.toString());
           data.set("nivel", nivel);
-          /*           data.set("questionArr", JSON.stringify(questionArr));
-           */
+          data.set("questionArr", JSON.stringify(questionArr));
           filesArr.forEach((file) => {
             const fileString = JSON.stringify(file);
             data.append("files", fileString);
