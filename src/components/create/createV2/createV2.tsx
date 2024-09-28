@@ -315,6 +315,18 @@ export default function CreateV2({ id }: { id?: string }) {
     } else {
       setSubmitting(true);
       const fetchSubmit = async () => {
+        function bufferToFile(buffer: Buffer, fileName: string): File {
+          const arrayBuffer = buffer.buffer.slice(
+            buffer.byteOffset,
+            buffer.byteOffset + buffer.byteLength
+          );
+          const blob = new Blob([arrayBuffer], {
+            type: "application/octet-stream",
+          });
+          return new File([blob], fileName, {
+            type: "application/octet-stream",
+          });
+        }
         try {
           const data = new FormData();
           data.set("name", name as string);
@@ -334,6 +346,23 @@ export default function CreateV2({ id }: { id?: string }) {
               })
             )
           );
+
+          questionArr.forEach((question, index) => {
+            const newQuestion = { ...question };
+
+            if (question.image instanceof Buffer) {
+              const file = bufferToFile(
+                question.image,
+                `question-image-${index}`
+              );
+              data.append(`image-${index}`, file);
+            } else if (typeof question.image === "string") {
+              data.append(`image-${index}`, question.image);
+            } else {
+              data.append(`image-${index}`, "null");
+            }
+          });
+
           filesArr.forEach((file) => {
             const fileString = JSON.stringify(file);
             data.append("files", fileString);
