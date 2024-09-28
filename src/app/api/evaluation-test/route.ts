@@ -70,26 +70,11 @@ export async function POST(req: Request) {
     });
     console.log("check3");
 
-    const parseQuestionArr: Question[] = questionArr.map((question: string) => {
-      const newQuestion: Question = JSON.parse(question);
-      if (
-        typeof newQuestion.image !== "string" &&
-        newQuestion.image !== null &&
-        typeof newQuestion.image !== "undefined" &&
-        "type" in newQuestion.image &&
-        newQuestion.image.type === "Buffer"
-      ) {
-        return {
-          ...newQuestion,
-          image: Buffer.from(newQuestion.image.data),
-        };
-      }
-      return newQuestion;
-    });
+    console.log({ questionArr });
     console.log({ check4: true });
 
-    const questionArrWithoutBuffer: Question[] = parseQuestionArr.map(
-      (question) => {
+    const questionArrWithoutBuffer: Question[] = questionArr.map(
+      (question: { image: any }) => {
         const clonedQuestion = { ...question }; // Clonar el objeto question
         if (question.image && typeof question.image !== "string") {
           clonedQuestion.image = null;
