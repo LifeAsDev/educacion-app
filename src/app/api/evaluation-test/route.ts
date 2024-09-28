@@ -38,25 +38,25 @@ export async function POST(req: Request) {
     const questionArr = JSON.parse(data.get("questionArr") as string);
 
     const filesArr: string[] = data.getAll("files") as unknown as string[];
-    console.log(data.get("image-0"));
-
-    const updatedQuestionArr = questionArr.map(
-      (question: any, index: number) => {
+    const updatedQuestionArr = await Promise.all(
+      questionArr.map(async (question: any, index: number) => {
         const imageKey = `image-${index}`;
-        const image = data.get(imageKey); // Puede ser un File o una URL (string)
+        let image = data.get(imageKey);
 
-        if (image instanceof File) {
-          console.log(`Recibido archivo para pregunta ${index}:`, image.name);
-        } else if (typeof image === "string") {
-          console.log(`Recibida URL de imagen para pregunta ${index}:`, image);
+        let buffer: Buffer | null | string = imageKey;
+
+        if (typeof image !== "string" && image !== null) {
+          const bytes = await (image as File).arrayBuffer();
+          buffer = Buffer.from(bytes);
         }
 
         return {
           ...question,
-          image: image,
+          image: buffer,
         };
-      }
+      })
     );
+
     const parseFilesArr: FilePDF[] = filesArr.map((file) => {
       const newFile: FilePDF = JSON.parse(file);
       if (
