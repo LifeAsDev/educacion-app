@@ -209,23 +209,45 @@ export default function CreateV2({ id }: { id?: string }) {
   }, [id, router]);
 
   useEffect(() => {
-    if (!submitting && !id) {
-      localStorage.setItem(
-        "createState",
-        JSON.stringify({
-          questionArr,
-          name,
-          type,
-          difficulty,
-          asignatura,
-          tiempo,
-          nivel,
-          filesArr,
-        })
-      );
-    } else if (submitting) {
+    if (submitting) {
       localStorage.removeItem("createState");
     }
+  }, [
+    asignatura,
+    difficulty,
+    id,
+    name,
+    questionArr,
+    submitting,
+    type,
+    tiempo,
+    nivel,
+    filesArr,
+  ]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (!submitting && !id) {
+        localStorage.setItem(
+          "createState",
+          JSON.stringify({
+            questionArr,
+            name,
+            type,
+            difficulty,
+            asignatura,
+            tiempo,
+            nivel,
+            filesArr,
+          })
+        );
+      }
+    }, 10000); // Ejecuta cada 10 segundos
+
+    // Limpia el intervalo al desmontar el componente o cuando cambien las dependencias
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [
     asignatura,
     difficulty,
@@ -340,11 +362,7 @@ export default function CreateV2({ id }: { id?: string }) {
           data.set("creatorId", session._id as string);
           data.set("time", tiempo.toString());
           data.set("nivel", nivel);
-
-          questionArr.forEach((question) => {
-            const questionString = JSON.stringify(question);
-            data.append("questionArr", questionString);
-          });
+          data.set("questionArr", JSON.stringify(questionArr));
 
           filesArr.forEach((file) => {
             const fileString = JSON.stringify(file);

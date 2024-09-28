@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./styles.module.css";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
 import NextImage from "next/image";
 import QuillEditor from "@/components/create/quillEditor/quillEditor";
 import { QuestionWithError } from "@/components/create/createV2/createV2";
@@ -35,17 +35,14 @@ export default function SetQuestion({
   typeOfQuestionSelected: string;
   setTypeOfQuestionSelected: Dispatch<SetStateAction<string>>;
 }) {
-  const imageUrl =
-    typeof question.image === "string"
-      ? `/api/get-image?photoName=${
-          question.image
-        }&cacheBuster=${new Date().getTime()}`
+  const imageUrl = useMemo(() => {
+    return typeof question.image === "string"
+      ? `/api/get-image?photoName=${question.image}`
       : (() => {
           const blob = new Blob([question.image as Buffer]);
-
           return URL.createObjectURL(blob);
         })();
-
+  }, [question.image]);
   return (
     <div className={styles.questionBox}>
       {question.type === "open" ? (

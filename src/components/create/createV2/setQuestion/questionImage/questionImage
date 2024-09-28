@@ -1,0 +1,25 @@
+import { useMemo } from 'react';
+import Image from 'next/image'; // Asegúrate de que estás importando NextImage correctamente
+
+const YourComponent = ({ question }) => {
+  const imageUrl = useMemo(() => {
+    return typeof question.image === "string"
+      ? `/api/get-image?photoName=${question.image}&cacheBuster=${new Date().getTime()}`
+      : (() => {
+          const blob = new Blob([question.image as Buffer]);
+          return URL.createObjectURL(blob);
+        })();
+  }, [question.image]);
+
+  return (
+    <Image
+      className="m-auto h-[400px] w-auto object-cover"
+      src={imageUrl}
+      alt={`Image of question ${question._id}`}
+      width={1200} // Agrega el ancho de la imagen
+      height={400} // Agrega la altura de la imagen
+    />
+  );
+};
+
+export default YourComponent;

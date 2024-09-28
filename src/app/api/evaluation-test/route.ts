@@ -98,6 +98,7 @@ export async function POST(req: Request) {
         return clonedQuestion; // Devolver el clon modificado
       }
     );
+
     console.log("check5");
 
     if (asignatura === "N/A") {
