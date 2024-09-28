@@ -49,7 +49,7 @@ export async function POST(req: Request) {
           const bytes = await (image as File).arrayBuffer();
           buffer = Buffer.from(bytes);
         }
-
+        console.log(buffer);
         return {
           ...question,
           image: buffer,
