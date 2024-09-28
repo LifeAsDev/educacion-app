@@ -318,8 +318,3 @@ export async function GET(req: Request) {
   }
 }
 export const revalidate = 0;
-export const config = {
-  api: {
-    externalResolver: true,
-  },
-};
