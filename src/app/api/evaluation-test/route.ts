@@ -103,9 +103,9 @@ export async function POST(req: Request) {
     });
 
     if (newEvaluationTest) {
-      console.log({ check7: parseQuestionArr });
+      console.log({ check7: questionArr });
 
-      for (const question of parseQuestionArr) {
+      for (const question of questionArr) {
         console.log({ question });
         // Llamar a una función asíncrona por cada elemento
         const evaluationIndex = newEvaluationTest?.questionArr?.findIndex(
