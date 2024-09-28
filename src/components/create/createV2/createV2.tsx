@@ -348,8 +348,6 @@ export default function CreateV2({ id }: { id?: string }) {
           );
 
           questionArr.forEach((question, index) => {
-            const newQuestion = { ...question };
-
             if (question.image instanceof Buffer) {
               const file = bufferToFile(
                 question.image,
@@ -363,9 +361,26 @@ export default function CreateV2({ id }: { id?: string }) {
             }
           });
 
-          filesArr.forEach((file) => {
-            const fileString = JSON.stringify(file);
-            data.append("files", fileString);
+          data.set(
+            "filesArr",
+            JSON.stringify(
+              filesArr.map((file) => {
+                const newFile = { ...file };
+                newFile.file = null;
+                return newFile;
+              })
+            )
+          );
+
+          filesArr.forEach((item, index) => {
+            if (item.file instanceof Buffer) {
+              const file = bufferToFile(item.file, `question-pdf-${index}`);
+              data.append(`file-${index}`, file);
+            } else if (typeof item.file === "string") {
+              data.append(`file-${index}`, item.file);
+            } else {
+              data.append(`file-${index}`, "null");
+            }
           });
 
           const res = await fetch("/api/evaluation-test", {

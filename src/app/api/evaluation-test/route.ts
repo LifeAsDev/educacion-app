@@ -37,19 +37,19 @@ export async function POST(req: Request) {
     const tiempo = parseInt(data.get("time")! as string);
     let questionArr = JSON.parse(data.get("questionArr") as string);
 
-    const filesArr: string[] = data.getAll("files") as unknown as string[];
+    let filesArr: FilePDF[] = JSON.parse(data.get("filesArr") as string);
+
     const updatedQuestionArr: Question[] = await Promise.all(
       questionArr.map(async (question: any, index: number) => {
         const imageKey = `image-${index}`;
-        let image = data.get(imageKey);
-
-        let buffer: Buffer | null | string = imageKey;
-
+        let image: null | File | string = data.get(imageKey);
+        let buffer: Buffer | null | string = null;
         if (typeof image !== "string" && image !== null) {
           const bytes = await (image as File).arrayBuffer();
           buffer = Buffer.from(bytes);
+        } else if (image) {
+          buffer = image;
         }
-        console.log(buffer);
         return {
           ...question,
           image: buffer,
@@ -58,27 +58,31 @@ export async function POST(req: Request) {
     );
 
     questionArr = updatedQuestionArr;
-    const parseFilesArr: FilePDF[] = filesArr.map((file) => {
-      const newFile: FilePDF = JSON.parse(file);
-      if (
-        typeof newFile.file !== "string" &&
-        newFile.file !== null &&
-        typeof newFile.file !== "undefined" &&
-        "type" in newFile.file &&
-        newFile.file.type === "Buffer"
-      ) {
-        return {
-          ...newFile,
-          file: Buffer.from(newFile.file.data),
-        };
-      }
 
-      return newFile;
-    });
+    const updatedFilesArr: FilePDF[] = await Promise.all(
+      filesArr.map(async (question, index: number) => {
+        const imageKey = `file-${index}`;
+        let image: null | File | string = data.get(imageKey);
+        let buffer: Buffer | null | string = null;
+
+        if (typeof image !== "string" && image !== null) {
+          const bytes = await (image as File).arrayBuffer();
+          buffer = Buffer.from(bytes);
+        } else if (image) {
+          buffer = image;
+        }
+        return {
+          ...question,
+          image: buffer,
+        };
+      })
+    );
+
+    filesArr = updatedFilesArr;
 
     console.log({ check2: true });
 
-    const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
+    const filesArrWithoutBuffer: FilePDF[] = filesArr.map((file) => {
       const clonedFile = { ...file }; // Clonar el objeto
       if (file.file && typeof file.file !== "string") {
         clonedFile.file = null;
@@ -152,7 +156,7 @@ export async function POST(req: Request) {
         }
       }
       let fileIndex = 0;
-      for (const file of parseFilesArr) {
+      for (const file of filesArr) {
         const id = newEvaluationTest.files[fileIndex]._id;
         if (id) {
           const { imagePath, success } = await uploadFile(

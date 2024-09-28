@@ -94,7 +94,9 @@ export async function PATCH(req: Request, { params }: any) {
     const questionArr: string[] = data.getAll(
       "questionArr"
     ) as unknown as string[];
+
     const filesArr: string[] = data.getAll("files") as unknown as string[];
+
     const parseFilesArr: FilePDF[] = filesArr.map((file) => {
       const newFile: FilePDF = JSON.parse(file);
       if (
