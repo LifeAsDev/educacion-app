@@ -41,8 +41,7 @@ export const OnboardingProvider = ({
         if (Date.now() > expirationTime) {
           localStorage.removeItem(TOKEN_KEY);
           console.log("SignOut");
-          /*           signOut();
-           */
+          signOut();
         }
       } else {
         updateToken();
