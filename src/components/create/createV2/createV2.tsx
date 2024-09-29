@@ -15,7 +15,18 @@ import { FilePDF } from "@/models/evaluationTest";
 export interface QuestionWithError extends Question {
   error?: string;
 }
-
+function bufferToFile(buffer: Buffer, fileName: string): File {
+  const arrayBuffer = buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength
+  );
+  const blob = new Blob([arrayBuffer], {
+    type: "application/octet-stream",
+  });
+  return new File([blob], fileName, {
+    type: "application/octet-stream",
+  });
+}
 export default function CreateV2({ id }: { id?: string }) {
   const [tabSelected, setTabSelected] = useState("general");
   const [typeOfQuestionSelected, setTypeOfQuestionSelected] =
@@ -314,19 +325,8 @@ export default function CreateV2({ id }: { id?: string }) {
       return;
     } else {
       setSubmitting(true);
+
       const fetchSubmit = async () => {
-        function bufferToFile(buffer: Buffer, fileName: string): File {
-          const arrayBuffer = buffer.buffer.slice(
-            buffer.byteOffset,
-            buffer.byteOffset + buffer.byteLength
-          );
-          const blob = new Blob([arrayBuffer], {
-            type: "application/octet-stream",
-          });
-          return new File([blob], fileName, {
-            type: "application/octet-stream",
-          });
-        }
         try {
           const data = new FormData();
           data.set("name", name as string);
@@ -410,10 +410,51 @@ export default function CreateV2({ id }: { id?: string }) {
           data.set("creatorId", session._id as string);
           data.set("time", tiempo.toString());
           data.set("nivel", nivel);
-          data.set("questionArr", JSON.stringify(questionArr));
-          filesArr.forEach((file) => {
-            const fileString = JSON.stringify(file);
-            data.append("files", fileString);
+          data.set(
+            "questionArr",
+            JSON.stringify(
+              questionArr.map((question) => {
+                const newQuestion = { ...question };
+                newQuestion.image = null;
+                return newQuestion;
+              })
+            )
+          );
+
+          questionArr.forEach((question, index) => {
+            if (question.image instanceof Buffer) {
+              const file = bufferToFile(
+                question.image,
+                `question-image-${index}`
+              );
+              data.append(`image-${index}`, file);
+            } else if (typeof question.image === "string") {
+              data.append(`image-${index}`, question.image);
+            } else {
+              data.append(`image-${index}`, "null");
+            }
+          });
+
+          data.set(
+            "filesArr",
+            JSON.stringify(
+              filesArr.map((file) => {
+                const newFile = { ...file };
+                newFile.file = null;
+                return newFile;
+              })
+            )
+          );
+
+          filesArr.forEach((item, index) => {
+            if (item.file instanceof Buffer) {
+              const file = bufferToFile(item.file, item.name);
+              data.append(`file-${index}`, file);
+            } else if (typeof item.file === "string") {
+              data.append(`file-${index}`, item.file);
+            } else {
+              data.append(`file-${index}`, "null");
+            }
           });
 
           const res = await fetch(`/api/evaluation-test/${id}`, {

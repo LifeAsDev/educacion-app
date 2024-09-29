@@ -91,27 +91,27 @@ export async function PATCH(req: Request, { params }: any) {
     const tiempo = parseInt(data.get("time")! as string);
     const nivel = data.get("nivel")! as string;
 
-    const questionArr: string[] = data.getAll(
-      "questionArr"
-    ) as unknown as string[];
+    let questionArr: Question[] = JSON.parse(data.get("questionArr") as string);
 
-    const filesArr: string[] = data.getAll("files") as unknown as string[];
+    let filesArr: FilePDF[] = JSON.parse(data.get("filesArr") as string);
 
-    const parseFilesArr: FilePDF[] = filesArr.map((file) => {
-      const newFile: FilePDF = JSON.parse(file);
-      if (
-        newFile.file &&
-        typeof newFile.file !== "string" &&
-        "type" in newFile.file &&
-        newFile.file.type === "Buffer"
-      ) {
+    const parseFilesArr: FilePDF[] = await Promise.all(
+      filesArr.map(async (question, index: number) => {
+        const fileKey = `file-${index}`;
+        let file: null | File | string = data.get(fileKey);
+        let buffer: Buffer | null | string = null;
+        if (typeof file !== "string" && file !== null) {
+          const bytes = await (file as File).arrayBuffer();
+          buffer = Buffer.from(bytes);
+        } else if (file !== "null") {
+          buffer = file;
+        }
         return {
-          ...newFile,
-          file: Buffer.from(newFile.file.data),
+          ...question,
+          file: buffer,
         };
-      }
-      return newFile;
-    });
+      })
+    );
 
     const filesArrWithoutBuffer: FilePDF[] = parseFilesArr.map((file) => {
       const clonedFile = { ...file };
@@ -120,21 +120,25 @@ export async function PATCH(req: Request, { params }: any) {
       }
       return clonedFile;
     });
-    const parseQuestionArr: Question[] = questionArr.map((question) => {
-      const newQuestion: Question = JSON.parse(question);
-      if (
-        newQuestion.image &&
-        typeof newQuestion.image !== "string" &&
-        "type" in newQuestion.image &&
-        newQuestion.image.type === "Buffer"
-      ) {
+
+    const parseQuestionArr: Question[] = await Promise.all(
+      questionArr.map(async (question: any, index: number) => {
+        const imageKey = `image-${index}`;
+        let image: null | File | string = data.get(imageKey);
+        let buffer: Buffer | null | string = null;
+
+        if (typeof image !== "string" && image !== null) {
+          const bytes = await (image as File).arrayBuffer();
+          buffer = Buffer.from(bytes);
+        } else if (image !== "null") {
+          buffer = image;
+        }
         return {
-          ...newQuestion,
-          image: Buffer.from(newQuestion.image.data),
+          ...question,
+          image: buffer,
         };
-      }
-      return newQuestion;
-    });
+      })
+    );
 
     const questionArrWithoutBuffer: Question[] = parseQuestionArr.map(
       (question) => {

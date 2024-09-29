@@ -37,7 +37,9 @@ export default function SetQuestion({
 }) {
   const imageUrl = useMemo(() => {
     return typeof question.image === "string"
-      ? `/api/get-image?photoName=${question.image}`
+      ? `/api/get-image?photoName=${
+          question.image
+        }&cacheBuster=${new Date().getTime()}`
       : (() => {
           const blob = new Blob([question.image as Buffer]);
           return URL.createObjectURL(blob);

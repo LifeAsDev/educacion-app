@@ -43,10 +43,11 @@ export async function POST(req: Request) {
         const imageKey = `image-${index}`;
         let image: null | File | string = data.get(imageKey);
         let buffer: Buffer | null | string = null;
+
         if (typeof image !== "string" && image !== null) {
           const bytes = await (image as File).arrayBuffer();
           buffer = Buffer.from(bytes);
-        } else if (image) {
+        } else if (image !== "null") {
           buffer = image;
         }
         return {
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
 
     filesArr = updatedFilesArr;
 
-    console.log({ check2: true });
+    console.log({ check2: questionArr });
 
     const filesArrWithoutBuffer: FilePDF[] = filesArr.map((file) => {
       const clonedFile = { ...file }; // Clonar el objeto
