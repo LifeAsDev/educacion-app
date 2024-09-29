@@ -11,13 +11,16 @@ export const OnboardingProvider = ({
   children: React.ReactNode;
 }) => {
   const { data: session, status } = useSession();
+  const TOKEN_KEY = "sessionExpirationToken";
 
   useEffect(() => {
-    if (session?.signOutNextAuth) signOut();
+    if (session?.signOutNextAuth) {
+      localStorage.removeItem(TOKEN_KEY);
+      signOut();
+    }
   }, [session]);
 
   useEffect(() => {
-    const TOKEN_KEY = "sessionExpirationToken";
     const EXPIRATION_INTERVAL = 15000; // 15 segundos
 
     const updateToken = () => {
@@ -50,8 +53,6 @@ export const OnboardingProvider = ({
       return () => {
         clearInterval(interval);
       };
-    } else {
-      localStorage.removeItem(TOKEN_KEY);
     }
   }, [session]);
 
