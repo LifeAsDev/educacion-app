@@ -1,5 +1,5 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+import { getSession, signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import React from "react";
 
@@ -16,7 +16,8 @@ export const OnboardingProvider = ({
   useEffect(() => {
     if (session?.signOutNextAuth) {
       localStorage.removeItem(TOKEN_KEY);
-      signOut();
+      /*       signOut();
+       */
     }
   }, [session]);
 
@@ -30,18 +31,18 @@ export const OnboardingProvider = ({
 
     const checkToken = () => {
       const token = localStorage.getItem(TOKEN_KEY);
-      console.log({ token });
-      if (token) {
+      /*       console.log({ token });
+       */ if (token) {
         const expirationTime = parseInt(token, 10);
-        console.log({
+        /*       console.log({
           dateNow: Date.now(),
           expirationTime,
           if: Date.now() > expirationTime,
-        });
+        }); */
         if (Date.now() > expirationTime) {
           localStorage.removeItem(TOKEN_KEY);
-          console.log("SignOut");
-          signOut();
+          /*      console.log("SignOut");
+          signOut(); */
         }
       } else {
         updateToken();
@@ -50,9 +51,13 @@ export const OnboardingProvider = ({
     if (session) {
       checkToken();
       const interval = setInterval(updateToken, 7000);
+      const intervalTokenUpdate = setInterval(() => {
+        getSession();
+      }, 15000);
 
       return () => {
         clearInterval(interval);
+        clearInterval(intervalTokenUpdate);
       };
     }
   }, [session]);
