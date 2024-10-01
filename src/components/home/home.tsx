@@ -198,7 +198,8 @@ export default function Home() {
                   <p>Datos de estudiantes</p>
                 </Link>
               </>
-            ) : session && session.rol === "Admin" ? (
+            ) : session &&
+              (session.rol === "Admin" || session.rol === "Directivo") ? (
               <>
                 <Link href={"/evaluation"} className={styles.homeOption}>
                   <svg
