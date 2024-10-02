@@ -1,7 +1,16 @@
 "use client";
 import "react-quill/dist/quill.snow.css";
+import "katex/dist/katex.min.css";
+import katex from "katex"; // Importar KaTeX en tu código
+
 import dynamic from "next/dynamic";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, MutableRefObject } from "react";
+
+if (typeof window !== "undefined") {
+  window.katex = katex;
+  /*   window.jQuery = window.$ = $;
+   */
+}
 const ReactQuill = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill");
@@ -16,16 +25,19 @@ export default function QuillEditor({
   value,
   setValue,
   placeholder,
+  forwardedRef,
 }: {
   value: string;
   setValue: (value: string) => void;
   placeholder: string;
+  forwardedRef?: MutableRefObject<null>;
 }) {
   const quillRef = useRef(null);
   const regex = /(<([^>]+)>)/gi;
 
   const modules = {
     toolbar: [["bold", "italic", "underline", "strike", "blockquote"]],
+    formula: true, // Enable the formula module
   };
 
   useEffect(() => {
@@ -36,6 +48,7 @@ export default function QuillEditor({
     ) {
       // @ts-ignore
       const editor = quillRef.current.getEditor();
+
       const delta = editor.format("bold", true);
     }
     // eslint-disable-next-line
@@ -44,7 +57,7 @@ export default function QuillEditor({
   return (
     <ReactQuill
       // @ts-ignore
-      forwardedRef={quillRef}
+      forwardedRef={forwardedRef || quillRef}
       placeholder={placeholder}
       modules={modules}
       theme="snow"

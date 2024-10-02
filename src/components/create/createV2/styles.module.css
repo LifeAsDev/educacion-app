@@ -47,3 +47,7 @@
   height: 100%;
   width: calc(50% - 9em);
 }
+
+.main [class~="ql-tooltip"] {
+  left: 0 !important;
+}

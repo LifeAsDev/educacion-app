@@ -4,6 +4,10 @@ import "./globals.css";
 import { OnboardingProvider } from "@/lib/context";
 import { NextAuthProvider } from "@/providers/nextAuthProvider";
 import Header from "@/components/header/header";
+import "katex/dist/katex.min.css";
+import "@edtr-io/mathquill/build/mathquill.css";
+import "react-quill/dist/quill.snow.css";
+import "mathquill4quill/mathquill4quill.css";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
