@@ -10,7 +10,7 @@ if (typeof window !== "undefined") {
   require("@edtr-io/mathquill/build/mathquill.js");
 }
 
-const QuillEditor = () => {
+const QuillEditor = ({ placeholder, value, setValue }) => {
   const options = {
     operators: [
       ["\\pm", "\\pm"],
@@ -52,11 +52,15 @@ const QuillEditor = () => {
       ref={reactQuillRef}
       modules={{
         formula: true,
-        toolbar: [["bold", "italic", "underline", "formula"]],
+        toolbar: [
+          ["bold", "italic", "underline", "strike", "blockquote", "formula"],
+        ],
       }}
       theme="snow"
-      placeholder="Compose an epic ..."
+      placeholder={placeholder || "Compose an epic ..."}
       bounds=".quill"
+      value={value}
+      onChange={(value) => setValue(value)}
     />
   );
 };

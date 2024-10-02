@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import dynamic from "next/dynamic";
 import React from "react";
 
@@ -9,7 +9,7 @@ const QuillEditor = dynamic(
 
 class EditorEquations extends React.Component {
   render() {
-    return <main><QuillEditor {...this.props} /></main>;
+    return <QuillEditor {...this.props} />;
   }
 }
 

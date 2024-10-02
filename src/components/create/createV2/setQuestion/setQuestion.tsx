@@ -5,6 +5,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
 import NextImage from "next/image";
 import QuillEditor from "@/components/create/quillEditor/quillEditor";
 import { QuestionWithError } from "@/components/create/createV2/createV2";
+import EditorEquations from "@/components/create/quillEditorMath/Editor";
 
 export default function SetQuestion({
   question,
@@ -162,11 +163,18 @@ export default function SetQuestion({
             id={`error${question._id || question.id}`}
             className={styles.questionInput}
           >
-            <QuillEditor
+            <EditorEquations
+              placeholder="Pregunta"
+              value={question.pregunta}
+              setValue={(value: string | number) =>
+                editQuestion("pregunta", value, i)
+              }
+            />
+            {/*   <QuillEditor
               placeholder="Pregunta"
               value={question.pregunta}
               setValue={(value) => editQuestion("pregunta", value, i)}
-            />
+            /> */}
           </div>
         </div>
       ) : (
@@ -285,39 +293,74 @@ export default function SetQuestion({
             id={`error${question._id || question.id}`}
             className={styles.questionInput}
           >
-            <QuillEditor
+            {/*   <QuillEditor
               placeholder="Pregunta"
               value={question.pregunta}
               setValue={(value) => editQuestion("pregunta", value, i)}
+            /> */}
+            <EditorEquations
+              placeholder="Pregunta"
+              value={question.pregunta}
+              setValue={(value: string | number) =>
+                editQuestion("pregunta", value, i)
+              }
             />
           </div>
           <div className={styles.multipleQuestionAnswerBox}>
             <div className={styles.answerInput}>
-              <QuillEditor
+              {/*   <QuillEditor
                 placeholder="Respuesta Correcta"
                 value={question.correcta!}
                 setValue={(value) => editQuestion("correcta", value, i)}
+              /> */}
+              <EditorEquations
+                placeholder="Respuesta Correcta"
+                value={question.correcta!}
+                setValue={(value: string | number) =>
+                  editQuestion("correcta", value, i)
+                }
               />
             </div>
             <div className={styles.answerInput}>
-              <QuillEditor
+              {/*     <QuillEditor
                 placeholder="Respuesta señuelo"
                 value={question.señuelo1!}
                 setValue={(value) => editQuestion("señuelo1", value, i)}
+              /> */}
+              <EditorEquations
+                placeholder="Respuesta señuelo"
+                value={question.señuelo1!}
+                setValue={(value: string | number) =>
+                  editQuestion("señuelo1", value, i)
+                }
               />
             </div>
             <div className={styles.answerInput}>
-              <QuillEditor
+              {/*    <QuillEditor
                 placeholder="Respuesta señuelo"
                 value={question.señuelo2!}
                 setValue={(value) => editQuestion("señuelo2", value, i)}
+              /> */}
+              <EditorEquations
+                placeholder="Respuesta señuelo"
+                value={question.señuelo2!}
+                setValue={(value: string | number) =>
+                  editQuestion("señuelo2", value, i)
+                }
               />
             </div>
             <div className={styles.answerInput}>
-              <QuillEditor
+              {/*   <QuillEditor
                 placeholder="Respuesta señuelo"
                 value={question.señuelo3!}
                 setValue={(value) => editQuestion("señuelo3", value, i)}
+              /> */}
+              <EditorEquations
+                placeholder="Respuesta señuelo"
+                value={question.señuelo3!}
+                setValue={(value: string | number) =>
+                  editQuestion("señuelo3", value, i)
+                }
               />
             </div>
           </div>

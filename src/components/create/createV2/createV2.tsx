@@ -687,13 +687,17 @@ export default function CreateV2({ id }: { id?: string }) {
         />
       ) : (
         <>
-          <EvaluationInfoViewer
-            evaluationId={id}
-            filesArr={filesArr}
-            fileSelected={
-              questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
-            }
-          />
+          {questionArr[parseInt(tabSelected, 10)]?.fileSelected ? (
+            <div className={styles.emptyViewer}></div>
+          ) : (
+            <EvaluationInfoViewer
+              evaluationId={id}
+              filesArr={filesArr}
+              fileSelected={
+                questionArr[parseInt(tabSelected, 10)]?.fileSelected ?? -1
+              }
+            />
+          )}
           <SetQuestion
             question={questionArr[parseInt(tabSelected, 10)]}
             i={parseInt(tabSelected, 10)}
