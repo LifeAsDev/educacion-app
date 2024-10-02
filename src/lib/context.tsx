@@ -11,54 +11,11 @@ export const OnboardingProvider = ({
   children: React.ReactNode;
 }) => {
   const { data: session, status } = useSession();
-  const TOKEN_KEY = "sessionExpirationToken";
 
   useEffect(() => {
     if (session?.signOutNextAuth) {
-      localStorage.removeItem(TOKEN_KEY);
       /*       signOut();
        */
-    }
-  }, [session]);
-
-  useEffect(() => {
-    const EXPIRATION_INTERVAL = 15000; // 15 segundos
-
-    const updateToken = () => {
-      const expirationTime = Date.now() + EXPIRATION_INTERVAL;
-      localStorage.setItem(TOKEN_KEY, expirationTime.toString());
-    };
-
-    const checkToken = () => {
-      const token = localStorage.getItem(TOKEN_KEY);
-      /*       console.log({ token });
-       */ if (token) {
-        const expirationTime = parseInt(token, 10);
-        /*       console.log({
-          dateNow: Date.now(),
-          expirationTime,
-          if: Date.now() > expirationTime,
-        }); */
-        if (Date.now() > expirationTime) {
-          localStorage.removeItem(TOKEN_KEY);
-          /*      console.log("SignOut");
-          signOut(); */
-        }
-      } else {
-        updateToken();
-      }
-    };
-    if (session) {
-      checkToken();
-      const interval = setInterval(updateToken, 7000);
-      const intervalTokenUpdate = setInterval(() => {
-        getSession();
-      }, 15000);
-
-      return () => {
-        clearInterval(interval);
-        clearInterval(intervalTokenUpdate);
-      };
     }
   }, [session]);
 
