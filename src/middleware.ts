@@ -24,7 +24,7 @@ export default async function middleware(req: NextRequest) {
     process.env.NEXT_PUBLIC_DOMAIN_CONFIG_BASE_URL || "http://localhost:3000"; // Usa tu dominio
   const auth = req.nextUrl.clone();
   auth.pathname = "/";
-
+  console.log({ session });
   const afterAuth = req.nextUrl.clone();
   const home = req.nextUrl.clone();
   const evaluation = req.nextUrl.clone();

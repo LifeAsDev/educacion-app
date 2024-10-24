@@ -13,11 +13,13 @@ export const OnboardingProvider = ({
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (session?.signOutNextAuth) {
-      /*       signOut();
-       */
+    if (status === "unauthenticated" && window.location.pathname !== "/") {
+      window.location.reload();
     }
-  }, [session]);
+    if (session?.signOutNextAuth) {
+      //      signOut();
+    }
+  }, [status, session]);
 
   return (
     <OnboardingContext.Provider
