@@ -9,7 +9,7 @@
 
 .mathquill4quill-operator-button {
   margin: 5px;
-  width: 50px;
+  width: fit-content;
   height: 50px;
   background-color: #fff;
   border-color: #000;

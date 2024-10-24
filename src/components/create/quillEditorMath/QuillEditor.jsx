@@ -23,6 +23,10 @@ const QuillEditor = ({ placeholder, value, setValue }) => {
       ["\\coprod^{s}_{x}{d}", "\\coprod"],
       ["\\int^{s}_{x}{d}", "\\int"],
       ["\\binom{n}{k}", "\\binom"],
+      ["\\log_x(y)", "\\log_{}()"],
+      ["\\sin(x)", "\\sin{()}"],
+      ["\\cos(x)", "\\cos{()}"],
+      ["x^{n}", "\\^{}"],
     ],
     displayHistory: true,
   };

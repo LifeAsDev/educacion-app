@@ -12,6 +12,7 @@ const pagesNotAllowedForEstudiantes = [
   "/stats",
 ];
 const pagesNotAllowedForProfesores = ["/management"];
+const pagesNotAllowedForDirectivos = ["/management"];
 
 export default async function middleware(req: NextRequest) {
   const session = await getToken({
@@ -107,6 +108,12 @@ export default async function middleware(req: NextRequest) {
 
       if (
         pagesNotAllowedForProfesores.some((page) => currentUrl.startsWith(page))
+      ) {
+        return NextResponse.redirect(home);
+      }
+    } else if (session.rol === "Directivo") {
+      if (
+        pagesNotAllowedForDirectivos.some((page) => currentUrl.startsWith(page))
       ) {
         return NextResponse.redirect(home);
       }

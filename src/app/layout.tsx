@@ -9,7 +9,7 @@ import "@edtr-io/mathquill/build/mathquill.css";
 import "react-quill/dist/quill.snow.css";
 import "mathquill4quill/mathquill4quill.css";
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "AULAD",
