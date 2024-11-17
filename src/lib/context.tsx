@@ -14,6 +14,7 @@ export const OnboardingProvider = ({
 
   useEffect(() => {
     if (status === "unauthenticated" && window.location.pathname !== "/") {
+      console.log("unauthenticated");
       window.location.reload();
     }
     if (session?.signOutNextAuth) {
