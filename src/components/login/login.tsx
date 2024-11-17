@@ -55,6 +55,16 @@ export default function Login() {
 
   return (
     <main className={styles.main}>
+      {process.env.NEXT_PUBLIC_SHOW_IN_PORTFOLIO === "true" && (
+        <div className={styles.credentialBox}>
+          <p>
+            <strong>RUT:</strong> admin
+          </p>
+          <p>
+            <strong>Contraseña:</strong> admin
+          </p>
+        </div>
+      )}
       <div className={styles.loginBox}>
         <label>RUT</label>
         <input
